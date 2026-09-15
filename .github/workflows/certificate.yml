@@ -6,15 +6,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      - name: G0 hygiene
+      - name: G0 fail-closed source hygiene
         run: |
           set -euo pipefail
-          if grep -R -n -E '(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-          if grep -R -n -E '^[[:space:]]*axiom[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
       - {name: Preserve K3, run: 'lake build MCore.K3 && lake build MCore.Frontier.K3Gaps && lake build MCore.AttackDAG.K3AlgebraAttacks'}
       - {name: Preserve K4, run: 'lake build MCore.K4'}
       - {name: Build K5, run: 'lake build MCore.K5'}
-      - name: K5 axioms
+      - name: K5 semantic axiom closure
         run: |
           printf 'import MCore.K5\n#print axioms MCore.k5_firewall\n#print axioms MCore.k5_openBridge_cannot_certify\n' > K5AxiomAudit.lean
           lake env lean K5AxiomAudit.lean 2>&1 | tee K5AxiomAudit.log
