@@ -1,0 +1,69 @@
+name: nb-zero-limit-frontier
+
+on:
+  push:
+    branches: [research/nb-zero-limit-frontier]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  nb-zero-limit-frontier-audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve dependencies
+        run: |
+          lake update
+          lake exe cache get
+      - name: NB15 source firewall
+        run: |
+          FILE=lean/MCore/RH/NB/ZeroLimitFrontier.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+      - name: NB15 semantic firewall
+        run: |
+          FILE=lean/MCore/RH/NB/ZeroLimitFrontier.lean
+          ! grep -n -E 'theorem[[:space:]].*(RH|Riemann)' "$FILE"
+          ! grep -n -E '(criterion_iff_RH|RH_PROVED|RiemannHypothesis)' "$FILE"
+      - name: NB15 build
+        run: lake build MCore.RH.NB.ZeroLimitFrontier
+      - name: NB15 theorem API
+        run: |
+          cat > NBZeroAudit.lean <<'EOF'
+          import MCore.RH.NB.ZeroLimitFrontier
+          open MCore.RH.NB
+          #check NBHilbertData.DNToZero
+          #check NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+          #check NBHilbertData.DNToZero_of_le_zero
+          EOF
+          lake env lean NBZeroAudit.lean
+      - name: NB15 axiom report
+        run: |
+          cat > NBZeroAxioms.lean <<'EOF'
+          import MCore.RH.NB.ZeroLimitFrontier
+          open MCore.RH.NB
+          #print axioms NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+          #print axioms NBHilbertData.DNToZero_of_le_zero
+          EOF
+          lake env lean NBZeroAxioms.lean | tee nb15-axioms.txt
+          python3 - <<'PY'
+          import re, sys
+          text=open('nb15-axioms.txt',encoding='utf-8').read()
+          lists=re.findall(r'depends on axioms:\s*\[([^\]]*)\]',text)
+          allowed={'propext','Classical.choice','Quot.sound'}
+          if not lists:
+              print('No axiom dependency report found',file=sys.stderr); sys.exit(1)
+          bad=set()
+          for body in lists:
+              bad |= {x.strip() for x in body.split(',') if x.strip()} - allowed
+          if bad:
+              print('Unexpected axioms:',', '.join(sorted(bad)),file=sys.stderr); sys.exit(1)
+          print('NB15 axiom audit GREEN')
+          PY
