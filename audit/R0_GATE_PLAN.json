@@ -1,0 +1,24 @@
+{
+  "phase": "R0",
+  "status": "PLANNED_NOT_STARTED",
+  "prerequisite": "NB16 ALL_GREEN and certified NB_TOTAL",
+  "canonicalization_rule": "No concrete normalization is accepted until it is proved to instantiate or identify the abstract NBHilbertData objects.",
+  "gates": [
+    {"id":"R0.1","name":"space","goal":"Construct the chosen concrete real L2 Hilbert space with explicit measure/domain and prove required structure."},
+    {"id":"R0.2","name":"rho","goal":"Define the canonical fractional-part generator family from the selected authoritative Nyman-Beurling/Baez-Duarte normalization and prove measurability/MemLp."},
+    {"id":"R0.3","name":"chi","goal":"Define the canonical target indicator in the same concrete L2 space and prove membership/norm facts actually needed."},
+    {"id":"R0.4","name":"spans","goal":"Identify concrete finite spans of the first N generators with NBHilbertData.V under the concrete instance."},
+    {"id":"R0.5","name":"distance","goal":"Identify abstract dN with the concrete residual norm and abstract DN with its square; do not redefine DN."},
+    {"id":"R0.6","name":"identification","goal":"Package the concrete NBHilbertData instance/isometric identification and prove chi, generators, V, projection, dN, DN and DNLimit correspondence."}
+  ],
+  "external_criterion": {
+    "separate_gate": true,
+    "rule": "State and formalize the exact published criterion only after R0.6 fixes normalization. Never use the criterion to prove DNLimit=0 unconditionally."
+  },
+  "R1": {
+    "status": "OPEN_MATHEMATICAL_FRONTIER",
+    "intended_obligation": "DNLimit = 0 or the exact equivalent determined by R0",
+    "automatic_closure_forbidden": true
+  },
+  "rh_proved": false
+}
