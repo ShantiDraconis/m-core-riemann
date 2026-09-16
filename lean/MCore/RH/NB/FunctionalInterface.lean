@@ -36,8 +36,8 @@ def zeroCarrier (sys : MCoreSystem) : FunctionalCarrier where
   coveringAt := fun _ => 0
 
 def zeroCompatibility (sys : MCoreSystem) : FunctionalCompatibility sys (zeroCarrier sys) where
-  amplitudeWitness := fun _ => 0
-  scaleWitness := fun _ => 0
+  amplitudeWitness := fun _ => (zeroCarrier sys).zero
+  scaleWitness := fun _ => (zeroCarrier sys).zero
   observe := id
   amplitude_agrees := by intro A; rfl
   scale_agrees := by intro s; rfl
@@ -64,8 +64,8 @@ def oneCarrier (sys : MCoreSystem) : FunctionalCarrier where
   coveringAt := fun _ => 1
 
 def oneCompatibility (sys : MCoreSystem) : FunctionalCompatibility sys (oneCarrier sys) where
-  amplitudeWitness := fun _ => 0
-  scaleWitness := fun _ => 0
+  amplitudeWitness := fun _ => (oneCarrier sys).zero
+  scaleWitness := fun _ => (oneCarrier sys).zero
   observe := id
   amplitude_agrees := by intro A; rfl
   scale_agrees := by intro s; rfl
