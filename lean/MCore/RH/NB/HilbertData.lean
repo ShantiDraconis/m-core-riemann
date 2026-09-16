@@ -40,7 +40,7 @@ theorem generator_mem_V (rho : D.GeneratorFamily) (N : ℕ) (n : Fin N) :
 /-- The finite generating set really is finite. -/
 theorem finite_finiteGenerators (rho : D.GeneratorFamily) (N : ℕ) :
     (D.finiteGenerators rho N).Finite := by
-  exact Set.Finite.range _
+  exact Set.finite_range _
 
 end NBHilbertData
 
