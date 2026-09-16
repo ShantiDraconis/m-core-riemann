@@ -1,0 +1,29 @@
+{
+  "certificate": "NB13",
+  "status": "PROVED_LEAN",
+  "gate": "finite-stage defect antitonicity",
+  "source_sha": "b2ef9ba5ee30de05af98ab3d58979691254ab9cb",
+  "frozen_ref": "frozen/nb13-antitone-green-b2ef9ba",
+  "workflow": "nb-antitone",
+  "run_id": 35144382612,
+  "job_id": 104956605192,
+  "checks": {
+    "source_firewall": "GREEN",
+    "build": "GREEN",
+    "theorem_api": "GREEN",
+    "axiom_audit": "GREEN"
+  },
+  "theorems": [
+    "MCore.RH.NB.NBHilbertData.dN_antitone_of_le",
+    "MCore.RH.NB.NBHilbertData.DN_antitone_of_le",
+    "MCore.RH.NB.NBHilbertData.DN_antitone"
+  ],
+  "allowed_foundational_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "scientific_claim": "For the certified NBHilbertData finite-stage construction, enlarging the cutoff does not increase dN or DN; DN is antitone.",
+  "rh_proved": false,
+  "notes": "Certificate document is separate from the immutable scientific SOURCE_SHA and does not modify NB0-NB12 or the frozen NB13 source."
+}
