@@ -1,0 +1,61 @@
+{
+  "gate": "NB16",
+  "purpose": "forensic audit and documentary closure of NB0-NB15; no new mathematical claim",
+  "base_source_sha": "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6",
+  "nb15_frozen_ref": "frozen/nb15-zero-limit-frontier-green-e7e36d6",
+  "rules": {
+    "modify_prior_frozen_sources": false,
+    "rewrite_history": false,
+    "force_push": false,
+    "allow_sorry_admit_sorryAx": false,
+    "allow_project_scientific_axiom": false,
+    "emit_NB_TOTAL_before_ALL_GREEN": false,
+    "assert_RH": false
+  },
+  "required_audit_fields_per_gate": [
+    "logical_gate",
+    "source_sha",
+    "source_files",
+    "source_blob_hashes",
+    "imports",
+    "exported_api",
+    "workflow",
+    "run_id",
+    "job_id",
+    "build_status",
+    "firewall_status",
+    "axiom_report",
+    "frozen_ref",
+    "certificate_document",
+    "certificate_document_sha",
+    "epistemic_status"
+  ],
+  "definition_targets": [
+    "NBHilbertData",
+    "GeneratorFamily",
+    "finiteGenerators",
+    "V",
+    "P",
+    "dN",
+    "DN",
+    "DNLimit",
+    "DNToZero"
+  ],
+  "known_definition_facts_at_base": {
+    "GeneratorFamily": "Nat -> D.H",
+    "V": "Submodule.span R of range (fun n : Fin N => rho n)",
+    "dN": "norm of chi minus orthogonal projection onto V_N",
+    "DN": "dN squared",
+    "DNLimit": "to be extracted/audited from Limit.lean",
+    "DNToZero": "to be extracted/audited from ZeroLimitFrontier.lean"
+  },
+  "outputs": [
+    "audit/NB16_DEFINITION_LEDGER.json",
+    "audit/NB16_DAG.json",
+    "audit/NB16_GATE_LEDGER.json",
+    "audit/NB_GREEN_CERTIFICATION.json"
+  ],
+  "all_green_condition": "Every logical NB0-NB15 has verifiable source provenance, applicable build/API/firewall/axiom evidence, and an individual certificate document or explicitly documented legitimate historical shared-source mapping.",
+  "next_if_all_green": "Create NB_TOTAL on a new source branch using only already-proved statements, run dedicated CI, freeze exact GREEN SHA, then issue NB_TOTAL_CERT separately.",
+  "next_if_not_all_green": "Repair only documentary/current audit layers where possible; never modify a prior frozen scientific SOURCE_SHA. A mathematically unverified gate remains UNVERIFIED."
+}
