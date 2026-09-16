@@ -1,0 +1,27 @@
+{
+  "certificate": "NB14",
+  "status": "PROVED_LEAN",
+  "gate": "bounded antitone defect convergence",
+  "source_sha": "9d6c36dd9d7503e99edfc9fce4940665c95fad91",
+  "frozen_ref": "frozen/nb14-limit-green-9d6c36d",
+  "workflow": "nb-limit",
+  "run_id": 35146032014,
+  "job_id": 104962225538,
+  "checks": {
+    "source_firewall": "GREEN",
+    "build": "GREEN",
+    "theorem_api": "GREEN",
+    "axiom_audit": "GREEN"
+  },
+  "theorems": [
+    "MCore.RH.NB.NBHilbertData.DN_bddBelow",
+    "MCore.RH.NB.NBHilbertData.DNLimit",
+    "MCore.RH.NB.NBHilbertData.tendsto_DN_DNLimit",
+    "MCore.RH.NB.NBHilbertData.DNLimit_nonneg"
+  ],
+  "allowed_foundational_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "scientific_claim": "The certified nonnegative antitone finite-stage defect DN converges to its real infimum DNLimit, and DNLimit is nonnegative.",
+  "zero_limit_proved": false,
+  "rh_proved": false,
+  "notes": "This certificate does not assert DNLimit = 0. Certificate documentation is separated from the immutable scientific SOURCE_SHA."
+}
