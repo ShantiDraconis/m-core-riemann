@@ -27,7 +27,7 @@ theorem P_mem (rho : D.GeneratorFamily) (N : ℕ) (x : D.H) :
 /-- The residual after projection is orthogonal to every vector in `V_N`. -/
 theorem residual_inner_eq_zero (rho : D.GeneratorFamily) (N : ℕ) (x : D.H)
     (v : D.H) (hv : v ∈ D.V rho N) :
-    inner (x - (D.P rho N x : D.H)) v = 0 := by
+    @inner ℝ D.H _ (x - (D.P rho N x : D.H)) v = 0 := by
   exact Submodule.orthogonalProjection_inner_eq_zero x v hv
 
 /-- Projection onto `V_N` minimizes the norm of the residual. -/
