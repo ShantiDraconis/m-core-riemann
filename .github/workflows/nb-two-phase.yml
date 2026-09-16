@@ -44,8 +44,28 @@ jobs:
       - name: NB0 source hygiene
         run: |
           set -euo pipefail
-          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          ROOT=lean/MCore/RH/NB
+          # Incomplete proofs or explicit proof-bypass markers.
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' --include='*.lean' "$ROOT"; then
+            echo 'Forbidden proof-bypass/incomplete marker detected'
+            exit 1
+          else
+            rc=$?; [ "$rc" -eq 1 ] || exit "$rc"
+          fi
+          # No project declarations of new axioms/constants.
+          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' "$ROOT"; then
+            echo 'Project axiom/constant declaration detected'
+            exit 1
+          else
+            rc=$?; [ "$rc" -eq 1 ] || exit "$rc"
+          fi
+          # Endpoint convergence must be proved as separate theorems, never stored as structure fields.
+          if grep -R -n -E '^[[:space:]]*(coveringError_tends_zero|testDefect_tends_zero|D_N_to_zero)[[:space:]]*:' --include='*.lean' "$ROOT"; then
+            echo 'Endpoint-shaped convergence field/declaration detected; audit manually before admission'
+            exit 1
+          else
+            rc=$?; [ "$rc" -eq 1 ] || exit "$rc"
+          fi
 
       - name: NB1 exact current A1-A4 interface
         run: lake build MCore.A14_Formal
