@@ -5,16 +5,15 @@ namespace NBHilbertData
 
 variable (D : NBHilbertData)
 
-/-- Enlarging the finite approximation space cannot increase the projection residual norm. -/
+/-- Enlarging the finite approximation space cannot increase the projection residual norm.
+This proof uses orthogonal-projection minimality directly and does not modify any
+previously certified NB source. -/
 theorem dN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) :
     D.dN rho M ≤ D.dN rho N := by
   unfold dN
   let vN : D.V rho M :=
     ⟨(D.P rho N D.chi : D.H), D.V_mono_of_le rho hNM (D.P_mem rho N D.chi)⟩
-  rw [D.P_minimal rho M D.chi]
-  have hle : (⨅ v : D.V rho M, ‖D.chi - (v : D.H)‖) ≤ ‖D.chi - (vN : D.H)‖ := by
-    exact ciInf_le' vN
-  simpa [vN] using hle
+  exact Submodule.orthogonalProjection_minimal D.chi vN
 
 /-- The squared finite-stage defect is antitone in the cutoff. -/
 theorem DN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) :
