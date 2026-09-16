@@ -8,6 +8,7 @@ on:
       - "lean/MCore/RH/NB/**"
       - "lean/MCore/A14_Formal.lean"
       - ".github/workflows/nb-two-phase.yml"
+  workflow_dispatch:
 
 jobs:
   nb-interface-audit:
@@ -22,12 +23,23 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
           "$HOME/.elan/bin/elan" default "$(cat lean-toolchain)"
 
+      - name: Restore incremental Lake cache
+        id: lake-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml', 'lakefile.lean') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml', 'lakefile.lean') }}-
+            lake-build-${{ runner.os }}-
+
       - name: Resolve pinned mathlib dependency graph
         run: |
           set -euo pipefail
           lake update
           lake exe cache get
           grep -F '"name":"mathlib"' lake-manifest.json || grep -F '"name": "mathlib"' lake-manifest.json
+          echo "Lake build cache exact-hit: ${{ steps.lake-cache.outputs.cache-hit }}"
 
       - name: NB0 source hygiene
         run: |
@@ -89,3 +101,26 @@ jobs:
           set -euo pipefail
           test "$(cat lean-toolchain)" = "leanprover/lean4:v4.19.0"
           if grep -R -n -E 'RiemannHypothesis|riemannZeta|Baez|Báez' --include='A14NonImplication.lean' --include='FunctionalInterface.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+
+      - name: Prepare audit snapshot
+        if: always()
+        run: |
+          mkdir -p audit-snapshot
+          cp NBAxiomAudit.log audit-snapshot/axioms.txt 2>/dev/null || true
+          printf 'run_id=%s\nsha=%s\nref=%s\ncache_exact_hit=%s\n' "${{ github.run_id }}" "${{ github.sha }}" "${{ github.ref }}" "${{ steps.lake-cache.outputs.cache-hit }}" > audit-snapshot/summary.txt
+          find lean/MCore/RH/NB -maxdepth 2 -type f -name '*.lean' -print | sort > audit-snapshot/tree.txt
+
+      - name: Upload audit snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nb-audit-${{ github.run_id }}-${{ github.sha }}
+          path: audit-snapshot/
+          retention-days: 90
+
+      - name: Save incremental Lake cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .lake/build
+          key: lake-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml', 'lakefile.lean') }}-${{ github.sha }}
