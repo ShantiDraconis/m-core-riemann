@@ -14,7 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+
+      - name: Install pinned Lean toolchain
+        run: |
+          set -euo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/elan" default "$(cat lean-toolchain)"
+
+      - name: Resolve pinned mathlib dependency graph
+        run: |
+          set -euo pipefail
+          lake update
+          lake exe cache get
+          grep -F '"name":"mathlib"' lake-manifest.json || grep -F '"name": "mathlib"' lake-manifest.json
 
       - name: NB0 source hygiene
         run: |
@@ -34,6 +47,8 @@ jobs:
           import MCore.RH.NB.A14NonImplication
           open MCore MCore.RH.NB
           example : A14Signature witnessSystem := witness_A14
+          example : CompatibleObservation witnessSystem goodObservation := good_is_compatible
+          example : CompatibleObservation witnessSystem badObservation := bad_is_compatible
           example : ¬ (∀ obs : NBObservation,
               CompatibleObservation witnessSystem obs → obs.coveringDecay) :=
             A14_alone_not_sufficient_for_covering
@@ -45,8 +60,15 @@ jobs:
 
       - name: NB4 axiom audit
         run: |
-          printf 'import MCore.RH.NB.A14NonImplication\n#print axioms MCore.RH.NB.witness_A14\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_testDefect\n' > NBAxiomAudit.lean
+          printf 'import MCore.RH.NB.A14NonImplication\n#print axioms MCore.RH.NB.witness_A14\n#print axioms MCore.RH.NB.same_A14_opposite_NB_observations\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_testDefect\n' > NBAxiomAudit.lean
           lake env lean NBAxiomAudit.lean 2>&1 | tee NBAxiomAudit.log
           grep -F "'MCore.RH.NB.witness_A14' does not depend on any axioms" NBAxiomAudit.log
+          grep -F "'MCore.RH.NB.same_A14_opposite_NB_observations' does not depend on any axioms" NBAxiomAudit.log
           grep -F "'MCore.RH.NB.A14_alone_not_sufficient_for_covering' does not depend on any axioms" NBAxiomAudit.log
           grep -F "'MCore.RH.NB.A14_alone_not_sufficient_for_testDefect' does not depend on any axioms" NBAxiomAudit.log
+
+      - name: NB5 pin and endpoint-firewall audit
+        run: |
+          set -euo pipefail
+          test "$(cat lean-toolchain)" = "leanprover/lean4:v4.19.0"
+          if grep -R -n -E 'RiemannHypothesis|riemannZeta|Baez|Báez' --include='A14NonImplication.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
