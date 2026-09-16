@@ -18,7 +18,10 @@ theorem dN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) 
 theorem DN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) :
     D.DN rho M ≤ D.DN rho N := by
   unfold DN
-  exact sq_le_sq₀ (D.dN_nonneg rho M) (D.dN_antitone_of_le rho hNM)
+  have hnonnegM : 0 ≤ D.dN rho M := D.dN_nonneg rho M
+  have hnonnegN : 0 ≤ D.dN rho N := D.dN_nonneg rho N
+  have hmono : D.dN rho M ≤ D.dN rho N := D.dN_antitone_of_le rho hNM
+  nlinarith
 
 /-- `DN` is an antitone real sequence. -/
 theorem DN_antitone (rho : D.GeneratorFamily) :
