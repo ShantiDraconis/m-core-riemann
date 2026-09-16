@@ -1,0 +1,72 @@
+name: nb-distance
+
+on:
+  push:
+    branches:
+      - research/nb-distance
+  workflow_dispatch:
+
+jobs:
+  nb-distance-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+
+      - name: Resolve dependencies
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: NB10 source firewall
+        run: |
+          FILE=lean/MCore/RH/NB/Distance.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+
+      - name: NB10 build distance
+        run: lake build MCore.RH.NB.Distance
+
+      - name: NB10 theorem API
+        run: |
+          cat > NBDistanceAudit.lean <<'EOF'
+          import MCore.RH.NB.Distance
+          open MCore.RH.NB
+          #check NBHilbertData.dN
+          #check NBHilbertData.DN
+          #check NBHilbertData.dN_nonneg
+          #check NBHilbertData.DN_nonneg
+          EOF
+          lake env lean NBDistanceAudit.lean
+
+      - name: NB10 axiom report
+        run: |
+          cat > NBDistanceAxioms.lean <<'EOF'
+          import MCore.RH.NB.Distance
+          open MCore.RH.NB
+          #print axioms NBHilbertData.dN_nonneg
+          #print axioms NBHilbertData.DN_nonneg
+          EOF
+          lake env lean NBDistanceAxioms.lean | tee nb10-axioms.txt
+          python3 - <<'PY'
+          import re, sys
+          text = open('nb10-axioms.txt', encoding='utf-8').read()
+          lists = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text)
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          if not lists:
+              print('No axiom dependency report found', file=sys.stderr)
+              sys.exit(1)
+          bad = set()
+          for body in lists:
+              deps = {x.strip() for x in body.split(',') if x.strip()}
+              bad |= deps - allowed
+          if bad:
+              print('Unexpected axioms:', ', '.join(sorted(bad)), file=sys.stderr)
+              sys.exit(1)
+          print('NB10 axiom audit GREEN')
+          PY
