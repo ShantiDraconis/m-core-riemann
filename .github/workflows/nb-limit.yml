@@ -1,0 +1,67 @@
+name: nb-limit
+
+on:
+  push:
+    branches:
+      - research/nb-limit
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  nb-limit-audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve dependencies
+        run: |
+          lake update
+          lake exe cache get
+      - name: NB14 source firewall
+        run: |
+          FILE=lean/MCore/RH/NB/Limit.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+      - name: NB14 build limit
+        run: lake build MCore.RH.NB.Limit
+      - name: NB14 theorem API
+        run: |
+          cat > NBLimitAudit.lean <<'EOF'
+          import MCore.RH.NB.Limit
+          open MCore.RH.NB
+          #check NBHilbertData.DN_bddBelow
+          #check NBHilbertData.DNLimit
+          #check NBHilbertData.tendsto_DN_DNLimit
+          #check NBHilbertData.DNLimit_nonneg
+          EOF
+          lake env lean NBLimitAudit.lean
+      - name: NB14 axiom report
+        run: |
+          cat > NBLimitAxioms.lean <<'EOF'
+          import MCore.RH.NB.Limit
+          open MCore.RH.NB
+          #print axioms NBHilbertData.DN_bddBelow
+          #print axioms NBHilbertData.tendsto_DN_DNLimit
+          #print axioms NBHilbertData.DNLimit_nonneg
+          EOF
+          lake env lean NBLimitAxioms.lean | tee nb14-axioms.txt
+          python3 - <<'PY'
+          import re, sys
+          text = open('nb14-axioms.txt', encoding='utf-8').read()
+          lists = re.findall(r'depends on axioms:\s*\[([^\]]*)\]', text)
+          allowed = {'propext', 'Classical.choice', 'Quot.sound'}
+          if not lists:
+              print('No axiom dependency report found', file=sys.stderr); sys.exit(1)
+          bad = set()
+          for body in lists:
+              bad |= {x.strip() for x in body.split(',') if x.strip()} - allowed
+          if bad:
+              print('Unexpected axioms:', ', '.join(sorted(bad)), file=sys.stderr); sys.exit(1)
+          print('NB14 axiom audit GREEN')
+          PY
