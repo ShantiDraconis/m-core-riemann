@@ -6,14 +6,25 @@ namespace NBHilbertData
 variable (D : NBHilbertData)
 
 /-- Enlarging the finite approximation space cannot increase the projection residual norm.
-This proof uses orthogonal-projection minimality directly and does not modify any
-previously certified NB source. -/
+The proof keeps all certified NB0--NB12 sources unchanged: it uses the existing
+projection-minimality equality and a typed competitor in the larger subspace. -/
 theorem dN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) :
     D.dN rho M ≤ D.dN rho N := by
   unfold dN
   let vN : D.V rho M :=
     ⟨(D.P rho N D.chi : D.H), D.V_mono_of_le rho hNM (D.P_mem rho N D.chi)⟩
-  exact Submodule.orthogonalProjection_minimal D.chi vN
+  have hmin := D.P_minimal rho M D.chi
+  have hb : BddBelow (Set.range (fun v : D.V rho M => ‖D.chi - (v : D.H)‖)) := by
+    refine ⟨0, ?_⟩
+    rintro _ ⟨v, rfl⟩
+    exact norm_nonneg _
+  have hle : (⨅ v : D.V rho M, ‖D.chi - (v : D.H)‖) ≤ ‖D.chi - (vN : D.H)‖ := by
+    exact ciInf_le hb vN
+  calc
+    ‖D.chi - (D.P rho M D.chi : D.H)‖ =
+        (⨅ v : D.V rho M, ‖D.chi - (v : D.H)‖) := hmin
+    _ ≤ ‖D.chi - (vN : D.H)‖ := hle
+    _ = ‖D.chi - (D.P rho N D.chi : D.H)‖ := by rfl
 
 /-- The squared finite-stage defect is antitone in the cutoff. -/
 theorem DN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) :
