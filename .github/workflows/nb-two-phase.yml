@@ -1,0 +1,52 @@
+name: nb-two-phase
+
+on:
+  push:
+    branches: ["research/nb-two-phase-tests"]
+  pull_request:
+    paths:
+      - "lean/MCore/RH/NB/**"
+      - "lean/MCore/A14_Formal.lean"
+      - ".github/workflows/nb-two-phase.yml"
+
+jobs:
+  nb-interface-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+
+      - name: NB0 source hygiene
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+
+      - name: NB1 exact current A1-A4 interface
+        run: lake build MCore.A14_Formal
+
+      - name: NB2 non-implication module
+        run: lake build MCore.RH.NB.A14NonImplication
+
+      - name: NB3 theorem API
+        run: |
+          cat > NBAudit.lean <<'EOF'
+          import MCore.RH.NB.A14NonImplication
+          open MCore MCore.RH.NB
+          example : A14Signature witnessSystem := witness_A14
+          example : ¬ (∀ obs : NBObservation,
+              CompatibleObservation witnessSystem obs → obs.coveringDecay) :=
+            A14_alone_not_sufficient_for_covering
+          example : ¬ (∀ obs : NBObservation,
+              CompatibleObservation witnessSystem obs → obs.testDefectDecay) :=
+            A14_alone_not_sufficient_for_testDefect
+          EOF
+          lake env lean NBAudit.lean
+
+      - name: NB4 axiom audit
+        run: |
+          printf 'import MCore.RH.NB.A14NonImplication\n#print axioms MCore.RH.NB.witness_A14\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_testDefect\n' > NBAxiomAudit.lean
+          lake env lean NBAxiomAudit.lean 2>&1 | tee NBAxiomAudit.log
+          grep -F "'MCore.RH.NB.witness_A14' does not depend on any axioms" NBAxiomAudit.log
+          grep -F "'MCore.RH.NB.A14_alone_not_sufficient_for_covering' does not depend on any axioms" NBAxiomAudit.log
+          grep -F "'MCore.RH.NB.A14_alone_not_sufficient_for_testDefect' does not depend on any axioms" NBAxiomAudit.log
