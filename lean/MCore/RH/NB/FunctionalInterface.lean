@@ -11,7 +11,9 @@ structure FunctionalCarrier where
   defectAt : ℕ → ℝ
   coveringAt : ℕ → ℝ
 
-structure FunctionalCompatibility (sys : MCoreSystem) (F : FunctionalCarrier) : Prop where
+/-- Observational compatibility is data-bearing: it contains witnesses and an
+observation map, so it lives in `Type`, not `Prop`. -/
+structure FunctionalCompatibility (sys : MCoreSystem) (F : FunctionalCarrier) where
   amplitudeWitness : ℝ → F.State
   scaleWitness : ℝ → F.State
   observe : F.State → ℝ
@@ -80,6 +82,8 @@ theorem oneCarrier_not_testDefect_decay (sys : MCoreSystem) : ¬ TestDefectDecay
   have hlt := hN0 N0 (le_refl N0)
   norm_num [oneCarrier] at hlt
 
+/-- Compatibility of the action/observation data alone does not constrain the
+covering sequence. This is an interface-separation theorem, not an NB theorem. -/
 theorem compatibility_alone_not_sufficient_for_covering :
     ¬ (∀ F : FunctionalCarrier,
         FunctionalCompatibility witnessSystem F → CoveringDecay F) := by
@@ -87,6 +91,8 @@ theorem compatibility_alone_not_sufficient_for_covering :
   exact oneCarrier_not_covering_decay witnessSystem
     (h (oneCarrier witnessSystem) (oneCompatibility witnessSystem))
 
+/-- Compatibility of the action/observation data alone does not constrain the
+defect sequence. This is an interface-separation theorem, not an NB theorem. -/
 theorem compatibility_alone_not_sufficient_for_testDefect :
     ¬ (∀ F : FunctionalCarrier,
         FunctionalCompatibility witnessSystem F → TestDefectDecay F) := by
