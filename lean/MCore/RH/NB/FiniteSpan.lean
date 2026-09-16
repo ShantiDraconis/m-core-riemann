@@ -1,6 +1,7 @@
 import MCore.RH.NB.HilbertData
 import Mathlib.LinearAlgebra.Dimension.Finite
 import Mathlib.Topology.Algebra.Module.FiniteDimension
+import Mathlib.RingTheory.Finiteness.Basic
 
 namespace MCore.RH.NB
 namespace NBHilbertData
