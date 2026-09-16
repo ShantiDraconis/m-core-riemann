@@ -12,7 +12,9 @@ theorem dN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) 
   let vN : D.V rho M :=
     ⟨(D.P rho N D.chi : D.H), D.V_mono_of_le rho hNM (D.P_mem rho N D.chi)⟩
   rw [D.P_minimal rho M D.chi]
-  exact ciInf_le' vN
+  have hle : (⨅ v : D.V rho M, ‖D.chi - (v : D.H)‖) ≤ ‖D.chi - (vN : D.H)‖ := by
+    exact ciInf_le' vN
+  simpa [vN] using hle
 
 /-- The squared finite-stage defect is antitone in the cutoff. -/
 theorem DN_antitone_of_le (rho : D.GeneratorFamily) {N M : ℕ} (hNM : N ≤ M) :
