@@ -11,8 +11,7 @@ variable (D : NBHilbertData)
 theorem finiteDimensional_V (rho : D.GeneratorFamily) (N : ℕ) :
     Module.Finite ℝ (D.V rho N) := by
   rw [V]
-  exact Submodule.fg_iff_finite.mpr ⟨D.finiteGenerators rho N, D.finite_finiteGenerators rho N,
-    rfl⟩
+  exact Submodule.span_of_finite (D.finite_finiteGenerators rho N)
 
 /-- Finite-dimensional approximation spaces are closed in the ambient Hilbert space. -/
 theorem isClosed_V (rho : D.GeneratorFamily) (N : ℕ) :
