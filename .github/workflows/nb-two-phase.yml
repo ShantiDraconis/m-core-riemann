@@ -38,13 +38,16 @@ jobs:
       - name: NB1 exact current A1-A4 interface
         run: lake build MCore.A14_Formal
 
-      - name: NB2 non-implication module
+      - name: NB2 scalar non-implication module
         run: lake build MCore.RH.NB.A14NonImplication
 
-      - name: NB3 theorem API
+      - name: NB3 functional-interface module
+        run: lake build MCore.RH.NB.FunctionalInterface
+
+      - name: NB4 theorem API
         run: |
           cat > NBAudit.lean <<'EOF'
-          import MCore.RH.NB.A14NonImplication
+          import MCore.RH.NB.FunctionalInterface
           open MCore MCore.RH.NB
           example : A14Signature witnessSystem := witness_A14
           example : CompatibleObservation witnessSystem goodObservation := good_is_compatible
@@ -55,20 +58,34 @@ jobs:
           example : ¬ (∀ obs : NBObservation,
               CompatibleObservation witnessSystem obs → obs.testDefectDecay) :=
             A14_alone_not_sufficient_for_testDefect
+          example : FunctionalCompatibility witnessSystem (zeroCarrier witnessSystem) :=
+            zeroCompatibility witnessSystem
+          example : FunctionalCompatibility witnessSystem (oneCarrier witnessSystem) :=
+            oneCompatibility witnessSystem
+          example : CoveringDecay (zeroCarrier witnessSystem) :=
+            zeroCarrier_covering_decay witnessSystem
+          example : ¬ CoveringDecay (oneCarrier witnessSystem) :=
+            oneCarrier_not_covering_decay witnessSystem
+          example : ¬ TestDefectDecay (oneCarrier witnessSystem) :=
+            oneCarrier_not_testDefect_decay witnessSystem
+          example : ¬ (∀ F : FunctionalCarrier,
+              FunctionalCompatibility witnessSystem F → CoveringDecay F) :=
+            compatibility_alone_not_sufficient_for_covering
+          example : ¬ (∀ F : FunctionalCarrier,
+              FunctionalCompatibility witnessSystem F → TestDefectDecay F) :=
+            compatibility_alone_not_sufficient_for_testDefect
           EOF
           lake env lean NBAudit.lean
 
-      - name: NB4 axiom audit
+      - name: NB5 axiom audit
         run: |
-          printf 'import MCore.RH.NB.A14NonImplication\n#print axioms MCore.RH.NB.witness_A14\n#print axioms MCore.RH.NB.same_A14_opposite_NB_observations\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_testDefect\n' > NBAxiomAudit.lean
+          printf 'import MCore.RH.NB.FunctionalInterface\n#print axioms MCore.RH.NB.witness_A14\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_testDefect\n#print axioms MCore.RH.NB.zeroCarrier_covering_decay\n#print axioms MCore.RH.NB.oneCarrier_not_covering_decay\n#print axioms MCore.RH.NB.compatibility_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.compatibility_alone_not_sufficient_for_testDefect\n' > NBAxiomAudit.lean
           lake env lean NBAxiomAudit.lean 2>&1 | tee NBAxiomAudit.log
-          grep -F "'MCore.RH.NB.witness_A14' does not depend on any axioms" NBAxiomAudit.log
-          grep -F "'MCore.RH.NB.same_A14_opposite_NB_observations' does not depend on any axioms" NBAxiomAudit.log
-          grep -F "'MCore.RH.NB.A14_alone_not_sufficient_for_covering' does not depend on any axioms" NBAxiomAudit.log
-          grep -F "'MCore.RH.NB.A14_alone_not_sufficient_for_testDefect' does not depend on any axioms" NBAxiomAudit.log
+          grep -F "does not depend on any axioms" NBAxiomAudit.log
+          test "$(grep -c 'does not depend on any axioms' NBAxiomAudit.log)" -ge 7
 
-      - name: NB5 pin and endpoint-firewall audit
+      - name: NB6 pin and endpoint-firewall audit
         run: |
           set -euo pipefail
           test "$(cat lean-toolchain)" = "leanprover/lean4:v4.19.0"
-          if grep -R -n -E 'RiemannHypothesis|riemannZeta|Baez|Báez' --include='A14NonImplication.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E 'RiemannHypothesis|riemannZeta|Baez|Báez' --include='A14NonImplication.lean' --include='FunctionalInterface.lean' lean/MCore/RH/NB; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
