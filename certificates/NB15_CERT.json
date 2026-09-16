@@ -1,0 +1,27 @@
+{
+  "certificate": "NB15",
+  "status": "PROVED_LEAN",
+  "gate": "zero-limit frontier characterization",
+  "source_sha": "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6",
+  "frozen_ref": "frozen/nb15-zero-limit-frontier-green-e7e36d6",
+  "workflow": "nb-zero-limit-frontier",
+  "run_id": 35147964804,
+  "job_id": 104968746422,
+  "checks": {
+    "source_firewall": "GREEN",
+    "semantic_firewall": "GREEN",
+    "build": "GREEN",
+    "theorem_api": "GREEN",
+    "axiom_audit": "GREEN"
+  },
+  "theorems": [
+    "MCore.RH.NB.NBHilbertData.DNToZero",
+    "MCore.RH.NB.NBHilbertData.DNToZero_iff_DNLimit_eq_zero",
+    "MCore.RH.NB.NBHilbertData.DNToZero_of_le_zero"
+  ],
+  "allowed_foundational_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "scientific_claim": "For the certified convergent finite-stage defect sequence, convergence to zero is equivalent to its canonical limit being zero. A pointwise nonpositive upper bound would force zero convergence, but no such substantive bound is asserted here.",
+  "zero_limit_proved": false,
+  "rh_proved": false,
+  "notes": "This gate isolates rather than solves the genuine zero-limit frontier. Certificate documentation is separated from the immutable scientific SOURCE_SHA."
+}
