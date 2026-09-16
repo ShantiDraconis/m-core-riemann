@@ -91,10 +91,15 @@ jobs:
 
       - name: NB5 axiom audit
         run: |
+          set -euo pipefail
           printf 'import MCore.RH.NB.FunctionalInterface\n#print axioms MCore.RH.NB.witness_A14\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.A14_alone_not_sufficient_for_testDefect\n#print axioms MCore.RH.NB.zeroCarrier_covering_decay\n#print axioms MCore.RH.NB.oneCarrier_not_covering_decay\n#print axioms MCore.RH.NB.compatibility_alone_not_sufficient_for_covering\n#print axioms MCore.RH.NB.compatibility_alone_not_sufficient_for_testDefect\n' > NBAxiomAudit.lean
           lake env lean NBAxiomAudit.lean 2>&1 | tee NBAxiomAudit.log
-          grep -F "does not depend on any axioms" NBAxiomAudit.log
-          test "$(grep -c 'does not depend on any axioms' NBAxiomAudit.log)" -ge 7
+          test "$(grep -c '^.*depends on axioms:' NBAxiomAudit.log)" -eq 7
+          if grep -E 'depends on axioms:.*MCore|depends on axioms:.*RH\.NB' NBAxiomAudit.log; then
+            echo 'Project-defined axiom dependency detected'
+            exit 1
+          fi
+          awk '/depends on axioms:/{flag=1} flag{print}' NBAxiomAudit.log | grep -E 'propext|Classical\.choice|Quot\.sound'
 
       - name: NB6 pin and endpoint-firewall audit
         run: |
