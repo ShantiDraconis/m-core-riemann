@@ -1,0 +1,47 @@
+name: nb-finite-span
+
+on:
+  push:
+    branches: ["research/nb-finite-span"]
+  workflow_dispatch:
+
+jobs:
+  nb-finite-span-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean toolchain
+        run: |
+          set -euo pipefail
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- --default-toolchain none -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/elan" default "$(cat lean-toolchain)"
+      - name: Resolve dependencies
+        run: |
+          set -euo pipefail
+          lake update
+          lake exe cache get
+      - name: NB8 source firewall
+        run: |
+          set -euo pipefail
+          F=lean/MCore/RH/NB/FiniteSpan.lean
+          if grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$F"; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$F"; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+      - name: NB8 build finite span
+        run: lake build MCore.RH.NB.FiniteSpan
+      - name: NB8 theorem API
+        run: |
+          cat > NBFiniteSpanAudit.lean <<'EOF'
+          import MCore.RH.NB.FiniteSpan
+          open MCore.RH.NB
+          example (D : NBHilbertData) (rho : D.GeneratorFamily) (N : ℕ) :
+              Module.Finite ℝ (D.V rho N) := D.finiteDimensional_V rho N
+          example (D : NBHilbertData) (rho : D.GeneratorFamily) (N : ℕ) :
+              IsClosed (D.V rho N : Set D.H) := D.isClosed_V rho N
+          EOF
+          lake env lean NBFiniteSpanAudit.lean
+      - name: NB8 axiom report
+        run: |
+          printf 'import MCore.RH.NB.FiniteSpan\n#print axioms MCore.RH.NB.NBHilbertData.finiteDimensional_V\n#print axioms MCore.RH.NB.NBHilbertData.isClosed_V\n' > NBFiniteSpanAxioms.lean
+          lake env lean NBFiniteSpanAxioms.lean 2>&1 | tee NBFiniteSpanAxioms.log
+          if grep -E 'depends on axioms:.*MCore|depends on axioms:.*RH\.NB' NBFiniteSpanAxioms.log; then exit 1; fi
