@@ -1,16 +1,17 @@
 namespace MCore.RH.NB.Functional
 
-variable {F : Type*} (L P : F → Prop)
+variable {F : Type*}
+variable (L P : F → Prop)
 
-def Sufficient : Prop := ∀ f, L f → P f
+def Sufficient : Prop := ∀ f : F, L f → P f
 
-def Necessary : Prop := ∀ f, P f → L f
+def Necessary : Prop := ∀ f : F, P f → L f
 
 def StrictlyStronger : Prop :=
-  Sufficient L P ∧ ∃ f, P f ∧ ¬ L f
+  Sufficient L P ∧ ∃ f : F, P f ∧ ¬ L f
 
 def StrictlyWeaker : Prop :=
-  Necessary L P ∧ ∃ f, L f ∧ ¬ P f
+  Necessary L P ∧ ∃ f : F, L f ∧ ¬ P f
 
 def Equivalent : Prop :=
   Sufficient L P ∧ Necessary L P
