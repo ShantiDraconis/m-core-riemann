@@ -24,11 +24,12 @@ theorem DNToZero_iff_DNLimit_eq_zero (rho : D.GeneratorFamily) :
 pure order logic and does not provide such a bound. -/
 theorem DNToZero_of_le_zero (rho : D.GeneratorFamily)
     (hupper : ∀ N : ℕ, D.DN rho N ≤ 0) : D.DNToZero rho := by
-  have hzero : ∀ N : ℕ, D.DN rho N = 0 := by
-    intro N
+  have hzero : D.DN rho = fun _ : ℕ => (0 : ℝ) := by
+    funext N
     exact le_antisymm (hupper N) (D.DN_nonneg rho N)
   unfold DNToZero
-  simpa [hzero] using (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (0 : ℝ)) Filter.atTop (nhds 0))
+  rw [hzero]
+  exact tendsto_const_nhds
 
 end NBHilbertData
 end MCore.RH.NB
