@@ -1,0 +1,57 @@
+name: nb-projection
+
+on:
+  push:
+    branches:
+      - research/nb-projection-api
+  workflow_dispatch:
+
+jobs:
+  nb-projection-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+
+      - name: Resolve dependencies
+        run: |
+          lake update
+          lake exe cache get
+
+      - name: NB9 source firewall
+        run: |
+          FILE=lean/MCore/RH/NB/Projection.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+
+      - name: NB9 build projection
+        run: lake build MCore.RH.NB.Projection
+
+      - name: NB9 theorem API
+        run: |
+          cat > NBProjectionAudit.lean <<'EOF'
+          import MCore.RH.NB.Projection
+          open MCore.RH.NB
+          #check NBHilbertData.P
+          #check NBHilbertData.P_mem
+          #check NBHilbertData.residual_inner_eq_zero
+          #check NBHilbertData.P_minimal
+          EOF
+          lake env lean NBProjectionAudit.lean
+
+      - name: NB9 axiom report
+        run: |
+          cat > NBProjectionAxioms.lean <<'EOF'
+          import MCore.RH.NB.Projection
+          open MCore.RH.NB
+          #print axioms NBHilbertData.P_mem
+          #print axioms NBHilbertData.residual_inner_eq_zero
+          #print axioms NBHilbertData.P_minimal
+          EOF
+          lake env lean NBProjectionAxioms.lean | tee nb9-axioms.txt
+          ! grep -E 'MCore\.RH\.NB\..*axiom|NBHilbertData\..*axiom' nb9-axioms.txt
