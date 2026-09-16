@@ -1,7 +1,6 @@
 import MCore.RH.NB.HilbertData
-import Mathlib.LinearAlgebra.Dimension.Finite
+import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Topology.Algebra.Module.FiniteDimension
-import Mathlib.RingTheory.Finiteness.Basic
 
 namespace MCore.RH.NB
 namespace NBHilbertData
@@ -12,7 +11,7 @@ variable (D : NBHilbertData)
 theorem finiteDimensional_V (rho : D.GeneratorFamily) (N : ℕ) :
     Module.Finite ℝ (D.V rho N) := by
   rw [V]
-  exact Submodule.span_of_finite (D.finite_finiteGenerators rho N)
+  exact FiniteDimensional.span_of_finite ℝ (D.finite_finiteGenerators rho N)
 
 /-- Finite-dimensional approximation spaces are closed in the ambient Hilbert space. -/
 theorem isClosed_V (rho : D.GeneratorFamily) (N : ℕ) :
