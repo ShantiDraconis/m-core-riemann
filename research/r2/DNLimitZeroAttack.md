@@ -469,3 +469,81 @@ OPEN_BRIDGE:
 No project axiom.
 No sorry.
 No RH theorem emitted.
+
+
+## 11. Explicit Riesz–Möbius candidate selected by Arb diagnostics
+
+The dyadic finite-N probe is recorded in
+`audit/R2_MOBIUS_DYADIC_PROBE.md`.
+
+It tests the explicit weights
+
+[
+w_{N,alpha}(n)
+=
+left(rac{log(N/n)}{log N}ight)^alpha
+quad (1le nle N),
+]
+
+with coefficients
+
+[
+c_{N,n}=-mu(n)w_{N,alpha}(n).
+]
+
+On the grid (alpha=m/16), finite interval evidence selects the narrow band
+([3/16,1/4]). With scale fixed exactly to one, (3/16) is the best tested
+exponent at N=64,128,256, while (1/4) is best at N=32. This is not evidence
+for a limiting exponent theorem.
+
+Define
+
+[
+P_{N,alpha}(s)
+=
+sum_{nle N}rac{mu(n)w_{N,alpha}(n)}{n^s}.
+]
+
+For
+
+[
+v_{N,alpha}
+=
+-sum_{nle N}mu(n)w_{N,alpha}(n)ho_n,
+]
+
+Mellin–Plancherel yields the exact finite identity
+
+[
+oxed{
+|chi-v_{N,alpha}|_2^2
+=
+rac1{2pi}int_{mathbb R}
+rac{
+|1-zeta(	frac12+it)P_{N,alpha}(	frac12+it)|^2
+}{
+	frac14+t^2
+},dt.
+}
+]
+
+This converts the selected R2 route into one sharp analytic obligation:
+
+[
+existsalpha	ext{ explicit},qquad
+int_{mathbb R}
+rac{
+|1-zeta(	frac12+it)P_{N,alpha}(	frac12+it)|^2
+}{
+	frac14+t^2
+},dt
+longrightarrow0.
+]
+
+No known unconditional estimate in the audited literature supplies this
+limit. A proof of it would itself close the Nyman–Beurling frontier.
+
+The finite data therefore select a concrete family to study, but they do not
+reduce the epistemic status of the final bridge:
+
+`UNIFORM_UPPER_BOUND = OPEN_MATH`.

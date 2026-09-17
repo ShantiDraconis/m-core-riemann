@@ -70,6 +70,14 @@
       "state": "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE",
       "through_N": 256,
       "reason": "finite N data cannot certify the infinite limit"
+    },
+    {
+      "id": "FIXED_SCALE_RIESZ_MOBIUS_FRACTIONAL_TAPER",
+      "state": "RESEARCH_CANDIDATE_FINITE_N_ONLY",
+      "family": "c_N,n = -mu(n)*(1-log(n)/log(N))^alpha",
+      "candidate_alpha_band": "[3/16,1/4]",
+      "analytic_target": "weighted Mellin mean square of 1-zeta(s)P_N,alpha(s) tends to zero",
+      "blocker": "no unconditional all-N mean-square bound known/proved"
     }
   ],
   "rate_guardrail": {
@@ -79,10 +87,11 @@
     "finite_data_do_not_establish_asymptotic": true
   },
   "next_mathematical_task": {
-    "id": "MOBIUS_WEIGHTED_UNIFORM_UPPER_BOUND",
+    "id": "RIESZ_MOBIUS_WEIGHTED_MEAN_SQUARE",
     "status": "OPEN_MATH",
-    "objective": "Find and prove an unconditional decomposition c_N,n = -mu(n) w_N(n) + r_N,n with Gram-energy error tending to zero, or any other explicit approximant yielding DN_N <= epsilon_N -> 0.",
-    "note": "Finite Arb data select the hypothesis; they do not prove the asymptotic bound."
+    "objective": "For one fixed explicit alpha (current finite candidate band [3/16,1/4]) or another explicit weight, prove unconditionally that ||chi + sum_{n<=N} mu(n) w_N(n) rho_n||_2^2 -> 0.",
+    "equivalent_mellin_target": "(1/(2*pi))*integral_R |1-zeta(1/2+it)P_N(1/2+it)|^2/(1/4+t^2) dt -> 0",
+    "note": "Finite Arb evidence selects the family only; proving this limit is already the RH-equivalent open bridge."
   },
   "finite_mobius_diagnostics": {
     "source_sha": "77be7ec1a7d4e8c834a1afc8dc30cbcf62d61ec1",
@@ -104,5 +113,36 @@
       "mean_abs_nonsquarefree": 0.05580093176501322
     },
     "inference_limit": "finite N only; no all-N sign law or asymptotic coefficient formula proved"
+  },
+  "dyadic_mobius_probe": {
+    "classification": "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE",
+    "optimized_scale_run": {
+      "source_sha": "2b26cec7775e0a1550f6d294f67e68b01f052d99",
+      "workflow_run_id": 35285797407,
+      "workflow_job_id": 105417711482,
+      "artifact_id": 10524221363,
+      "artifact_sha256": "66ec4a56eb43db3f5ff2bca0d6058a417dcec3b8bbebfb00cc4029c94f024e41"
+    },
+    "fixed_scale_run": {
+      "source_sha": "8514832357cedace6bf78733c42e6c1d258c6176",
+      "workflow_run_id": 35285974111,
+      "workflow_job_id": 105418254059,
+      "artifact_id": 10523049716,
+      "artifact_sha256": "43711c300c363fdced9dd114c485606f8e5d55ee75f9cb1c469383ba2f6eb82d"
+    },
+    "best_fixed_alpha_grid": {
+      "N32": "4/16",
+      "N64": "3/16",
+      "N128": "3/16",
+      "N256": "3/16"
+    },
+    "candidate_band": "[3/16,1/4]",
+    "fixed_alpha_3_over_16_E2_logN": {
+      "N32": 0.11686934022511837,
+      "N64": 0.16211540106310582,
+      "N128": 0.1171499149802728,
+      "N256": 0.1370818210256597
+    },
+    "inference_limit": "finite interval data only; no uniform C/log N bound or limiting exponent theorem"
   }
 }
