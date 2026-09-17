@@ -62,6 +62,13 @@
       "N": 128,
       "DN": "0.0096585492781119099100353925714525770885013882931170",
       "DN_logN": "0.046863573402957958098263303784356430904608460435562"
+    },
+    {
+      "N": 256,
+      "DN": "0.0082337162772610214415980381026354345341046229830852",
+      "DN_logN": "0.045657417784912047557502704311935014621523762773934",
+      "d_sqrt_logN": "0.21367596445298204750888585893215506734692272710737",
+      "gram_det": "5.1554922009132928539512748525058826984692829098091e-893"
     }
   ],
   "interpretation": {
@@ -75,16 +82,16 @@
   "dnlimit_eq_zero_proved": false,
   "rh_proved": false,
   "latest_extension": {
-    "source_sha": "f3cdf9fe145d0577e6ff82ee1d2e01511b7c5b17",
-    "workflow_run_id": 35284455366,
-    "workflow_job_id": 105413573728,
-    "artifact_id": 10524067970,
-    "artifact_sha256": "c18c4f8864abb9698e93b19b73354d81714c7f9db618bee2eaa91fb0cd910cf8",
-    "arb_decimal_precision": 100
+    "source_sha": "652ccd94ce0b474d43ecb13e3235414c5ebe3656",
+    "workflow_run_id": 35284617230,
+    "workflow_job_id": 105414089528,
+    "artifact_id": 10523628899,
+    "artifact_name": "r2-gram-arb-652ccd94ce0b474d43ecb13e3235414c5ebe3656",
+    "artifact_sha256": "c09854db08a327ee23e19d981fdec61d57d20fee1dcb2fb780be74b74385b106",
+    "arb_decimal_precision": 140
   },
   "next_probe": {
-    "N": 256,
-    "arb_decimal_precision": 140,
-    "status": "AWAITING_CI"
+    "status": "PAUSED_FOR_ANALYTIC_STRUCTURE_REVIEW",
+    "reason": "Finite-N ladder is rigorously certified through N=256. Further N alone does not reduce the OPEN_BRIDGE; inspect coefficient and Gram structure before spending cubic solve cost."
   }
 }
