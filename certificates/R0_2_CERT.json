@@ -1,0 +1,39 @@
+{
+  "stage": "R0.2",
+  "classification": "PROVED_LEAN_CONCRETE_DOMAIN_AND_TARGET_REPRESENTATIVE",
+  "SOURCE_SHA": "be25ead1e1433c4e2094ab67ca53cae31cb0ab4c",
+  "FROZEN_REF": "frozen/r0-2-concrete-domain-green-be25ead",
+  "workflow": "r0-2-concrete-domain",
+  "run_id": 35177823554,
+  "job_id": 105063322241,
+  "checks": {
+    "pinned_lean": "GREEN",
+    "clean_dependency_resolution": "GREEN",
+    "r0_1_provenance": "GREEN",
+    "source_firewall": "GREEN",
+    "lean_build": "GREEN",
+    "concrete_domain_api_audit": "GREEN",
+    "domain_separation_adversarial_test": "GREEN",
+    "assumptions_firewall": "GREEN"
+  },
+  "consumes": {
+    "R0_1_SOURCE_SHA": "6905ef324641c7fe2572d5839331eb6dff298c13",
+    "R0_1_FROZEN_REF": "frozen/r0-1-ambient-carrier-green-6905ef3"
+  },
+  "certified_scope": {
+    "base_domain": "Real",
+    "ambient_subset": "(0,infinity)",
+    "chi_support": "(0,1)",
+    "chi_representative": "0/1 indicator of (0,1)",
+    "ambient_measure": "Lebesgue volume on Real",
+    "ambient_and_chi_support_distinct": true
+  },
+  "open_bridges": [
+    "CHI_MEMLP_TWO",
+    "CHI_L2_EQUIV_CLASS",
+    "RHO_DILATE_MEMLP_TWO",
+    "NB_HILBERT_IDENTIFICATION"
+  ],
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false
+}
