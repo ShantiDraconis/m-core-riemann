@@ -1,0 +1,26 @@
+{
+  "certificate": "NB16",
+  "status": "GREEN",
+  "classification": "CHAIN_AUDIT_CERTIFIED",
+  "source_sha": "540066e741d0cfb88e9cf5b84364ab0715afab1d",
+  "frozen_ref": "frozen/nb16-chain-audit-green-540066e",
+  "workflow": "nb16-chain-audit",
+  "run_id": 35165812081,
+  "job_id": 105026518252,
+  "checks": {
+    "source_firewall": "GREEN",
+    "semantic_frontier_firewall": "GREEN",
+    "import_dag": "GREEN",
+    "complete_nb_build": "GREEN",
+    "theorem_api": "GREEN",
+    "axiom_report": "GREEN",
+    "documentary_evidence_inventory": "GREEN"
+  },
+  "scientific_boundary": {
+    "dn_is_squared_residual_distance": true,
+    "dn_to_zero_iff_dnlimit_eq_zero_certified": true,
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false
+  },
+  "history_policy": "This certificate references the immutable GREEN source SHA and does not rewrite frozen scientific history."
+}
