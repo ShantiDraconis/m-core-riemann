@@ -1,0 +1,20 @@
+{
+  "stage": "R0.1",
+  "classification": "STRUCTURAL_CARRIER_BOUNDARY",
+  "consumes": {
+    "R0_0_SOURCE_SHA": "93982aefdbe796fd7e760fb4bcce61c28dfbdc14",
+    "R0_0_FROZEN_REF": "frozen/r0-0-normalization-green-93982ae"
+  },
+  "assumes": [],
+  "certifies_if_green": [
+    "ambient and restricted carrier tags are distinct Lean types",
+    "selected carrier is L2(0,infinity)",
+    "no coercion from restricted carrier to ambient carrier is supplied by R0.1"
+  ],
+  "open_bridges": [
+    {"name": "CONCRETE_L2_REALIZATION", "status": "OPEN_BRIDGE"},
+    {"name": "CHI_ANALYTIC_REALIZATION", "status": "OPEN_BRIDGE"},
+    {"name": "NORM_PRESERVING_IDENTIFICATION", "status": "OPEN_BRIDGE"}
+  ],
+  "rh_proved": false
+}
