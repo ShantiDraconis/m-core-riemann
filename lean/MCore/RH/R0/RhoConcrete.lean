@@ -55,9 +55,10 @@ theorem rhoRepresentative_eq_reciprocal_of_tail
       (1 : ℝ) = (1 / (n : ℝ)) * (n : ℝ) := hrecip.symm
       _ < x * (n : ℝ) := mul_lt_mul_of_pos_right hx hnR
       _ = (n : ℝ) * x := by ring
+  have hnx0 : (0 : ℝ) < (n : ℝ) * x := lt_trans zero_lt_one hnx
   constructor
   · positivity
-  · rw [div_lt_one]
+  · rw [div_lt_one hnx0]
     exact hnx
 
 end MCore.RH.R0
