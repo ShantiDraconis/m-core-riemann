@@ -11,38 +11,47 @@ identification cannot silently change the generator family. -/
 noncomputable def rhoRepresentative (n : ℕ) (x : BaseDomain) : ℝ :=
   Int.fract (1 / ((n : ℝ) * x))
 
-/-- Every concrete generator is measurable.  This is infrastructure only; L²
-membership is proved separately so measurability cannot be confused with the
-analytic tail estimate. -/
+/-- Every concrete generator is measurable. -/
 theorem rhoRepresentative_measurable (n : ℕ) : Measurable (rhoRepresentative n) := by
   unfold rhoRepresentative
   fun_prop
 
-/-- Fractional-part nonnegativity gives the exact lower bound required by the
-near-origin L² estimate. -/
+/-- Fractional-part nonnegativity. -/
 theorem rhoRepresentative_nonneg (n : ℕ) (x : BaseDomain) :
     0 ≤ rhoRepresentative n x := by
   exact Int.fract_nonneg _
 
-/-- Fractional parts are strictly below one.  Keeping the strict statement is
-useful both for the bounded near-origin piece and for adversarial boundary tests. -/
+/-- Fractional parts are strictly below one. -/
 theorem rhoRepresentative_lt_one (n : ℕ) (x : BaseDomain) :
     rhoRepresentative n x < 1 := by
   exact Int.fract_lt_one _
 
-/-- Consequently every concrete generator has pointwise absolute value at most
-one.  This closes the boundedness half of the near/tail L² split without making
-any claim about the infinite-measure tail. -/
+/-- Pointwise absolute bound used on the finite near-origin piece. -/
 theorem abs_rhoRepresentative_le_one (n : ℕ) (x : BaseDomain) :
     |rhoRepresentative n x| ≤ 1 := by
   rw [abs_of_nonneg (rhoRepresentative_nonneg n x)]
   exact (rhoRepresentative_lt_one n x).le
 
 /-- The zero index degenerates to the zero function under Lean's totalized
-division.  It is therefore excluded from the mathematical NB generator family
-later by an explicit positivity condition, rather than by a false MemLp claim. -/
+ division.  Positivity of the index is imposed for the intended NB family. -/
 @[simp] theorem rhoRepresentative_zero (x : BaseDomain) :
     rhoRepresentative 0 x = 0 := by
   simp [rhoRepresentative]
+
+/-- On the analytic tail `1/n < x`, the argument of `fract` lies in `[0,1)`,
+so the concrete generator is exactly the reciprocal tail.  This is the key
+semantic reduction needed before proving square-integrability. -/
+theorem rhoRepresentative_eq_reciprocal_of_tail
+    (n : ℕ) (hn : 0 < n) (x : BaseDomain)
+    (hx : (1 : ℝ) / (n : ℝ) < x) :
+    rhoRepresentative n x = 1 / ((n : ℝ) * x) := by
+  unfold rhoRepresentative
+  rw [Int.fract_eq_self]
+  have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hx0 : (0 : ℝ) < x := lt_trans (by positivity : (0 : ℝ) < 1 / (n : ℝ)) hx
+  constructor
+  · positivity
+  · rw [div_lt_one]
+    nlinarith [hnR, hx]
 
 end MCore.RH.R0
