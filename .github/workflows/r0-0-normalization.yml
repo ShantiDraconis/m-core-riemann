@@ -1,0 +1,73 @@
+name: r0-0-normalization
+
+on:
+  push:
+    branches: [audit/r0-0-normalization]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r0-0:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve dependencies cleanly
+        run: |
+          rm -f lake-manifest.json
+          lake update
+          lake exe cache get
+      - name: Frozen NB_TOTAL provenance gate
+        run: |
+          set -euo pipefail
+          SHA=38aad03c90103ad9b6cf0a31169b1855869cba11
+          grep -R -q "$SHA" lean/MCore/RH/R0/Normalization.lean audit/R0_0_ASSUMPTIONS.json audit/STATE.json
+          test "$(git merge-base "$SHA" HEAD)" = "$SHA"
+          git show "$SHA:lean/MCore/RH/NB/Total.lean" >/dev/null
+      - name: R0.0 source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/R0/Normalization.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+          ! grep -n -E '(RiemannHypothesis|RH_PROVED|DNToZero|DNLimit[[:space:]]*=[[:space:]]*0)' "$FILE"
+      - name: Build R0.0
+        run: lake build MCore.RH.R0.Normalization
+      - name: Structural indexing adversarial test
+        run: |
+          cat > R00IndexAudit.lean <<'EOF'
+          import MCore.RH.R0.Normalization
+          open MCore.RH.R0
+          example : (baezDuarteIndex 0).val = 1 := by rfl
+          example (n : ℕ) : (baezDuarteIndex n).val = n + 1 := by rfl
+          example (n : ℕ) : 0 < (baezDuarteIndex n).val := (baezDuarteIndex n).positive
+          #check PositiveIndex
+          #check selectedAmbient
+          #print axioms baezDuarteIndex_val
+          #print axioms baezDuarteIndex_zero
+          EOF
+          lake env lean R00IndexAudit.lean | tee r0-0-axioms.txt
+      - name: Convention and assumptions firewall
+        run: |
+          python3 - <<'PY'
+          import json,sys
+          a=json.load(open('audit/R0_0_ASSUMPTIONS.json'))
+          assert a['consumes']['NB_TOTAL_SOURCE_SHA']=='38aad03c90103ad9b6cf0a31169b1855869cba11'
+          assert a['normalization_choice']['map']=='a(n)=n+1'
+          assert a['normalization_choice']['ambient_convention']=='L2(0,infinity)'
+          assert a['assumes']==[]
+          assert any(x['name']=='SPEC_MATCHES_LITERATURE' and x['status']=='OPEN_BRIDGE' for x in a['open_bridges'])
+          assert a['rh_proved'] is False
+          print('R0.0 assumptions firewall GREEN')
+          PY
+      - name: L2 firewall status
+        run: |
+          grep -q 'L2ZeroInfinity' lean/MCore/RH/R0/Normalization.lean
+          grep -q 'CONCRETE_L2_REALIZATION' audit/R0_0_ASSUMPTIONS.json
+          echo 'R0.0 does not yet instantiate chi in any L2 carrier; wrong-space coercion is therefore structurally unavailable at this gate.'
