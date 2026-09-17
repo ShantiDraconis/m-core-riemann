@@ -40,7 +40,8 @@ theorem twoExponent_eq_two : twoExponent = (2 : ENNReal) := by
 private theorem rhoRepresentative_measurable (n : ℕ) :
     Measurable (rhoRepresentative n) := by
   unfold rhoRepresentative rhoBase rhoIndex
-  fun_prop
+  exact measurable_fract.comp
+    (measurable_const.div (measurable_const.mul measurable_id))
 
 private theorem rho_sq_integrableOn_Ioc (n : ℕ) :
     IntegrableOn (fun x : ℝ => (rhoRepresentative n x) ^ 2) (Ioc 0 1) volume := by
@@ -69,24 +70,35 @@ private theorem rho_tail_eq (n : ℕ) {x : ℝ} (hx : 1 < x) :
       exact_mod_cast Nat.succ_le_iff.2 (rhoIndex_pos n)
     have hax : 1 < ((rhoIndex n : ℕ) : ℝ) * x := by
       nlinarith [show (0 : ℝ) < ((rhoIndex n : ℕ) : ℝ) by positivity]
-    exact (one_div_lt_one₀ hax).2 hax
+    exact (one_div_lt_one hax).2 hax
 
 private theorem rho_sq_integrableOn_Ioi (n : ℕ) :
     IntegrableOn (fun x : ℝ => (rhoRepresentative n x) ^ 2) (Ioi 1) volume := by
   have hrpow : IntegrableOn (fun x : ℝ => x ^ (-2 : ℝ)) (Ioi 1) volume := by
     exact integrableOn_Ioi_rpow_of_lt (by norm_num) (by norm_num)
-  refine hrpow.congr_fun ?_ measurableSet_Ioi
-  intro x hx
+  have hmeas : AEStronglyMeasurable (fun x : ℝ => (rhoRepresentative n x) ^ 2)
+      (volume.restrict (Ioi 1)) :=
+    ((rhoRepresentative_measurable n).pow_const 2).aestronglyMeasurable
+  refine Integrable.mono' hrpow hmeas ?_
+  filter_upwards with x hx
   have hx1 : 1 < x := hx
-  rw [rho_tail_eq n hx1]
   have hx0 : 0 < x := lt_trans (by norm_num) hx1
-  have ha0 : (0 : ℝ) < ((rhoIndex n : ℕ) : ℝ) := by positivity
-  have hpow : x ^ (-2 : ℝ) = (x⁻¹) ^ (2 : ℕ) := by
+  have ha : (1 : ℝ) ≤ ((rhoIndex n : ℕ) : ℝ) := by
+    exact_mod_cast Nat.succ_le_iff.2 (rhoIndex_pos n)
+  rw [rho_tail_eq n hx1]
+  rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+  have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := by positivity
+  have hfrac : 0 ≤ 1 / (((rhoIndex n : ℕ) : ℝ) * x) := le_of_lt (one_div_pos.mpr hden)
+  have hle : 1 / (((rhoIndex n : ℕ) : ℝ) * x) ≤ 1 / x := by
+    apply one_div_le_one_div_of_le hx0
+    nlinarith
+  have hsq : (1 / (((rhoIndex n : ℕ) : ℝ) * x)) ^ 2 ≤ (1 / x) ^ 2 := by
+    nlinarith [one_div_pos.mpr hx0]
+  have hrpow_eq : x ^ (-2 : ℝ) = (1 / x) ^ 2 := by
     rw [show (-2 : ℝ) = (-1 : ℝ) * 2 by norm_num, Real.rpow_mul hx0.le]
-    simp [Real.rpow_neg_one, Real.rpow_natCast]
-  rw [hpow]
-  field_simp
-  ring
+    simp [Real.rpow_neg_one, Real.rpow_natCast, one_div]
+  rw [hrpow_eq]
+  exact hsq
 
 private theorem rho_sq_integrableOn_Ioi_zero (n : ℕ) :
     IntegrableOn (fun x : ℝ => (rhoRepresentative n x) ^ 2) (Ioi 0) volume := by
@@ -95,17 +107,17 @@ private theorem rho_sq_integrableOn_Ioi_zero (n : ℕ) :
   have hunion := hnear.union htail
   have hset : Ioc (0 : ℝ) 1 ∪ Ioi 1 = Ioi 0 := by
     ext x
-    simp
+    simp only [mem_union, mem_Ioc, mem_Ioi]
     constructor
-    · intro hx
-      rcases hx with hx | hx
-      · exact hx.1
+    · rintro (⟨hx0, _⟩ | hx1)
+      · exact hx0
       · linarith
-    · intro hx
+    · intro hx0
       by_cases h : x ≤ 1
-      · exact Or.inl ⟨hx, h⟩
+      · exact Or.inl ⟨hx0, h⟩
       · exact Or.inr (lt_of_not_ge h)
-  simpa [hset] using hunion
+  rw [← hset]
+  exact hunion
 
 /-- The concrete Báez-Duarte generator belongs to L²((0,∞), dx). -/
 theorem rho_memLp_two (n : ℕ) : RhoMemLpTwo n := by
