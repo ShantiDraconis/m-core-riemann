@@ -34,8 +34,9 @@ theorem chiRepresentative_eq_indicator :
 
 /-- The support interval has finite measure for the selected positive-half-line measure. -/
 theorem chiSupport_measure_ne_top : zeroInfinityMeasure chiSupport ≠ ⊤ := by
-  rw [zeroInfinityMeasure, Measure.restrict_apply measurableSet_Ioo]
-  simp [chiSupport, zeroInfinityDomain]
+  unfold zeroInfinityMeasure ambientMeasure zeroInfinityDomain chiSupport
+  rw [Measure.restrict_apply measurableSet_Ioo]
+  simp
 
 /-- The actual R0.4 obligation: the concrete target belongs to L². -/
 theorem chi_memLp_two : ChiMemLpTwo := by
