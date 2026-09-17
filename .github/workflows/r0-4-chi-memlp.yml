@@ -66,10 +66,10 @@ jobs:
           cat > R04Pointwise.lean <<'EOF'
           import MCore.RH.R0.ChiMemLp
           open MCore.RH.R0
-          example : chiRepresentative (1/2 : ℝ) = 1 := by native_decide
-          example : chiRepresentative (2 : ℝ) = 0 := by native_decide
-          example : chiRepresentative (0 : ℝ) = 0 := by native_decide
-          example : chiRepresentative (1 : ℝ) = 0 := by native_decide
+          example : chiRepresentative (1/2 : ℝ) = 1 := by simp [chiRepresentative]
+          example : chiRepresentative (2 : ℝ) = 0 := by simp [chiRepresentative]
+          example : chiRepresentative (0 : ℝ) = 0 := by simp [chiRepresentative]
+          example : chiRepresentative (1 : ℝ) = 0 := by simp [chiRepresentative]
           example : ‖chiRepresentative (1/2 : ℝ)‖ ≤ 1 := chiRepresentative_norm_le_one _
           example : ‖chiRepresentative (2 : ℝ)‖ ≤ 1 := chiRepresentative_norm_le_one _
           EOF
