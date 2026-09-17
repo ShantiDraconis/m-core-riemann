@@ -1,0 +1,28 @@
+{
+  "schema": "m-core-riemann-state-v1",
+  "stages": {
+    "NB16": {
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "source_sha": "540066e741d0cfb88e9cf5b84364ab0715afab1d",
+      "run_id": 35165812081,
+      "job_id": 105026518252,
+      "frozen_ref": "frozen/nb16-chain-audit-green-540066e",
+      "cert_doc_sha": "6fd89aa163f5e53b054c522c7487323b0b74205f"
+    },
+    "NB_TOTAL": {
+      "status": "GREEN_FROZEN_CERTIFIED",
+      "source_sha": "38aad03c90103ad9b6cf0a31169b1855869cba11",
+      "run_id": 35166817037,
+      "job_id": 105029644437,
+      "frozen_ref": "frozen/nb-total-green-38aad03",
+      "cert_doc_sha": "bcfca3fface6a6834eb02c81872ca35ffc7457ba",
+      "rh_proved": false
+    },
+    "R0.0": {
+      "status": "PRE_CI",
+      "base_source_sha": "38aad03c90103ad9b6cf0a31169b1855869cba11",
+      "spec_matches_literature": "OPEN_BRIDGE",
+      "rh_proved": false
+    }
+  }
+}
