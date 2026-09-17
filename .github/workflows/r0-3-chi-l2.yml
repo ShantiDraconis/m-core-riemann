@@ -1,0 +1,86 @@
+name: r0-3-chi-l2
+
+on:
+  push:
+    branches: [audit/r0-3-chi-l2]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r0-3:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve dependencies cleanly
+        run: |
+          rm -f lake-manifest.json
+          lake update
+          lake exe cache get
+      - name: Frozen R0.2 provenance gate
+        run: |
+          set -euo pipefail
+          SHA=be25ead1e1433c4e2094ab67ca53cae31cb0ab4c
+          git cat-file -e "$SHA^{commit}"
+          grep -q "$SHA" audit/R0_3_ASSUMPTIONS.json
+          test "$(git merge-base "$SHA" HEAD)" = "$SHA"
+          git show "$SHA:lean/MCore/RH/R0/ConcreteDomain.lean" >/dev/null
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/R0/ChiL2.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+          ! grep -n -E '(RiemannHypothesis|RH_PROVED|DNToZero|DNLimit[[:space:]]*=[[:space:]]*0)' "$FILE"
+      - name: Build R0.3
+        run: lake build MCore.RH.R0.ChiL2
+      - name: R0.3 API and axiom audit
+        run: |
+          cat > R03Audit.lean <<'EOF'
+          import MCore.RH.R0.ChiL2
+          open MCore.RH.R0 MeasureTheory
+          #check zeroInfinityMeasure
+          #check twoExponent
+          #check ChiMemLpTwo
+          #check chiLp
+          example : zeroInfinityMeasure = ambientMeasure.restrict zeroInfinityDomain := by rfl
+          example : twoExponent = (2 : ENNReal) := by rfl
+          #print axioms chiLp
+          EOF
+          lake env lean R03Audit.lean | tee r0-3-axioms.txt
+      - name: Restricted-measure adversarial firewall
+        run: |
+          cat > R03Measure.lean <<'EOF'
+          import MCore.RH.R0.ChiL2
+          open MCore.RH.R0 MeasureTheory
+          example : zeroInfinityMeasure = ambientMeasure.restrict zeroInfinityDomain := by rfl
+          EOF
+          lake env lean R03Measure.lean
+          grep -q 'restrict zeroInfinityDomain' lean/MCore/RH/R0/ChiL2.lean
+      - name: Semantic frontier firewall
+        run: |
+          set -euo pipefail
+          ! grep -n -E 'theorem[[:space:]].*(ChiMemLpTwo|DNLimit|DNToZero|RiemannHypothesis)' lean/MCore/RH/R0/ChiL2.lean
+          grep -q 'hchi : ChiMemLpTwo' lean/MCore/RH/R0/ChiL2.lean
+      - name: Assumptions firewall
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open('audit/R0_3_ASSUMPTIONS.json'))
+          assert a['assumes']==[]
+          assert a['consumes']['R0_2_SOURCE_SHA']=='be25ead1e1433c4e2094ab67ca53cae31cb0ab4c'
+          assert a['definitions']['l2_measure']=='Lebesgue volume restricted to (0,infinity)'
+          names={x['name']:x['status'] for x in a['open_bridges']}
+          for n in ['CHI_MEMLP_TWO_PROOF','CHI_NORM_VALUE','RHO_DILATE_MEMLP_TWO','NB_HILBERT_IDENTIFICATION']:
+            assert names[n]=='OPEN_BRIDGE'
+          assert a['rh_proved'] is False
+          print('R0.3 assumptions firewall GREEN')
+          PY
