@@ -1,0 +1,47 @@
+name: r2-research-firewall
+
+on:
+  push:
+    branches:
+      - research/r2-dnlimit-zero
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify R1 base and no Lean writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=53d97bc0a3e64de419f4214625ae75a9e1ecb178
+          git merge-base --is-ancestor "$BASE" HEAD
+          if git diff --name-only "$BASE"..HEAD | grep -q '^lean/'; then
+            echo "R2 research phase must not modify lean/ before an unconditional bound exists"
+            exit 1
+          fi
+      - name: Verify R2 status firewall
+        shell: python
+        run: |
+          import json
+          with open("audit/R2_ROUTE_MATRIX.json", encoding="utf-8") as f:
+              r=json.load(f)
+          assert r["status"]=="OPEN_BRIDGE"
+          assert r["dnlimit_eq_zero_proved"] is False
+          assert r["rh_proved"] is False
+          assert r["new_lean_theorem"] is False
+          assert r["project_axiom_added"] is False
+          routes={x["id"]:x["state"] for x in r["routes"]}
+          assert routes["BAEZ_DUARTE_DAMPED_MOBIUS"]=="CIRCULAR_CONDITIONAL_ROUTE"
+          assert routes["FINITE_GRAM_NUMERICS"]=="MODEL_EVIDENCE_ONLY"
+      - name: R2 research status
+        run: |
+          echo "R2=OPEN_BRIDGE"
+          echo "DNLimit_EQ_ZERO=false"
+          echo "RH_PROVED=false"

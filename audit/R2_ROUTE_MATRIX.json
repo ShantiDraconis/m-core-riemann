@@ -1,0 +1,52 @@
+{
+  "stage": "R2_DNLIMIT_ZERO",
+  "status": "OPEN_BRIDGE",
+  "base_r1_commit": "53d97bc0a3e64de419f4214625ae75a9e1ecb178",
+  "target": "MCore.RH.R0.concreteNBData.DNLimit MCore.RH.R0.concreteGeneratorFamily = 0",
+  "equivalent_via_r1_to_rh": true,
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false,
+  "new_lean_theorem": false,
+  "project_axiom_added": false,
+  "reduction": {
+    "finite_distance": "d_N = ||chi - P_{V_N} chi||_2",
+    "finite_squared_defect": "DN_N = d_N^2",
+    "explicit_approximant": "v_N = sum_{k<=N} c_{N,k} rho_k",
+    "sufficient_bound": "||chi-v_N||_2 <= E_N and E_N -> 0 implies DNLimit = 0"
+  },
+  "routes": [
+    {
+      "id": "DIRECT_OPTIMAL_PROJECTION_UPPER_BOUND",
+      "state": "OPEN_CORE",
+      "goal": "DN_N <= epsilon_N with epsilon_N -> 0"
+    },
+    {
+      "id": "BAEZ_DUARTE_DAMPED_MOBIUS",
+      "state": "CIRCULAR_CONDITIONAL_ROUTE",
+      "reason": "published L2 convergence estimate assumes RH",
+      "source": "arXiv:math/0205003"
+    },
+    {
+      "id": "NATURAL_MOBIUS",
+      "state": "HIGH_RISK_L2",
+      "reason": "pointwise/L1 convergence does not guarantee L2 convergence",
+      "source": "arXiv:math/0011254"
+    },
+    {
+      "id": "BURNOL_LOWER_BOUND",
+      "state": "RATE_FLOOR_ONLY",
+      "reason": "lower bound constrains decay but does not provide DN_N -> 0",
+      "source": "arXiv:math/0103058"
+    },
+    {
+      "id": "FINITE_GRAM_NUMERICS",
+      "state": "MODEL_EVIDENCE_ONLY",
+      "reason": "finite N data cannot certify the infinite limit"
+    }
+  ],
+  "rate_guardrail": {
+    "squared_distance_scale": "known lower-bound regime is of order at least constant/log N",
+    "candidate_upper_bound_target": "C/log N or any rigorously proved epsilon_N -> 0",
+    "reject_unreconciled": "DN_N = o(1/log N)"
+  }
+}
