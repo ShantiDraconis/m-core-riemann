@@ -1,0 +1,87 @@
+name: r0-1-ambient-carrier
+
+on:
+  push:
+    branches: [audit/r0-1-ambient-carrier]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r0-1:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve dependencies cleanly
+        run: |
+          rm -f lake-manifest.json
+          lake update
+          lake exe cache get
+      - name: Frozen R0.0 provenance gate
+        run: |
+          set -euo pipefail
+          SHA=93982aefdbe796fd7e760fb4bcce61c28dfbdc14
+          git cat-file -e "$SHA^{commit}"
+          grep -q "$SHA" audit/R0_1_ASSUMPTIONS.json
+          test "$(git merge-base "$SHA" HEAD)" = "$SHA"
+          git show "$SHA:lean/MCore/RH/R0/Normalization.lean" >/dev/null
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/R0/AmbientCarrier.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+          ! grep -n -E '(RiemannHypothesis|RH_PROVED|DNToZero|DNLimit[[:space:]]*=[[:space:]]*0)' "$FILE"
+      - name: Build R0.1
+        run: lake build MCore.RH.R0.AmbientCarrier
+      - name: Carrier adversarial compile test
+        run: |
+          cat > R01CarrierAudit.lean <<'EOF'
+          import MCore.RH.R0.AmbientCarrier
+          open MCore.RH.R0
+          example : selectedCarrier = L2Carrier.zeroInfinity := by rfl
+          example : L2Carrier.zeroInfinity != L2Carrier.zeroOne := by decide
+          def ambient : AmbientTagged := ⟨"chi-future"⟩
+          def restricted : RestrictedTagged := ⟨"wrong-space"⟩
+          #check ambient
+          #check restricted
+          #print axioms selectedCarrier_eq_zeroInfinity
+          EOF
+          lake env lean R01CarrierAudit.lean | tee r0-1-axioms.txt
+      - name: Negative coercion test
+        run: |
+          cat > R01MustFail.lean <<'EOF'
+          import MCore.RH.R0.AmbientCarrier
+          open MCore.RH.R0
+          def restricted : RestrictedTagged := ⟨"wrong-space"⟩
+          def mustNotTypecheck : AmbientTagged := restricted
+          EOF
+          if lake env lean R01MustFail.lean >must-fail.log 2>&1; then
+            echo 'ERROR: restricted carrier silently coerced to ambient carrier'
+            cat must-fail.log
+            exit 1
+          fi
+          grep -E -q 'type mismatch|application type mismatch' must-fail.log
+          echo 'Negative carrier coercion test GREEN'
+      - name: Assumptions firewall
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open('audit/R0_1_ASSUMPTIONS.json'))
+          assert a['assumes']==[]
+          assert a['consumes']['R0_0_SOURCE_SHA']=='93982aefdbe796fd7e760fb4bcce61c28dfbdc14'
+          names={x['name']:x['status'] for x in a['open_bridges']}
+          assert names['CONCRETE_L2_REALIZATION']=='OPEN_BRIDGE'
+          assert names['CHI_ANALYTIC_REALIZATION']=='OPEN_BRIDGE'
+          assert names['NORM_PRESERVING_IDENTIFICATION']=='OPEN_BRIDGE'
+          assert a['rh_proved'] is False
+          print('R0.1 assumptions firewall GREEN')
+          PY
