@@ -16,9 +16,16 @@ jobs:
       - name: G1 preserve frozen K7
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "da5564fe1ac4da4d3a6b70b513abb7a8e281d8de"
-          test "$(git rev-parse HEAD^^)" = "ed937c9b72a831bd2fa270b8b050c5855567977d"
-          test "$(git rev-parse HEAD^^:lean/MCore/K7.lean)" = "abc1975c6de54eda03a5af2604490c1993fd5600"
+          K7_SHA="ed937c9b72a831bd2fa270b8b050c5855567977d"
+          K8_SHA="da5564fe1ac4da4d3a6b70b513abb7a8e281d8de"
+          K7_BLOB="abc1975c6de54eda03a5af2604490c1993fd5600"
+          git cat-file -e "${K7_SHA}^{commit}"
+          git cat-file -e "${K8_SHA}^{commit}"
+          git merge-base --is-ancestor "$K7_SHA" HEAD
+          git merge-base --is-ancestor "$K8_SHA" HEAD
+          test "$(git rev-parse "${K8_SHA}^")" = "$K7_SHA"
+          test "$(git rev-parse "${K7_SHA}:lean/MCore/K7.lean")" = "$K7_BLOB"
+          test "$(git rev-parse HEAD:lean/MCore/K7.lean)" = "$K7_BLOB"
           lake build MCore.K7
       - name: G2 explicit K8 build
         run: lake build MCore.K8
