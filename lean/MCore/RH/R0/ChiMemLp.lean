@@ -11,14 +11,13 @@ theorem chiRepresentative_norm_le_one (x : BaseDomain) :
   · simp [chiRepresentative, hx]
   · simp [chiRepresentative, hx]
 
-/-- The concrete target representative is measurable.  Use the original
-if-then-else presentation directly; this avoids indicator/piecewise API and
-its Decidable-membership elaboration entirely. -/
+/-- The concrete target representative is measurable. -/
 theorem chiRepresentative_measurable : Measurable chiRepresentative := by
   unfold chiRepresentative
-  exact Measurable.ite
-    (measurableSet_Ioi.measurableSet.and measurableSet_Iio.measurableSet)
-    measurable_const measurable_const
+  apply Measurable.ite
+  · exact measurableSet_Ioi.and measurableSet_Iio
+  · exact measurable_const
+  · exact measurable_const
 
 /-- A reusable quantitative bound for the square of the target. -/
 theorem chiRepresentative_square_le_one (x : BaseDomain) :
