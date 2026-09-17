@@ -33,7 +33,7 @@ theorem chiRepresentative_eq_indicator :
     simp [chiRepresentative, hx, hcond]
 
 /-- The support interval has finite measure for the selected positive-half-line measure. -/
-theorem chiSupport_measure_ne_top : zeroInfinityMeasure chiSupport ≠ ∞ := by
+theorem chiSupport_measure_ne_top : (zeroInfinityMeasure chiSupport) ≠ (∞ : ℝ≥0∞) := by
   rw [zeroInfinityMeasure, Measure.restrict_apply measurableSet_Ioo]
   simp [chiSupport, zeroInfinityDomain]
 
