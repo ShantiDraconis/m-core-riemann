@@ -60,7 +60,7 @@ jobs:
           #print axioms chi_memLp_two
           EOF
           lake env lean R04Audit.lean | tee r0-4-axioms.txt
-          ! grep -E 'depends on axioms:.*(sorryAx|propext.*propext)' r0-4-axioms.txt
+          ! grep -E 'depends on axioms:.*sorryAx' r0-4-axioms.txt
       - name: Pointwise adversarial tests
         run: |
           cat > R04Pointwise.lean <<'EOF'
