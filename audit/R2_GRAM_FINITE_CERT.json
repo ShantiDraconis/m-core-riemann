@@ -93,5 +93,36 @@
   "next_probe": {
     "status": "PAUSED_FOR_ANALYTIC_STRUCTURE_REVIEW",
     "reason": "Finite-N ladder is rigorously certified through N=256. Further N alone does not reduce the OPEN_BRIDGE; inspect coefficient and Gram structure before spending cubic solve cost."
+  },
+  "explicit_candidate_probe": {
+    "source_sha": "77be7ec1a7d4e8c834a1afc8dc30cbcf62d61ec1",
+    "workflow_run_id": 35285121855,
+    "workflow_job_id": 105415631681,
+    "artifact_id": 10524240236,
+    "artifact_sha256": "efb25882b6006a9adc539da360b90efb75f9238d7c30efc0e0117b0b8550ceda",
+    "N": 256,
+    "optimal_DN": "0.0082337162772610214415980381026354345341046229830852",
+    "explicit_squared_errors": {
+      "raw_mobius": "0.041758169053726221499981876646527789613483986006628",
+      "sqrt_log_taper": "0.043608225771310468085388569299920798720899174871726",
+      "linear_log_taper": "0.12428770771638819184885871242023601518304220686818"
+    },
+    "optimal_coefficient_structure": {
+      "squarefree_count": 157,
+      "minus_mobius_sign_matches": 157,
+      "minus_mobius_sign_match_rate": 1,
+      "mean_abs_squarefree": "0.3630560816477301",
+      "mean_abs_nonsquarefree": "0.05580093176501322"
+    },
+    "interpretation": "FINITE_N_STRUCTURE_ONLY; no candidate is promoted to a uniform asymptotic bound."
+  },
+  "lower_bound_guardrail": {
+    "burnol_statement": "liminf_N DN_N*log(N) >= sum_{Re(rho)=1/2} m(rho)^2/|rho|^2",
+    "simple_constant_note": "2+gamma-log(4*pi) arises under RH, and the simple-zero specialization is conditional; it is not an unconditional per-N lower bound.",
+    "finite_crossing_not_contradiction": true,
+    "primary_sources": [
+      "arXiv:math/0103058",
+      "arXiv:1211.5191"
+    ]
   }
 }
