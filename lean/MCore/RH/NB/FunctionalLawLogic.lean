@@ -1,6 +1,8 @@
 namespace MCore.RH.NB.Functional
 
-variable {F : Type*}
+universe u
+
+variable {F : Type u}
 variable (L P : F → Prop)
 
 def Sufficient : Prop := ∀ f : F, L f → P f
