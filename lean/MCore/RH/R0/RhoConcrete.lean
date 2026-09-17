@@ -35,17 +35,24 @@ noncomputable def rhoLp (n : ℕ) (h : RhoMemLpTwo n) :
     Lp ℝ twoExponent zeroInfinityMeasure :=
   h.toLp (rhoRepresentative n)
 
-noncomputable abbrev ConcreteH := Lp ℝ twoExponent zeroInfinityMeasure
+/-- Expose the literal exponent `2` so Mathlib can synthesize the Hilbert-space instances. -/
+abbrev ConcreteH := Lp ℝ (2 : ENNReal) zeroInfinityMeasure
+
+/-- The frozen R0 exponent is definitionally the literal exponent two. -/
+theorem twoExponent_eq_two : twoExponent = (2 : ENNReal) := by
+  rfl
 
 noncomputable def concreteNBData : MCore.RH.NB.NBHilbertData where
   H := ConcreteH
   instNormedAddCommGroup := inferInstance
   instInnerProductSpace := inferInstance
   instCompleteSpace := inferInstance
-  chi := chiLpConcrete
+  chi := by
+    simpa [ConcreteH, twoExponent] using chiLpConcrete
 
 noncomputable def concreteGeneratorFamily (h : ∀ n, RhoMemLpTwo n) :
     concreteNBData.GeneratorFamily :=
-  fun n => rhoLp n (h n)
+  fun n => by
+    simpa [concreteNBData, ConcreteH, twoExponent] using rhoLp n (h n)
 
 end MCore.RH.R0
