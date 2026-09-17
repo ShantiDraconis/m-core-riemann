@@ -1,0 +1,85 @@
+name: r2-gram-arb
+
+on:
+  push:
+    branches:
+      - research/r2-dnlimit-zero
+    paths:
+      - 'research/r2/**'
+      - '.github/workflows/r2-gram-arb.yml'
+  workflow_dispatch:
+    inputs:
+      schedule:
+        description: 'comma-separated N values'
+        required: false
+        default: '2,4,8,16,32,64'
+      dps:
+        description: 'Arb decimal precision'
+        required: false
+        default: '100'
+
+permissions:
+  contents: read
+
+jobs:
+  gram:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned R2 numerical runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r research/r2/requirements-r2.txt
+
+      - name: Validate Arb/FLINT backend
+        run: python research/r2/probe_arb.py
+
+      - name: Independent Vasyunin sanity checks
+        working-directory: research/r2
+        run: python validate_vasyunin.py --T 200
+
+      - name: Run mpmath pilot
+        run: |
+          python research/r2/gram_engine.py \
+            --backend mpmath \
+            --schedule '2,4,8,16,32' \
+            --dps 80 \
+            --jsonl research/r2/gram_mpmath.jsonl
+
+      - name: Run Arb interval-certified finite-N ladder
+        env:
+          SCHEDULE: \${{ github.event.inputs.schedule || '2,4,8,16,32,64' }}
+          DPS: \${{ github.event.inputs.dps || '100' }}
+        run: |
+          python research/r2/gram_engine.py \
+            --backend arb \
+            --schedule "$SCHEDULE" \
+            --dps "$DPS" \
+            --jsonl research/r2/gram_arb.jsonl
+
+      - name: Semantic firewall
+        run: |
+          grep -q '"classification": "INTERVAL_CERTIFIED_FINITE_N"' research/r2/gram_arb.jsonl
+          if grep -E '"dnlimit_eq_zero_proved": true|"rh_proved": true' research/r2/gram_arb.jsonl; then
+            echo "Finite numerics cannot promote DNLimit or RH"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r2-gram-arb-\${{ github.sha }}
+          path: |
+            research/r2/gram_arb.jsonl
+            research/r2/gram_mpmath.jsonl
+          if-no-files-found: error
+
+      - name: R2 finite computation status
+        run: |
+          echo "FINITE_GRAM=INTERVAL_CERTIFIED"
+          echo "DNLIMIT_EQ_ZERO=OPEN"
+          echo "RH_PROVED=false"
