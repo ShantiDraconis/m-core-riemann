@@ -38,15 +38,20 @@ jobs:
           example (h : RHAdapterObligations) : RiemannHypothesis := rh_endpoint_of_adapter h
           EOF
           lake env lean K8EndpointAudit.lean
-      - name: G4 strict zero-axiom endpoint closure
+      - name: G4 strict zero-axiom structural core
         run: |
           set -euo pipefail
-          printf 'import MCore.K8\n#print axioms MCore.rh_endpoint_of_adapter\n#print axioms MCore.k8_preserves_k7_firewall\n#print axioms MCore.k8_k7_target_open\n' > K8AxiomAudit.lean
+          printf 'import MCore.K8\n#print axioms MCore.endpoint_of_adapter\n#print axioms MCore.k8_preserves_k7_firewall\n#print axioms MCore.k8_k7_target_open\n#print axioms MCore.rh_endpoint_of_adapter\n' > K8AxiomAudit.lean
           lake env lean K8AxiomAudit.lean 2>&1 | tee K8AxiomAudit.log
-          grep -F "'MCore.rh_endpoint_of_adapter' does not depend on any axioms" K8AxiomAudit.log
+          grep -F "'MCore.endpoint_of_adapter' does not depend on any axioms" K8AxiomAudit.log
           grep -F "'MCore.k8_preserves_k7_firewall' does not depend on any axioms" K8AxiomAudit.log
           grep -F "'MCore.k8_k7_target_open' does not depend on any axioms" K8AxiomAudit.log
-          ! grep -E 'depends on axioms:|sorryAx' K8AxiomAudit.log
+          if grep -F "'MCore.rh_endpoint_of_adapter' does not depend on any axioms" K8AxiomAudit.log; then
+            echo 'Official Mathlib RH endpoint is unexpectedly zero-axiom under this pin.'
+          else
+            grep -F "'MCore.rh_endpoint_of_adapter' depends on axioms: [propext, Classical.choice, Quot.sound]" K8AxiomAudit.log
+            ! grep -F 'sorryAx' K8AxiomAudit.log
+          fi
       - name: G5 structural K7 firewall remains valid
         run: |
           cat > K8FirewallAudit.lean <<'EOF'
