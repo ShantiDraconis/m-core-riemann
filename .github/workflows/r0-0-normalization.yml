@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install pinned Lean toolchain
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
@@ -27,6 +29,7 @@ jobs:
         run: |
           set -euo pipefail
           SHA=38aad03c90103ad9b6cf0a31169b1855869cba11
+          git cat-file -e "$SHA^{commit}"
           grep -R -q "$SHA" lean/MCore/RH/R0/Normalization.lean audit/R0_0_ASSUMPTIONS.json audit/STATE.json
           test "$(git merge-base "$SHA" HEAD)" = "$SHA"
           git show "$SHA:lean/MCore/RH/NB/Total.lean" >/dev/null
@@ -56,7 +59,7 @@ jobs:
       - name: Convention and assumptions firewall
         run: |
           python3 - <<'PY'
-          import json,sys
+          import json
           a=json.load(open('audit/R0_0_ASSUMPTIONS.json'))
           assert a['consumes']['NB_TOTAL_SOURCE_SHA']=='38aad03c90103ad9b6cf0a31169b1855869cba11'
           assert a['normalization_choice']['map']=='a(n)=n+1'
