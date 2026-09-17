@@ -33,6 +33,10 @@ theorem rhoRepresentative_index_formula (n : ℕ) (x : BaseDomain) :
 def RhoMemLpTwo (n : ℕ) : Prop :=
   MemLp (rhoRepresentative n) twoExponent zeroInfinityMeasure
 
+/-- The frozen R0 exponent is definitionally the literal exponent two. -/
+theorem twoExponent_eq_two : twoExponent = (2 : ENNReal) := by
+  rfl
+
 private theorem rhoRepresentative_measurable (n : ℕ) :
     Measurable (rhoRepresentative n) := by
   unfold rhoRepresentative rhoBase rhoIndex
@@ -50,10 +54,8 @@ private theorem rho_sq_integrableOn_Ioc (n : ℕ) :
   refine Integrable.mono' hone hmeas ?_
   filter_upwards with x
   simp only [Real.norm_eq_abs]
-  have h0 : 0 ≤ rhoRepresentative n x := by
-    exact Int.fract_nonneg _
-  have h1 : rhoRepresentative n x < 1 := by
-    exact Int.fract_lt_one _
+  have h0 : 0 ≤ rhoRepresentative n x := Int.fract_nonneg _
+  have h1 : rhoRepresentative n x < 1 := Int.fract_lt_one _
   rw [abs_of_nonneg (sq_nonneg _)]
   nlinarith
 
@@ -63,7 +65,7 @@ private theorem rho_tail_eq (n : ℕ) {x : ℝ} (hx : 1 < x) :
   apply Int.fract_eq_self.2
   constructor
   · positivity
-  · have ha : (1 : ℝ) ≤ (rhoIndex n : ℕ) := by
+  · have ha : (1 : ℝ) ≤ ((rhoIndex n : ℕ) : ℝ) := by
       exact_mod_cast Nat.succ_le_iff.2 (rhoIndex_pos n)
     have hax : 1 < ((rhoIndex n : ℕ) : ℝ) * x := by
       nlinarith [show (0 : ℝ) < ((rhoIndex n : ℕ) : ℝ) by positivity]
@@ -118,10 +120,6 @@ noncomputable def rhoLp (n : ℕ) :
 
 /-- Literal L² carrier. `Mathlib.MeasureTheory.Function.L2Space` provides its Hilbert instance. -/
 noncomputable abbrev ConcreteH := Lp ℝ (2 : ENNReal) zeroInfinityMeasure
-
-/-- The frozen R0 exponent is definitionally the literal exponent two. -/
-theorem twoExponent_eq_two : twoExponent = (2 : ENNReal) := by
-  rfl
 
 /-- Concrete NB Hilbert data on the exact L²(0,∞) carrier. -/
 noncomputable def concreteNBData : MCore.RH.NB.NBHilbertData where
