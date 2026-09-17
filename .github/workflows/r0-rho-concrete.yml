@@ -1,0 +1,34 @@
+name: r0-rho-concrete
+on:
+  push:
+    branches: [audit/r0-4-chi-memlp]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rho:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: leanprover/lean-action@v1
+        with:
+          use-mathlib-cache: true
+      - name: Build concrete rho interface
+        run: lake build MCore.RH.R0.RhoConcrete
+      - name: Axiom audit
+        run: |
+          cat > RhoAxiomAudit.lean <<'EOF'
+          import MCore.RH.R0.RhoConcrete
+          #print axioms MCore.RH.R0.rhoRepresentative_measurable
+          #print axioms MCore.RH.R0.rhoRepresentative_zero
+          EOF
+          lake env lean RhoAxiomAudit.lean 2>&1 | tee RhoAxiomAudit.log
+          ! grep -E 'sorryAx' RhoAxiomAudit.log
+      - name: Semantic firewall
+        run: |
+          set -euo pipefail
+          ! grep -E '^[[:space:]]*(axiom|constant|constants)[[:space:]]' lean/MCore/RH/R0/RhoConcrete.lean
+          ! grep -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' lean/MCore/RH/R0/RhoConcrete.lean
+          ! grep -E 'RiemannHypothesis|RH_PROVED|DNLimit' lean/MCore/RH/R0/RhoConcrete.lean
