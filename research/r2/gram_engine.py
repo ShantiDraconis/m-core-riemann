@@ -126,6 +126,81 @@ def b_arb(a:int,dps:int=80):
     ctx.dps=dps
     return (arb(a).log()+1-arb.const_euler())/a
 
+def mobius_int(n:int) -> int:
+    """Elementary Möbius function for finite research coefficient diagnostics."""
+    m=n
+    parity=0
+    p=2
+    while p*p<=m:
+        if m%p==0:
+            e=0
+            while m%p==0:
+                m//=p
+                e+=1
+            if e>1:
+                return 0
+            parity+=1
+        p+=1
+    if m>1:
+        parity+=1
+    return 1 if parity%2==0 else -1
+
+
+def explicit_candidate_error_arb(G,B,N:int,kind:str):
+    """Rigorous finite-N squared error for an explicit coefficient family."""
+    from flint import arb,arb_mat
+    if N<=1:
+        raise ValueError("candidate taper requires N > 1")
+    logN=arb(N).log()
+    vals=[]
+    for n in range(1,N+1):
+        mu=mobius_int(n)
+        if mu==0:
+            vals.append(arb(0))
+            continue
+        u=arb(1)-arb(n).log()/logN
+        if kind=="sqrt_log_taper":
+            weight=u.sqrt()
+        elif kind=="linear_log_taper":
+            weight=u
+        elif kind=="raw_mobius":
+            weight=arb(1)
+        else:
+            raise ValueError(kind)
+        vals.append(-mu*weight)
+    C=arb_mat(N,1,vals)
+    err=arb(1)-2*(B.transpose()*C)[0,0]+(C.transpose()*G*C)[0,0]
+    return err
+
+
+def optimal_coefficient_diagnostics(C,N:int):
+    """Descriptive finite-N diagnostics only; no asymptotic inference."""
+    vals=[float(C[i,0].mid()) for i in range(N)]
+    sf=0
+    match=0
+    sf_abs=0.0
+    nsf_abs=0.0
+    nsf=0
+    for i,c in enumerate(vals, start=1):
+        mu=mobius_int(i)
+        if mu:
+            sf+=1
+            sf_abs+=abs(c)
+            if (c>0)==(-mu>0):
+                match+=1
+        else:
+            nsf+=1
+            nsf_abs+=abs(c)
+    return {
+        "squarefree_count":sf,
+        "minus_mobius_sign_matches":match,
+        "minus_mobius_sign_match_rate":match/sf if sf else None,
+        "mean_abs_optimal_coeff_squarefree":sf_abs/sf if sf else None,
+        "mean_abs_optimal_coeff_nonsquarefree":nsf_abs/nsf if nsf else None,
+        "classification":"MODEL_EVIDENCE_ONLY"
+    }
+
+
 def run_arb(N:int,dps:int):
     import flint
     from flint import arb,arb_mat,ctx
@@ -145,6 +220,12 @@ def run_arb(N:int,dps:int):
     DN=arb(1)-(B.transpose()*C)[0,0]
     logN=arb(N).log() if N>1 else arb(0)
     det=G.det()
+    candidate_errors={
+        "raw_mobius":_arb_bounds(explicit_candidate_error_arb(G,B,N,"raw_mobius")),
+        "sqrt_log_taper":_arb_bounds(explicit_candidate_error_arb(G,B,N,"sqrt_log_taper")),
+        "linear_log_taper":_arb_bounds(explicit_candidate_error_arb(G,B,N,"linear_log_taper")),
+    }
+    coeff_diagnostics=optimal_coefficient_diagnostics(C,N)
     return {
         "backend":"python-flint/arb",
         "python_flint_version":flint.__version__,
@@ -157,6 +238,8 @@ def run_arb(N:int,dps:int):
         "DN_logN":_arb_bounds(DN*logN),
         "d_sqrt_logN":_arb_bounds((DN*logN).sqrt()) if N>1 and DN.lower()>=0 else None,
         "coefficients":[_arb_bounds(C[i,0],35) for i in range(N)],
+        "explicit_candidate_errors_sq":candidate_errors,
+        "optimal_coefficient_diagnostics":coeff_diagnostics,
         "finite_N_only":True,
         "dnlimit_eq_zero_proved":False,
         "rh_proved":False,
