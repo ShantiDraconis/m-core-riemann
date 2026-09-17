@@ -1,0 +1,84 @@
+name: r1-baez-duarte-interface
+
+on:
+  push:
+    branches:
+      - audit/r1-baez-duarte-interface
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  interface-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout R1 branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify immutable prerequisite refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin             refs/heads/frozen/r0-rho-identification-green-66a9b18             refs/heads/certificates/r0-rho-identification-66a9b18             refs/heads/frozen/nb15-zero-limit-frontier-green-e7e36d6
+          test "$(git rev-parse origin/frozen/r0-rho-identification-green-66a9b18)" = "66a9b18f26fd714a968c1d33935d54dde4e6bf30"
+          test "$(git rev-parse origin/certificates/r0-rho-identification-66a9b18)" = "8a77227890003bbff297474e6861beed2cfc8de6"
+          test "$(git rev-parse origin/frozen/nb15-zero-limit-frontier-green-e7e36d6)" = "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
+
+      - name: Verify R0_CERT prerequisite
+        shell: python
+        run: |
+          import json
+          with open("R0_CERT.json", "r", encoding="utf-8") as f:
+              r0 = json.load(f)
+          assert r0["status"] == "GREEN"
+          assert r0["dnlimit_eq_zero_proved"] is False
+          assert r0["rh_proved"] is False
+          assert r0["composition_base_sha"] == "66a9b18f26fd714a968c1d33935d54dde4e6bf30"
+
+      - name: Verify R1 interface payload
+        shell: python
+        run: |
+          import json
+          p = "audit/R1_BAEZ_DUARTE_INTERFACE.json"
+          with open(p, "r", encoding="utf-8") as f:
+              r = json.load(f)
+          assert r["stage"] == "R1_BAEZ_DUARTE_CRITERION_INTERFACE"
+          assert r["classification"] == "EXTERNAL_INTERFACE_VERIFIED_WITH_STANDARD_HILBERT_BRIDGE"
+          assert r["implementation_mode"] == "DOCUMENTED_EXTERNAL_INTERFACE_NO_LEAN_DECLARATION"
+          assert r["external_criterion"]["classification"] == "PROVED_EXTERNAL"
+          assert r["external_criterion"]["arxiv"] == "math/0202141"
+          assert r["normalization_match"]["ambient"] == "L2((0,infinity), dx)"
+          assert r["normalization_match"]["index_match"] == "a = n + 1"
+          assert r["closure_to_finite_distance_bridge"]["mathematical_status"] == "STANDARD_HILBERT_ANALYSIS"
+          assert r["closure_to_finite_distance_bridge"]["formal_status"] == "EXTERNAL_UNFORMALIZED"
+          assert r["closure_to_finite_distance_bridge"]["proved_in_current_lean"] is False
+          assert r["closure_to_finite_distance_bridge"]["new_open_mathematics"] is False
+          assert r["internal_zero_limit_bridge"]["classification"] == "PROVED_LEAN"
+          assert r["internal_zero_limit_bridge"]["source_sha"] == "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
+          assert r["semantic_composition"]["lean_theorem_emitted"] is False
+          assert r["semantic_composition"]["project_axiom_added"] is False
+          assert r["frontier"]["status"] == "OPEN_BRIDGE"
+          assert r["dnlimit_eq_zero_proved"] is False
+          assert r["rh_proved"] is False
+          assert r["new_lean_proof"] is False
+          assert r["new_frozen_ref_required"] is False
+
+      - name: Verify no Lean source modification
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=f902fca1a59f750cb6d4a7b2d16fbc74715be1df
+          if git diff --name-only "$BASE"..HEAD | grep -q '^lean/'; then
+            echo "R1 interface must not modify lean/"
+            git diff --name-only "$BASE"..HEAD
+            exit 1
+          fi
+
+      - name: R1 interface GREEN
+        run: |
+          echo "R1_EXTERNAL_INTERFACE=GREEN"
+          echo "DNLimit_EQ_ZERO=OPEN_BRIDGE"
+          echo "RH_PROVED=false"
