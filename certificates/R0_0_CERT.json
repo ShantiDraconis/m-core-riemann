@@ -1,0 +1,36 @@
+{
+  "certificate": "R0.0",
+  "status": "GREEN",
+  "classification": "PROVED_LEAN_STRUCTURAL_NORMALIZATION",
+  "source_sha": "93982aefdbe796fd7e760fb4bcce61c28dfbdc14",
+  "frozen_ref": "frozen/r0-0-normalization-green-93982ae",
+  "workflow": "r0-0-normalization",
+  "run_id": 35172957189,
+  "job_id": 105048353026,
+  "consumes": {
+    "NB_TOTAL_SOURCE_SHA": "38aad03c90103ad9b6cf0a31169b1855869cba11"
+  },
+  "checks": {
+    "frozen_nb_total_provenance": "GREEN",
+    "source_firewall": "GREEN",
+    "build": "GREEN",
+    "structural_indexing_adversarial_test": "GREEN",
+    "convention_and_assumptions_firewall": "GREEN",
+    "l2_firewall_status": "GREEN"
+  },
+  "certified_scope": {
+    "baez_duarte_indexing_map": "a(n)=n+1",
+    "positive_index_requirement_structural": true,
+    "ambient_convention_selected": "L2(0,infinity)"
+  },
+  "open_bridges": [
+    "SPEC_MATCHES_LITERATURE",
+    "CONCRETE_L2_REALIZATION"
+  ],
+  "scientific_boundary": {
+    "concrete_chi_realized": false,
+    "baez_duarte_correspondence_proved": false,
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false
+  }
+}
