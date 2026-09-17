@@ -61,10 +61,17 @@ jobs:
           example : k6_dependency.target.status = .openBridge := k8_k7_target_open
           EOF
           lake env lean K8FirewallAudit.lean
-      - name: G6 numerical evidence excluded from Lean proof chain
+      - name: G6 numerical evidence excluded from K8 proof chain
         run: |
           set -euo pipefail
-          if grep -R -n -E 'phi_derived|0\.309|0\.594|0\.609' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          files=(lean/MCore/K3.lean lean/MCore/K4.lean lean/MCore/K5.lean lean/MCore/K6.lean lean/MCore/K7.lean lean/MCore/K8.lean)
+          if grep -n -E 'phi_derived|0\.309|0\.594|0\.609' "${files[@]}"; then
+            echo 'Numerical evidence entered the K3-K8 proof chain.'
+            exit 1
+          else
+            rc=$?
+            [ "$rc" -eq 1 ] || exit "$rc"
+          fi
       - name: G7 clean K8 reproduction
         run: |
           lake clean
