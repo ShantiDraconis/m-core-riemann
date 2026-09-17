@@ -173,6 +173,67 @@ def explicit_candidate_error_arb(G,B,N:int,kind:str):
     return err
 
 
+def scaled_power_taper_scan_arb(G,B,N:int):
+    """Finite-N Arb scan of scaled Möbius power tapers in Gram energy.
+
+    For v_n = -mu(n) * u_n^alpha, u_n=1-log(n)/log(N), optimize the
+    scalar A exactly in the finite quadratic error:
+        E(A)^2 = 1 - 2 A <b,v> + A^2 <v,Gv>.
+    This is finite-N model evidence only.
+    """
+    from flint import arb,arb_mat
+    if N<=1:
+        raise ValueError("power taper scan requires N > 1")
+    logN=arb(N).log()
+
+    def weight(u, kind):
+        if kind=="alpha_0":
+            return arb(1)
+        q=u.sqrt().sqrt()
+        h=u.sqrt()
+        if kind=="alpha_1_4":
+            return q
+        if kind=="alpha_1_2":
+            return h
+        if kind=="alpha_3_4":
+            return h*q
+        if kind=="alpha_1":
+            return u
+        if kind=="alpha_3_2":
+            return u*h
+        if kind=="alpha_2":
+            return u*u
+        raise ValueError(kind)
+
+    out={}
+    for kind in [
+        "alpha_0","alpha_1_4","alpha_1_2","alpha_3_4",
+        "alpha_1","alpha_3_2","alpha_2"
+    ]:
+        vals=[]
+        for n in range(1,N+1):
+            mu=mobius_int(n)
+            if mu==0:
+                vals.append(arb(0))
+                continue
+            u=arb(1)-arb(n).log()/logN
+            vals.append(-mu*weight(u,kind))
+        V=arb_mat(N,1,vals)
+        L=(B.transpose()*V)[0,0]
+        Q=(V.transpose()*G*V)[0,0]
+        if not (Q.lower()>0):
+            raise ArithmeticError(f"non-positive Gram energy for {kind}: {Q}")
+        A=L/Q
+        err=arb(1)-(L*L)/Q
+        out[kind]={
+            "optimal_scale":_arb_bounds(A),
+            "optimized_squared_error":_arb_bounds(err),
+            "linear_term":_arb_bounds(L),
+            "quadratic_energy":_arb_bounds(Q),
+        }
+    return out
+
+
 def optimal_coefficient_diagnostics(C,N:int):
     """Descriptive finite-N diagnostics only; no asymptotic inference."""
     vals=[float(C[i,0].mid()) for i in range(N)]
@@ -226,6 +287,7 @@ def run_arb(N:int,dps:int):
         "linear_log_taper":_arb_bounds(explicit_candidate_error_arb(G,B,N,"linear_log_taper")),
     }
     coeff_diagnostics=optimal_coefficient_diagnostics(C,N)
+    scaled_power_scan=scaled_power_taper_scan_arb(G,B,N)
     return {
         "backend":"python-flint/arb",
         "python_flint_version":flint.__version__,
@@ -240,6 +302,7 @@ def run_arb(N:int,dps:int):
         "coefficients":[_arb_bounds(C[i,0],35) for i in range(N)],
         "explicit_candidate_errors_sq":candidate_errors,
         "optimal_coefficient_diagnostics":coeff_diagnostics,
+        "scaled_mobius_power_taper_scan":scaled_power_scan,
         "finite_N_only":True,
         "dnlimit_eq_zero_proved":False,
         "rh_proved":False,
