@@ -1,0 +1,46 @@
+{
+  "stage": "R0.4",
+  "classification": "PROVED_LEAN_CHI_MEMLP_TWO",
+  "source_repository": "ShantiDraconis/m-core-riemann",
+  "source_sha": "c0fe29a5f4c430312432affabc55066083903438",
+  "frozen_ref": "frozen/r0-4-chi-memlp-green-c0fe29a",
+  "workflow": "r0-4-chi-memlp",
+  "workflow_run_id": 35217772150,
+  "workflow_job_id": 105190234110,
+  "certified_at": "2026-09-17T11:52:31Z",
+  "lean": {
+    "version": "4.19.0",
+    "commit": "6caaee842e94"
+  },
+  "mathlib_sha": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+  "consumes": {
+    "stage": "R0.3",
+    "source_sha": "67c9055c6e0778d9e46abab211aafa569dfcc280",
+    "frozen_ref": "frozen/r0-3-chi-l2-green-67c9055"
+  },
+  "source_theorems": [
+    "MCore.RH.R0.chiRepresentative_norm_le_one",
+    "MCore.RH.R0.chiRepresentative_measurable",
+    "MCore.RH.R0.chiRepresentative_eq_indicator",
+    "MCore.RH.R0.chiSupport_measure_ne_top",
+    "MCore.RH.R0.chi_memLp_two",
+    "MCore.RH.R0.chiLpConcrete"
+  ],
+  "allowed_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "assumes": [],
+  "certified_scope": [
+    "chiRepresentative is measurable and pointwise norm-bounded by one",
+    "chiRepresentative is the constant-one indicator of (0,1)",
+    "chiSupport has finite measure under zeroInfinityMeasure",
+    "ChiMemLpTwo is proved unconditionally",
+    "chiLpConcrete is constructed unconditionally"
+  ],
+  "open_bridges": [
+    "CHI_NORM_VALUE",
+    "RHO_DILATE_MEMLP_TWO",
+    "NB_HILBERT_IDENTIFICATION"
+  ],
+  "cross_repo_imports_used": [],
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false
+}
