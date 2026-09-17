@@ -1,0 +1,35 @@
+{
+  "gate": "R0.0",
+  "status": "PRE_CI",
+  "consumes": {
+    "NB_TOTAL_SOURCE_SHA": "38aad03c90103ad9b6cf0a31169b1855869cba11",
+    "NB_TOTAL_FROZEN_REF": "frozen/nb-total-green-38aad03",
+    "statements": [
+      "delta = DNLimit",
+      "0 <= delta",
+      "DN tends to delta",
+      "delta = 0 iff DNToZero"
+    ]
+  },
+  "normalization_choice": {
+    "abstract_index_domain": "Nat including 0",
+    "literature_parameter_domain": "positive integers",
+    "map": "a(n)=n+1",
+    "ambient_convention": "L2(0,infinity)"
+  },
+  "assumes": [],
+  "open_bridges": [
+    {
+      "name": "SPEC_MATCHES_LITERATURE",
+      "status": "OPEN_BRIDGE",
+      "meaning": "R0.0 fixes the convention and indexing only; it does not yet prove that the future concrete Lean realization is isometric to the published Baez-Duarte model."
+    },
+    {
+      "name": "CONCRETE_L2_REALIZATION",
+      "status": "OPEN_BRIDGE",
+      "meaning": "The L2(0,infinity) carrier, chi, rho_a, measurability, square-integrability, and norm-preserving identification are deferred to later R0 gates."
+    }
+  ],
+  "forbidden_promotions": ["RH", "DNToZero", "DNLimit=0", "density", "closure"],
+  "rh_proved": false
+}
