@@ -34,8 +34,9 @@ theorem chiRepresentative_eq_indicator :
 
 /-- The support interval has finite measure for the selected positive-half-line measure. -/
 theorem chiSupport_measure_ne_top : zeroInfinityMeasure chiSupport ≠ ⊤ := by
-  have hle : zeroInfinityMeasure chiSupport ≤ ambientMeasure chiSupport :=
-    Measure.restrict_le_self
+  have hle : zeroInfinityMeasure chiSupport ≤ ambientMeasure chiSupport := by
+    unfold zeroInfinityMeasure
+    exact Measure.restrict_apply_le zeroInfinityDomain chiSupport
   have hfinite : ambientMeasure chiSupport ≠ ⊤ := by
     unfold ambientMeasure chiSupport
     simp
