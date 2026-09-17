@@ -15,7 +15,8 @@ theorem chiRepresentative_norm_le_one (x : BaseDomain) :
 theorem chiRepresentative_measurable : Measurable chiRepresentative := by
   unfold chiRepresentative
   apply Measurable.ite
-  · exact measurableSet_Ioi.and measurableSet_Iio
+  · change MeasurableSet (Set.Ioi 0 ∩ Set.Iio 1)
+    exact MeasurableSet.inter measurableSet_Ioi measurableSet_Iio
   · exact measurable_const
   · exact measurable_const
 
