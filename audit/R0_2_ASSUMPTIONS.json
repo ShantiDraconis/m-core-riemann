@@ -1,0 +1,28 @@
+{
+  "stage": "R0.2",
+  "classification": "CONCRETE_DOMAIN_AND_TARGET_REPRESENTATIVE",
+  "consumes": {
+    "R0_1_SOURCE_SHA": "6905ef324641c7fe2572d5839331eb6dff298c13",
+    "R0_1_FROZEN_REF": "frozen/r0-1-ambient-carrier-green-6905ef3"
+  },
+  "assumes": [],
+  "definitions": {
+    "base_domain": "Real",
+    "ambient_subset": "(0,infinity)",
+    "chi_support": "(0,1)",
+    "measure": "Lebesgue volume on Real"
+  },
+  "certifies_if_green": [
+    "concrete real base domain is defined",
+    "positive half-line and chi support are distinct explicit sets",
+    "chi representative is the 0/1 indicator of (0,1)",
+    "ambient measure is Lebesgue volume"
+  ],
+  "open_bridges": [
+    {"name":"CHI_MEMLP_TWO", "status":"OPEN_BRIDGE"},
+    {"name":"CHI_L2_EQUIV_CLASS", "status":"OPEN_BRIDGE"},
+    {"name":"RHO_DILATE_MEMLP_TWO", "status":"OPEN_BRIDGE"},
+    {"name":"NB_HILBERT_IDENTIFICATION", "status":"OPEN_BRIDGE"}
+  ],
+  "rh_proved": false
+}
