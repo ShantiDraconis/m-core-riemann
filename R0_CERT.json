@@ -1,9 +1,13 @@
 {
   "stage": "R0_CERT",
   "classification": "R0_CERT_COMPOSED_FROZEN_EVIDENCE",
-  "status": "AWAITING_CI",
+  "status": "GREEN",
   "source_repository": "ShantiDraconis/m-core-riemann",
   "composition_base_sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+  "composition_commit_sha": "46ee7ccefe9a1ad947ff60cd100962ef9c39d7b1",
+  "workflow": "r0-cert-composition",
+  "workflow_run_id": 35278324919,
+  "workflow_job_id": 105394174388,
   "consumes": {
     "R0_4": {
       "source_sha": "c0fe29a5f4c430312432affabc55066083903438",
