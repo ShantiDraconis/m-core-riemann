@@ -33,13 +33,13 @@ theorem abs_rhoRepresentative_le_one (n : ℕ) (x : BaseDomain) :
   exact (rhoRepresentative_lt_one n x).le
 
 /-- The zero index degenerates to the zero function under Lean's totalized
- division.  Positivity of the index is imposed for the intended NB family. -/
+ division. Positivity of the index is imposed for the intended NB family. -/
 @[simp] theorem rhoRepresentative_zero (x : BaseDomain) :
     rhoRepresentative 0 x = 0 := by
   simp [rhoRepresentative]
 
 /-- On the analytic tail `1/n < x`, the argument of `fract` lies in `[0,1)`,
-so the concrete generator is exactly the reciprocal tail.  This is the key
+so the concrete generator is exactly the reciprocal tail. This is the key
 semantic reduction needed before proving square-integrability. -/
 theorem rhoRepresentative_eq_reciprocal_of_tail
     (n : ℕ) (hn : 0 < n) (x : BaseDomain)
@@ -48,10 +48,16 @@ theorem rhoRepresentative_eq_reciprocal_of_tail
   unfold rhoRepresentative
   rw [Int.fract_eq_self]
   have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
-  have hx0 : (0 : ℝ) < x := lt_trans (by positivity : (0 : ℝ) < 1 / (n : ℝ)) hx
+  have hrecip : (1 : ℝ) / (n : ℝ) * (n : ℝ) = 1 := by
+    field_simp
+  have hnx : (1 : ℝ) < (n : ℝ) * x := by
+    calc
+      (1 : ℝ) = (1 / (n : ℝ)) * (n : ℝ) := hrecip.symm
+      _ < x * (n : ℝ) := mul_lt_mul_of_pos_right hx hnR
+      _ = (n : ℝ) * x := by ring
   constructor
   · positivity
   · rw [div_lt_one]
-    nlinarith [hnR, hx]
+    exact hnx
 
 end MCore.RH.R0
