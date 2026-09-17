@@ -40,8 +40,7 @@ theorem twoExponent_eq_two : twoExponent = (2 : ENNReal) := by
 private theorem rhoRepresentative_measurable (n : ℕ) :
     Measurable (rhoRepresentative n) := by
   unfold rhoRepresentative rhoBase rhoIndex
-  exact measurable_fract.comp
-    (measurable_const.div (measurable_const.mul measurable_id))
+  exact (measurable_const.div (measurable_const.mul measurable_id)).fract
 
 private theorem rho_sq_integrableOn_Ioc (n : ℕ) :
     IntegrableOn (fun x : ℝ => (rhoRepresentative n x) ^ 2) (Ioc 0 1) volume := by
@@ -83,14 +82,15 @@ private theorem rho_sq_integrableOn_Ioi (n : ℕ) :
       (volume.restrict (Ioi 1)) :=
     ((rhoRepresentative_measurable n).pow_const 2).aestronglyMeasurable
   refine Integrable.mono' hrpow hmeas ?_
-  filter_upwards with x hx
+  filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with x hx
   have hx1 : 1 < x := hx
   have hx0 : 0 < x := by linarith
   have ha : (1 : ℝ) ≤ ((rhoIndex n : ℕ) : ℝ) := by
     exact_mod_cast Nat.succ_le_iff.2 (rhoIndex_pos n)
   rw [rho_tail_eq n hx1]
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-  have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := by positivity
+  have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by positivity
+  have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := mul_pos ha0 hx0
   have hle : 1 / (((rhoIndex n : ℕ) : ℝ) * x) ≤ 1 / x := by
     apply one_div_le_one_div_of_le hx0
     nlinarith
