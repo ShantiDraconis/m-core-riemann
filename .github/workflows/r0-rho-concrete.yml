@@ -22,10 +22,24 @@ jobs:
           cat > RhoAxiomAudit.lean <<'EOF'
           import MCore.RH.R0.RhoConcrete
           #print axioms MCore.RH.R0.rhoRepresentative_measurable
+          #print axioms MCore.RH.R0.rhoRepresentative_nonneg
+          #print axioms MCore.RH.R0.rhoRepresentative_lt_one
+          #print axioms MCore.RH.R0.abs_rhoRepresentative_le_one
           #print axioms MCore.RH.R0.rhoRepresentative_zero
           EOF
           lake env lean RhoAxiomAudit.lean 2>&1 | tee RhoAxiomAudit.log
           ! grep -E 'sorryAx' RhoAxiomAudit.log
+      - name: Pointwise adversarial tests
+        run: |
+          cat > RhoPointwiseAudit.lean <<'EOF'
+          import MCore.RH.R0.RhoConcrete
+          open MCore.RH.R0
+          example (x : BaseDomain) : rhoRepresentative 0 x = 0 := by simp
+          example (x : BaseDomain) : 0 ≤ rhoRepresentative 1 x := rhoRepresentative_nonneg 1 x
+          example (x : BaseDomain) : rhoRepresentative 2 x < 1 := rhoRepresentative_lt_one 2 x
+          example (x : BaseDomain) : |rhoRepresentative 1 x| ≤ 1 := abs_rhoRepresentative_le_one 1 x
+          EOF
+          lake env lean RhoPointwiseAudit.lean
       - name: Semantic firewall
         run: |
           set -euo pipefail
