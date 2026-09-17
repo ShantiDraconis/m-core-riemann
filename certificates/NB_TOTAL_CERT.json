@@ -1,0 +1,29 @@
+{
+  "certificate": "NB_TOTAL",
+  "status": "GREEN",
+  "classification": "PROVED_LEAN_AGGREGATE_FRONTIER",
+  "source_sha": "38aad03c90103ad9b6cf0a31169b1855869cba11",
+  "frozen_ref": "frozen/nb-total-green-38aad03",
+  "workflow": "nb-total",
+  "run_id": 35166817037,
+  "job_id": 105029644437,
+  "checks": {
+    "clean_dependency_resolution": "GREEN",
+    "source_firewall": "GREEN",
+    "build": "GREEN",
+    "theorem_api_and_axioms": "GREEN",
+    "boundary_assertion": "GREEN"
+  },
+  "certified_statements": [
+    "delta = DNLimit",
+    "0 <= delta",
+    "DN tends to delta",
+    "delta = 0 iff DNToZero"
+  ],
+  "scientific_boundary": {
+    "delta_eq_zero_proved": false,
+    "dn_to_zero_proved": false,
+    "rh_proved": false
+  },
+  "history_policy": "Certificate references the immutable GREEN source SHA; no prior frozen source is modified."
+}
