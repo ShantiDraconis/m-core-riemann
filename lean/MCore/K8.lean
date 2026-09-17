@@ -3,22 +3,24 @@ import Mathlib.NumberTheory.LSeries.RiemannZeta
 
 namespace MCore
 
-/-- K8 uses Mathlib's exact formal statement of the Riemann hypothesis.
+/-- K8 names Mathlib's exact formal statement of the Riemann hypothesis.
     It is deliberately independent of the K3/K6 audit-node statement. -/
-def OfficialSpecRH : Prop :=
+abbrev OfficialSpecRH : Prop :=
   RiemannHypothesis
 
-/-- Scientific bridge interface.  This is a structure, not an axiom.
-    Constructing a value requires supplying the actual RH proof. -/
+/-- Scientific bridge interface. This is data, not an axiom: constructing a
+value requires supplying the exact endpoint proof. -/
 structure RHAdapterObligations where
-  main : OfficialSpecRH
+  main : RiemannHypothesis
 
-/-- An inhabited adapter yields the exact Mathlib RH endpoint. -/
-theorem rh_endpoint_of_adapter (h : RHAdapterObligations) : RiemannHypothesis :=
-  h.main
+/-- Definitionally transparent projection from the bridge package.  Keeping
+this endpoint free of rewriting avoids importing proof-irrelevance/extensional
+machinery merely to unwrap a field. -/
+theorem rh_endpoint_of_adapter (h : RHAdapterObligations) : RiemannHypothesis := by
+  exact h.main
 
 /-- K7 remains an audit/open-bridge certificate and supplies no ProofCertificate
-    for its frozen target.  K8 does not reinterpret that target as RH. -/
+    for its frozen target. K8 does not reinterpret that target as RH. -/
 theorem k8_preserves_k7_firewall :
     ¬ Nonempty (ProofCertificate k6_dependency.target) :=
   k7_target_not_certified
