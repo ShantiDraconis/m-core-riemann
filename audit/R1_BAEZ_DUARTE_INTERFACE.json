@@ -1,9 +1,13 @@
 {
   "stage": "R1_BAEZ_DUARTE_CRITERION_INTERFACE",
   "classification": "EXTERNAL_INTERFACE_VERIFIED_WITH_STANDARD_HILBERT_BRIDGE",
-  "status": "AWAITING_CI",
+  "status": "GREEN",
   "source_repository": "ShantiDraconis/m-core-riemann",
   "base_r0_cert_commit": "f902fca1a59f750cb6d4a7b2d16fbc74715be1df",
+  "interface_commit_sha": "18e707a6b1f807d166c6fb31e839f3f98326c5e4",
+  "workflow": "r1-baez-duarte-interface",
+  "workflow_run_id": 35281941057,
+  "workflow_job_id": 105405627463,
   "implementation_mode": "DOCUMENTED_EXTERNAL_INTERFACE_NO_LEAN_DECLARATION",
   "consumes": {
     "R0_CERT": {
