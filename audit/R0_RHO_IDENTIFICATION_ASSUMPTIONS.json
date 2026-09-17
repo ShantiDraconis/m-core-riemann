@@ -1,0 +1,38 @@
+{
+  "stage": "R0.rho-identification",
+  "classification": "FUSED_RHO_IDENTIFICATION_FRONTIER",
+  "consumes": {
+    "R0_4_SOURCE_SHA": "c0fe29a5f4c430312432affabc55066083903438",
+    "R0_4_FROZEN_REF": "frozen/r0-4-chi-memlp-green-c0fe29a",
+    "R0_4_CERTIFICATE": "certificates/R0_4_CERT.json"
+  },
+  "literature_normalization": {
+    "source": "Luis Baez-Duarte, A strengthening of the Nyman-Beurling criterion for the Riemann Hypothesis, arXiv:math/0202141",
+    "ambient": "L2(0,infinity)",
+    "rho": "rho(t)=t-floor(t)",
+    "generator": "rho_a(x)=rho(1/(a*x))",
+    "strong_integer_family": "a in positive integers",
+    "abstract_index_map": "n |-> n+1"
+  },
+  "cross_repo_imports": [],
+  "cross_repo_search_result": "NO_CERTIFIED_EXACT_OR_ADAPTED_IMPORT_FOUND",
+  "assumes": [],
+  "proved_in_preflight": [
+    "rhoIndex(n)=n+1 is positive",
+    "rhoIndex is injective",
+    "rhoRepresentative uses the selected Baez-Duarte normalization",
+    "concreteNBData has carrier MeasureTheory.Lp and chi=chiLpConcrete",
+    "a proof of all RhoMemLpTwo obligations induces the exact abstract GeneratorFamily type"
+  ],
+  "open_bridges": [
+    {"name":"RHO_DILATE_MEMLP_TWO","status":"OPEN_BRIDGE","necessary_for_closure":true},
+    {"name":"CONCRETE_GENERATOR_FAMILY_UNCONDITIONAL","status":"BLOCKED_BY_RHO_DILATE_MEMLP_TWO","necessary_for_closure":true}
+  ],
+  "reused_exact_nb_layer": [
+    "MCore.RH.NB.NBHilbertData.GeneratorFamily",
+    "MCore.RH.NB.NBHilbertData.finiteGenerators",
+    "MCore.RH.NB.NBHilbertData.V"
+  ],
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false
+}
