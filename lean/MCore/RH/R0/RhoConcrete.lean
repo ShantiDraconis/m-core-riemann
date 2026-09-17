@@ -1,6 +1,7 @@
 import MCore.RH.R0.ChiMemLp
 import MCore.RH.NB.HilbertData
 import Mathlib.Algebra.Order.Floor.Ring
+import Mathlib.MeasureTheory.Function.L2Space
 
 namespace MCore.RH.R0
 
@@ -35,13 +36,14 @@ noncomputable def rhoLp (n : ℕ) (h : RhoMemLpTwo n) :
     Lp ℝ twoExponent zeroInfinityMeasure :=
   h.toLp (rhoRepresentative n)
 
-/-- Expose the literal exponent `2` so Mathlib can synthesize the Hilbert-space instances. -/
-abbrev ConcreteH := Lp ℝ (2 : ENNReal) zeroInfinityMeasure
+/-- Literal L² carrier. `Mathlib.MeasureTheory.Function.L2Space` provides its Hilbert instance. -/
+noncomputable abbrev ConcreteH := Lp ℝ (2 : ENNReal) zeroInfinityMeasure
 
 /-- The frozen R0 exponent is definitionally the literal exponent two. -/
 theorem twoExponent_eq_two : twoExponent = (2 : ENNReal) := by
   rfl
 
+/-- Concrete NB Hilbert data on the exact L²(0,∞) carrier. -/
 noncomputable def concreteNBData : MCore.RH.NB.NBHilbertData where
   H := ConcreteH
   instNormedAddCommGroup := inferInstance
@@ -50,6 +52,7 @@ noncomputable def concreteNBData : MCore.RH.NB.NBHilbertData where
   chi := by
     simpa [ConcreteH, twoExponent] using chiLpConcrete
 
+/-- Once rho membership is proved, no further carrier/isometry assumption is required. -/
 noncomputable def concreteGeneratorFamily (h : ∀ n, RhoMemLpTwo n) :
     concreteNBData.GeneratorFamily :=
   fun n => by
