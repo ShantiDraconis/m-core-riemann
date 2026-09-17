@@ -1,0 +1,48 @@
+{
+  "stage": "R2_FINITE_GRAM_INTERVAL_CERTIFICATE",
+  "classification": "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE",
+  "status": "GREEN",
+  "repository": "ShantiDraconis/m-core-riemann",
+  "branch": "research/r2-dnlimit-zero",
+  "source_sha": "25941e47d992904aad667c0390fcf9915000c88f",
+  "workflow": "r2-gram-arb",
+  "workflow_run_id": 35284254916,
+  "workflow_job_id": 105412950020,
+  "artifact": {
+    "id": 10523093655,
+    "name": "r2-gram-arb-25941e47d992904aad667c0390fcf9915000c88f",
+    "sha256": "4a7e461bdfab7abce69b73545fd9eca211ddaeed9ca5ad143b9210b98084c35c"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "python_flint": "0.9.0",
+    "arb_decimal_precision": 100,
+    "rigorous_solver": "arb_mat.solve(precond)"
+  },
+  "validated": [
+    "pinned dependency installation",
+    "Arb constants and rigorous linear solve probe",
+    "independent truncated-integral Vasyunin sanity test",
+    "mpmath pilot",
+    "Arb finite-N Gram solve",
+    "semantic non-promotion firewall"
+  ],
+  "finite_results": [
+    {"N":2,"DN":"0.28996457374220273181120058341604661120541387112561","DN_logN":"0.20098812675167417350734350606402944191372664044727"},
+    {"N":4,"DN":"0.065128868659900249571061363672861236619831301064859","DN_logN":"0.090287783369337683170479022062368823472613650707595"},
+    {"N":8,"DN":"0.024161421585896685022808943010851337446765483831296","DN_logN":"0.050242263751753469042350095148961383180846191993821"},
+    {"N":16,"DN":"0.017894023476969435099055063147958761277454641801610","DN_logN":"0.049612767687739333590535615130174981609800147719240"},
+    {"N":32,"DN":"0.014051943699529859836425040722123291603488740873497","DN_logN":"0.048700325783581048170800255295621667655939396899710"},
+    {"N":64,"DN":"0.011376040299673658147058970029326766678825821686496","DN_logN":"0.047311621557930668822769713447245314813351625208835"}
+  ],
+  "interpretation": {
+    "finite_N_certified": true,
+    "observed_DN_decreasing_on_schedule": true,
+    "observed_DN_logN_near_known_lower_bound_scale": true,
+    "asymptotic_limit_proved": false,
+    "uniform_upper_bound_proved": false
+  },
+  "frontier": "concreteNBData.DNLimit concreteGeneratorFamily = 0",
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false
+}

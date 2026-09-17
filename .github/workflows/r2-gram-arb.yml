@@ -12,7 +12,7 @@ on:
       schedule:
         description: 'comma-separated N values'
         required: false
-        default: '2,4,8,16,32,64'
+        default: '2,4,8,16,32,64,128'
       dps:
         description: 'Arb decimal precision'
         required: false
@@ -53,7 +53,7 @@ jobs:
 
       - name: Run Arb interval-certified finite-N ladder
         env:
-          SCHEDULE: ${{ github.event.inputs.schedule || '2,4,8,16,32,64' }}
+          SCHEDULE: ${{ github.event.inputs.schedule || '2,4,8,16,32,64,128' }}
           DPS: ${{ github.event.inputs.dps || '100' }}
         run: |
           python research/r2/gram_engine.py \
