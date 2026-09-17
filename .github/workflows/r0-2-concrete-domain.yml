@@ -1,0 +1,97 @@
+name: r0-2-concrete-domain
+
+on:
+  push:
+    branches: [audit/r0-2-concrete-domain]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r0-2:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve dependencies cleanly
+        run: |
+          rm -f lake-manifest.json
+          lake update
+          lake exe cache get
+      - name: Frozen R0.1 provenance gate
+        run: |
+          set -euo pipefail
+          SHA=6905ef324641c7fe2572d5839331eb6dff298c13
+          git cat-file -e "$SHA^{commit}"
+          grep -q "$SHA" audit/R0_2_ASSUMPTIONS.json
+          test "$(git merge-base "$SHA" HEAD)" = "$SHA"
+          git show "$SHA:lean/MCore/RH/R0/AmbientCarrier.lean" >/dev/null
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/R0/ConcreteDomain.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+          ! grep -n -E '(RiemannHypothesis|RH_PROVED|DNToZero|DNLimit[[:space:]]*=[[:space:]]*0)' "$FILE"
+      - name: Build R0.2
+        run: lake build MCore.RH.R0.ConcreteDomain
+      - name: Concrete-domain API audit
+        run: |
+          cat > R02Audit.lean <<'EOF'
+          import MCore.RH.R0.ConcreteDomain
+          open MCore.RH.R0
+          example : (1 / 2 : ℝ) ∈ chiSupport := by
+            constructor <;> norm_num [chiSupport]
+          example : (2 : ℝ) ∉ chiSupport := by
+            norm_num [chiSupport]
+          example : chiRepresentative (1 / 2) = 1 := by
+            apply chiRepresentative_of_mem
+            constructor <;> norm_num [chiSupport]
+          example : chiRepresentative 2 = 0 := by
+            apply chiRepresentative_of_not_mem
+            norm_num [chiSupport]
+          #check zeroInfinityDomain
+          #check chiSupport
+          #check ambientMeasure
+          #print axioms chiRepresentative_of_mem
+          #print axioms chiRepresentative_of_not_mem
+          EOF
+          lake env lean R02Audit.lean | tee r0-2-axioms.txt
+      - name: Domain separation adversarial test
+        run: |
+          cat > R02Separation.lean <<'EOF'
+          import MCore.RH.R0.ConcreteDomain
+          open MCore.RH.R0
+          example : (2 : ℝ) ∈ zeroInfinityDomain := by norm_num [zeroInfinityDomain]
+          example : (2 : ℝ) ∉ chiSupport := by norm_num [chiSupport]
+          example : zeroInfinityDomain != chiSupport := by
+            intro h
+            have h2 : (2 : ℝ) ∈ chiSupport := by
+              rw [← h]
+              norm_num [zeroInfinityDomain]
+            norm_num [chiSupport] at h2
+          EOF
+          lake env lean R02Separation.lean
+      - name: Assumptions firewall
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open('audit/R0_2_ASSUMPTIONS.json'))
+          assert a['assumes']==[]
+          assert a['consumes']['R0_1_SOURCE_SHA']=='6905ef324641c7fe2572d5839331eb6dff298c13'
+          assert a['definitions']['base_domain']=='Real'
+          assert a['definitions']['ambient_subset']=='(0,infinity)'
+          assert a['definitions']['chi_support']=='(0,1)'
+          names={x['name']:x['status'] for x in a['open_bridges']}
+          for n in ['CHI_MEMLP_TWO','CHI_L2_EQUIV_CLASS','RHO_DILATE_MEMLP_TWO','NB_HILBERT_IDENTIFICATION']:
+            assert names[n]=='OPEN_BRIDGE'
+          assert a['rh_proved'] is False
+          print('R0.2 assumptions firewall GREEN')
+          PY
