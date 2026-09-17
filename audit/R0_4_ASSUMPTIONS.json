@@ -1,6 +1,6 @@
 {
   "stage": "R0.4",
-  "classification": "CHI_MEMLP_PROOF_DECOMPOSITION",
+  "classification": "CHI_MEMLP_TWO_PROVED",
   "consumes": {
     "R0_3_SOURCE_SHA": "67c9055c6e0778d9e46abab211aafa569dfcc280",
     "R0_3_FROZEN_REF": "frozen/r0-3-chi-l2-green-67c9055"
@@ -9,14 +9,21 @@
   "certifies_if_green": [
     "chiRepresentative is pointwise norm-bounded by one",
     "chiRepresentative is measurable",
-    "the remaining square-integrability obligation is explicitly isolated"
+    "chiRepresentative equals the constant-one indicator of (0,1)",
+    "chiSupport has finite zeroInfinityMeasure",
+    "ChiMemLpTwo is proved unconditionally",
+    "chiLpConcrete is constructed unconditionally from chi_memLp_two"
   ],
   "open_bridges": [
-    {"name": "CHI_INTEGRABLE_SQUARE_PROOF", "status": "OPEN_BRIDGE"},
-    {"name": "CHI_MEMLP_TWO_PROOF", "status": "OPEN_BRIDGE"},
     {"name": "CHI_NORM_VALUE", "status": "OPEN_BRIDGE"},
     {"name": "RHO_DILATE_MEMLP_TWO", "status": "OPEN_BRIDGE"},
     {"name": "NB_HILBERT_IDENTIFICATION", "status": "OPEN_BRIDGE"}
   ],
+  "cross_repo_protocol": {
+    "search_before_new_math": true,
+    "allowed_import_modes": ["EXACT", "ADAPTED", "ANALOGY_ONLY"],
+    "analogy_only_is_proof_dependency": false
+  },
+  "dnlimit_eq_zero_proved": false,
   "rh_proved": false
 }
