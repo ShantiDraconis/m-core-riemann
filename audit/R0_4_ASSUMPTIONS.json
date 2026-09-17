@@ -1,0 +1,22 @@
+{
+  "stage": "R0.4",
+  "classification": "CHI_MEMLP_PROOF_DECOMPOSITION",
+  "consumes": {
+    "R0_3_SOURCE_SHA": "67c9055c6e0778d9e46abab211aafa569dfcc280",
+    "R0_3_FROZEN_REF": "frozen/r0-3-chi-l2-green-67c9055"
+  },
+  "assumes": [],
+  "certifies_if_green": [
+    "chiRepresentative is pointwise norm-bounded by one",
+    "chiRepresentative is measurable",
+    "the remaining square-integrability obligation is explicitly isolated"
+  ],
+  "open_bridges": [
+    {"name": "CHI_INTEGRABLE_SQUARE_PROOF", "status": "OPEN_BRIDGE"},
+    {"name": "CHI_MEMLP_TWO_PROOF", "status": "OPEN_BRIDGE"},
+    {"name": "CHI_NORM_VALUE", "status": "OPEN_BRIDGE"},
+    {"name": "RHO_DILATE_MEMLP_TWO", "status": "OPEN_BRIDGE"},
+    {"name": "NB_HILBERT_IDENTIFICATION", "status": "OPEN_BRIDGE"}
+  ],
+  "rh_proved": false
+}
