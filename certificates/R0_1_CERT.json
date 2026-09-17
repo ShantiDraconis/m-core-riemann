@@ -1,0 +1,26 @@
+{
+  "certificate": "R0.1",
+  "status": "GREEN",
+  "classification": "PROVED_LEAN_STRUCTURAL_CARRIER_BOUNDARY",
+  "source_sha": "6905ef324641c7fe2572d5839331eb6dff298c13",
+  "frozen_ref": "frozen/r0-1-ambient-carrier-green-6905ef3",
+  "workflow": "r0-1-ambient-carrier",
+  "run_id": 35173350647,
+  "job_id": 105049567238,
+  "consumes": {"R0_0_SOURCE_SHA": "93982aefdbe796fd7e760fb4bcce61c28dfbdc14"},
+  "checks": {
+    "frozen_r0_0_provenance": "GREEN",
+    "source_firewall": "GREEN",
+    "build": "GREEN",
+    "carrier_adversarial_compile_test": "GREEN",
+    "negative_coercion_test": "GREEN",
+    "assumptions_firewall": "GREEN"
+  },
+  "certified_scope": {
+    "selected_carrier": "L2(0,infinity)",
+    "restricted_carrier_distinct_type": true,
+    "silent_restricted_to_ambient_coercion": false
+  },
+  "open_bridges": ["CONCRETE_L2_REALIZATION", "CHI_ANALYTIC_REALIZATION", "NORM_PRESERVING_IDENTIFICATION"],
+  "rh_proved": false
+}
