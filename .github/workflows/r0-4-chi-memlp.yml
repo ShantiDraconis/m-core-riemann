@@ -49,16 +49,27 @@ jobs:
           open MCore.RH.R0 MeasureTheory
           #check chiRepresentative_norm_le_one
           #check chiRepresentative_measurable
-          #check ChiIntegrableSquare
+          #check chiRepresentative_eq_indicator
+          #check chiSupport_measure_ne_top
+          #check chi_memLp_two
+          #check chiLpConcrete
           #print axioms chiRepresentative_norm_le_one
           #print axioms chiRepresentative_measurable
+          #print axioms chiRepresentative_eq_indicator
+          #print axioms chiSupport_measure_ne_top
+          #print axioms chi_memLp_two
           EOF
           lake env lean R04Audit.lean | tee r0-4-axioms.txt
+          ! grep -E 'depends on axioms:.*(sorryAx|propext.*propext)' r0-4-axioms.txt
       - name: Pointwise adversarial tests
         run: |
           cat > R04Pointwise.lean <<'EOF'
           import MCore.RH.R0.ChiMemLp
           open MCore.RH.R0
+          example : chiRepresentative (1/2 : ℝ) = 1 := by native_decide
+          example : chiRepresentative (2 : ℝ) = 0 := by native_decide
+          example : chiRepresentative (0 : ℝ) = 0 := by native_decide
+          example : chiRepresentative (1 : ℝ) = 0 := by native_decide
           example : ‖chiRepresentative (1/2 : ℝ)‖ ≤ 1 := chiRepresentative_norm_le_one _
           example : ‖chiRepresentative (2 : ℝ)‖ ≤ 1 := chiRepresentative_norm_le_one _
           EOF
@@ -66,18 +77,24 @@ jobs:
       - name: Semantic frontier firewall
         run: |
           set -euo pipefail
-          ! grep -n -E 'theorem[[:space:]].*(ChiIntegrableSquare|ChiMemLpTwo|DNLimit|DNToZero|RiemannHypothesis)' lean/MCore/RH/R0/ChiMemLp.lean
-          grep -q 'def ChiIntegrableSquare' lean/MCore/RH/R0/ChiMemLp.lean
+          FILE=lean/MCore/RH/R0/ChiMemLp.lean
+          grep -q 'theorem chi_memLp_two : ChiMemLpTwo' "$FILE"
+          grep -q 'noncomputable def chiLpConcrete' "$FILE"
+          ! grep -n -E '(DNLimit|DNToZero|RiemannHypothesis|RH_PROVED)' "$FILE"
       - name: Assumptions firewall
         run: |
           python3 - <<'PY'
           import json
           a=json.load(open('audit/R0_4_ASSUMPTIONS.json'))
+          assert a['classification']=='CHI_MEMLP_TWO_PROVED'
           assert a['assumes']==[]
           assert a['consumes']['R0_3_SOURCE_SHA']=='67c9055c6e0778d9e46abab211aafa569dfcc280'
           names={x['name']:x['status'] for x in a['open_bridges']}
-          for n in ['CHI_INTEGRABLE_SQUARE_PROOF','CHI_MEMLP_TWO_PROOF','CHI_NORM_VALUE','RHO_DILATE_MEMLP_TWO','NB_HILBERT_IDENTIFICATION']:
-            assert names[n]=='OPEN_BRIDGE'
+          assert set(names)=={'CHI_NORM_VALUE','RHO_DILATE_MEMLP_TWO','NB_HILBERT_IDENTIFICATION'}
+          assert all(v=='OPEN_BRIDGE' for v in names.values())
+          assert a['cross_repo_protocol']['search_before_new_math'] is True
+          assert a['cross_repo_protocol']['analogy_only_is_proof_dependency'] is False
+          assert a['dnlimit_eq_zero_proved'] is False
           assert a['rh_proved'] is False
           print('R0.4 assumptions firewall GREEN')
           PY
