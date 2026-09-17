@@ -1,0 +1,33 @@
+{
+  "stage": "R0.3",
+  "classification": "CHI_L2_REALIZATION_FRONTIER",
+  "consumes": {
+    "R0_2_SOURCE_SHA": "be25ead1e1433c4e2094ab67ca53cae31cb0ab4c",
+    "R0_2_FROZEN_REF": "frozen/r0-2-concrete-domain-green-be25ead"
+  },
+  "assumes": [],
+  "definitions": {
+    "base_measure": "Lebesgue volume on Real",
+    "l2_measure": "Lebesgue volume restricted to (0,infinity)",
+    "exponent": 2,
+    "target_representative": "indicator of (0,1)"
+  },
+  "certifies_if_green": [
+    "the selected L2 measure is the restriction of Lebesgue measure to the positive half-line",
+    "the target L2 obligation is stated as Mathlib MemLp at exponent 2",
+    "an Lp equivalence-class representative is constructed from an explicit MemLp proof"
+  ],
+  "open_bridges": [
+    {"name": "CHI_MEMLP_TWO_PROOF", "status": "OPEN_BRIDGE"},
+    {"name": "CHI_NORM_VALUE", "status": "OPEN_BRIDGE"},
+    {"name": "RHO_DILATE_MEMLP_TWO", "status": "OPEN_BRIDGE"},
+    {"name": "NB_HILBERT_IDENTIFICATION", "status": "OPEN_BRIDGE"}
+  ],
+  "forbidden_promotions": [
+    "abstract NB chi identified with concrete chiLp",
+    "DNLimit = 0",
+    "DNToZero",
+    "Riemann Hypothesis"
+  ],
+  "rh_proved": false
+}
