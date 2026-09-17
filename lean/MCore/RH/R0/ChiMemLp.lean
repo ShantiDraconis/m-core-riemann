@@ -1,4 +1,5 @@
 import MCore.RH.R0.ChiL2
+import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 
 namespace MCore.RH.R0
 
@@ -20,18 +21,30 @@ theorem chiRepresentative_measurable : Measurable chiRepresentative := by
   · exact measurable_const
   · exact measurable_const
 
-/-- A reusable quantitative bound for the square of the target. -/
-theorem chiRepresentative_square_le_one (x : BaseDomain) :
-    ‖chiRepresentative x‖ ^ 2 ≤ 1 := by
-  have h := chiRepresentative_norm_le_one x
-  nlinarith [norm_nonneg (chiRepresentative x)]
+/-- The if-then-else representative is exactly the constant-one indicator of `(0,1)`. -/
+theorem chiRepresentative_eq_indicator :
+    chiRepresentative = chiSupport.indicator (fun _ : BaseDomain => (1 : ℝ)) := by
+  funext x
+  by_cases hx : x ∈ chiSupport
+  · have hcond : 0 < x ∧ x < 1 := hx
+    simp [chiRepresentative, hx, hcond]
+  · have hcond : ¬ (0 < x ∧ x < 1) := by
+      simpa [chiSupport] using hx
+    simp [chiRepresentative, hx, hcond]
 
-/-- R0.4's elementary quantitative obligation is closed explicitly. -/
-def ChiIntegrableSquare : Prop :=
-  ∃ C : ℝ, 0 ≤ C ∧ ∀ x : BaseDomain, ‖chiRepresentative x‖ ^ 2 ≤ C
+/-- The support interval has finite measure for the selected positive-half-line measure. -/
+theorem chiSupport_measure_ne_top : zeroInfinityMeasure chiSupport ≠ ∞ := by
+  rw [zeroInfinityMeasure, Measure.restrict_apply measurableSet_Ioo]
+  simp [chiSupport, zeroInfinityDomain]
 
-theorem chiIntegrableSquare_bound : ChiIntegrableSquare := by
-  refine ⟨1, by norm_num, ?_⟩
-  exact chiRepresentative_square_le_one
+/-- The actual R0.4 obligation: the concrete target belongs to L². -/
+theorem chi_memLp_two : ChiMemLpTwo := by
+  rw [ChiMemLpTwo, chiRepresentative_eq_indicator]
+  exact memLp_indicator_const twoExponent measurableSet_Ioo (1 : ℝ)
+    (Or.inr chiSupport_measure_ne_top)
+
+/-- The unconditional concrete L² target obtained from the proved membership theorem. -/
+noncomputable def chiLpConcrete : Lp ℝ twoExponent zeroInfinityMeasure :=
+  chiLp chi_memLp_two
 
 end MCore.RH.R0
