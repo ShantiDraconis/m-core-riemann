@@ -234,6 +234,58 @@ def scaled_power_taper_scan_arb(G,B,N:int):
     return out
 
 
+def scaled_mobius_dyadic_scan_arb(G,B,N:int,denom_power:int=4):
+    """Rigorous finite-N scan alpha=m/2^denom_power for 0<=alpha<=1.
+
+    The base root u^(1/2^denom_power) is formed by repeated square roots;
+    integer powers are formed by multiplication, avoiding a floating exponent.
+    Each shape gets its optimal scalar amplitude in the Gram energy.
+    """
+    from flint import arb,arb_mat
+    if N<=1:
+        raise ValueError("dyadic taper scan requires N > 1")
+    if denom_power<1:
+        raise ValueError("denom_power must be >= 1")
+    den=2**denom_power
+    logN=arb(N).log()
+    out={}
+
+    for m in range(den+1):
+        vals=[]
+        for n in range(1,N+1):
+            mu=mobius_int(n)
+            if mu==0:
+                vals.append(arb(0))
+                continue
+            u=arb(1)-arb(n).log()/logN
+            if m==0:
+                w=arb(1)
+            else:
+                root=u
+                for _ in range(denom_power):
+                    root=root.sqrt()
+                w=arb(1)
+                for _ in range(m):
+                    w*=root
+            vals.append(-mu*w)
+
+        V=arb_mat(N,1,vals)
+        L=(B.transpose()*V)[0,0]
+        Q=(V.transpose()*G*V)[0,0]
+        if not (Q.lower()>0):
+            raise ArithmeticError(f"non-positive Gram energy for alpha={m}/{den}: {Q}")
+        A=L/Q
+        err=arb(1)-(L*L)/Q
+        out[f"alpha_{m}_{den}"]={
+            "alpha_num":m,
+            "alpha_den":den,
+            "optimal_scale":_arb_bounds(A),
+            "optimized_squared_error":_arb_bounds(err),
+        }
+
+    return out
+
+
 def optimal_coefficient_diagnostics(C,N:int):
     """Descriptive finite-N diagnostics only; no asymptotic inference."""
     vals=[float(C[i,0].mid()) for i in range(N)]
@@ -288,6 +340,7 @@ def run_arb(N:int,dps:int):
     }
     coeff_diagnostics=optimal_coefficient_diagnostics(C,N)
     scaled_power_scan=scaled_power_taper_scan_arb(G,B,N)
+    dyadic_scan=scaled_mobius_dyadic_scan_arb(G,B,N,denom_power=4)
     return {
         "backend":"python-flint/arb",
         "python_flint_version":flint.__version__,
@@ -303,6 +356,7 @@ def run_arb(N:int,dps:int):
         "explicit_candidate_errors_sq":candidate_errors,
         "optimal_coefficient_diagnostics":coeff_diagnostics,
         "scaled_mobius_power_taper_scan":scaled_power_scan,
+        "scaled_mobius_dyadic_scan_m_over_16":dyadic_scan,
         "finite_N_only":True,
         "dnlimit_eq_zero_proved":False,
         "rh_proved":False,
