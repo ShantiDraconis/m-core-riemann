@@ -71,7 +71,7 @@ jobs:
           open MCore.RH.R0
           example : (2 : ℝ) ∈ zeroInfinityDomain := by norm_num [zeroInfinityDomain]
           example : (2 : ℝ) ∉ chiSupport := by norm_num [chiSupport]
-          example : zeroInfinityDomain != chiSupport := by
+          example : zeroInfinityDomain ≠ chiSupport := by
             intro h
             have h2 : (2 : ℝ) ∈ chiSupport := by
               rw [← h]
