@@ -1,0 +1,44 @@
+{
+  "stage": "R0_CERT",
+  "classification": "R0_CERT_COMPOSED_FROZEN_EVIDENCE",
+  "status": "AWAITING_CI",
+  "source_repository": "ShantiDraconis/m-core-riemann",
+  "composition_base_sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+  "consumes": {
+    "R0_4": {
+      "source_sha": "c0fe29a5f4c430312432affabc55066083903438",
+      "frozen_ref": "frozen/r0-4-chi-memlp-green-c0fe29a",
+      "certificate_branch": "certificates/r0-4-c0fe29a",
+      "certificate_path": "certificates/R0_4_CERT.json"
+    },
+    "R0_RHO_IDENTIFICATION": {
+      "source_sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+      "frozen_ref": "frozen/r0-rho-identification-green-66a9b18",
+      "certificate_branch": "certificates/r0-rho-identification-66a9b18",
+      "certificate_path": "certificates/R0_RHO_IDENTIFICATION_CERT.json",
+      "cert_doc_sha": "8a77227890003bbff297474e6861beed2cfc8de6",
+      "classification": "PROVED_LEAN_RHO_MEMLP_TWO_AND_CONCRETE_NB_IDENTIFICATION"
+    }
+  },
+  "proved": [
+    "MCore.RH.R0.rho_memLp_two",
+    "MCore.RH.R0.rhoLp",
+    "MCore.RH.R0.concreteNBData",
+    "MCore.RH.R0.concreteGeneratorFamily"
+  ],
+  "composition_scope": [
+    "R0.4 chi MemLp evidence is reused from its immutable frozen ref",
+    "rho MemLp and concrete NB identification evidence is reused from its immutable frozen ref",
+    "R0_CERT introduces no new Lean theorem and does not modify RhoConcrete.lean",
+    "the concrete chi and generator family live on the certified concrete NB L2 carrier"
+  ],
+  "out_of_scope": [
+    "R1_BAEZ_DUARTE_CRITERION_INTERFACE",
+    "DNLimit_EQ_ZERO",
+    "RIEMANN_HYPOTHESIS"
+  ],
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false,
+  "new_lean_proof": false,
+  "new_frozen_ref_required": false
+}

@@ -1,0 +1,103 @@
+name: r0-cert-composition
+
+on:
+  push:
+    branches:
+      - audit/r0-cert
+    paths:
+      - 'R0_CERT.json'
+      - '.github/workflows/r0-cert.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  composition:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout composition branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify frozen and certificate refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_SHA=66a9b18f26fd714a968c1d33935d54dde4e6bf30
+          FROZEN_REF=frozen/r0-rho-identification-green-66a9b18
+          CERT_REF=certificates/r0-rho-identification-66a9b18
+          CERT_DOC_SHA=8a77227890003bbff297474e6861beed2cfc8de6
+          git fetch origin "+refs/heads/$FROZEN_REF:refs/remotes/origin/$FROZEN_REF" "+refs/heads/$CERT_REF:refs/remotes/origin/$CERT_REF"
+          test "$(git rev-parse refs/remotes/origin/$FROZEN_REF)" = "$SOURCE_SHA"
+          test "$(git rev-parse refs/remotes/origin/$CERT_REF)" = "$CERT_DOC_SHA"
+          git cat-file -e "$SOURCE_SHA^{commit}"
+          git cat-file -e "$CERT_DOC_SHA^{commit}"
+
+      - name: Verify R0_CERT composition record
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('R0_CERT.json')
+          d = json.loads(p.read_text())
+          assert d['stage'] == 'R0_CERT'
+          assert d['classification'] == 'R0_CERT_COMPOSED_FROZEN_EVIDENCE'
+          assert d['composition_base_sha'] == '66a9b18f26fd714a968c1d33935d54dde4e6bf30'
+          r = d['consumes']['R0_RHO_IDENTIFICATION']
+          assert r['source_sha'] == '66a9b18f26fd714a968c1d33935d54dde4e6bf30'
+          assert r['frozen_ref'] == 'frozen/r0-rho-identification-green-66a9b18'
+          assert r['certificate_branch'] == 'certificates/r0-rho-identification-66a9b18'
+          assert r['certificate_path'] == 'certificates/R0_RHO_IDENTIFICATION_CERT.json'
+          assert r['cert_doc_sha'] == '8a77227890003bbff297474e6861beed2cfc8de6'
+          assert r['classification'] == 'PROVED_LEAN_RHO_MEMLP_TWO_AND_CONCRETE_NB_IDENTIFICATION'
+          assert d['proved'] == [
+              'MCore.RH.R0.rho_memLp_two',
+              'MCore.RH.R0.rhoLp',
+              'MCore.RH.R0.concreteNBData',
+              'MCore.RH.R0.concreteGeneratorFamily',
+          ]
+          assert d['dnlimit_eq_zero_proved'] is False
+          assert d['rh_proved'] is False
+          assert d['new_lean_proof'] is False
+          assert d['new_frozen_ref_required'] is False
+          print('R0_CERT composition record OK')
+          PY
+
+      - name: Verify certificate document payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          CERT_DOC_SHA=8a77227890003bbff297474e6861beed2cfc8de6
+          git show "$CERT_DOC_SHA:certificates/R0_RHO_IDENTIFICATION_CERT.json" > /tmp/rho-cert.json
+          python3 - <<'PY'
+          import json
+          d = json.load(open('/tmp/rho-cert.json'))
+          assert d['source_sha'] == '66a9b18f26fd714a968c1d33935d54dde4e6bf30'
+          assert d['frozen_ref'] == 'frozen/r0-rho-identification-green-66a9b18'
+          assert d['classification'] == 'PROVED_LEAN_RHO_MEMLP_TWO_AND_CONCRETE_NB_IDENTIFICATION'
+          assert d['dnlimit_eq_zero_proved'] is False
+          assert d['rh_proved'] is False
+          required = {
+              'MCore.RH.R0.rho_memLp_two',
+              'MCore.RH.R0.rhoLp',
+              'MCore.RH.R0.concreteNBData',
+              'MCore.RH.R0.concreteGeneratorFamily',
+          }
+          assert required.issubset(set(d['source_theorems']))
+          print('rho certificate payload OK')
+          PY
+
+      - name: Verify no Lean source modification
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_SHA=66a9b18f26fd714a968c1d33935d54dde4e6bf30
+          test -z "$(git diff --name-only "$SOURCE_SHA"...HEAD -- lean/)"
+          test -z "$(git diff --name-only "$SOURCE_SHA"...HEAD -- lean/MCore/RH/R0/RhoConcrete.lean)"
+
+      - name: R0_CERT GREEN
+        run: echo 'R0_CERT composition GREEN — frozen evidence composed; no new Lean theorem; DNLimit=0 remains out of scope.'
