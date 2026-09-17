@@ -1,6 +1,7 @@
 import MCore.RH.R0.ChiMemLp
 import MCore.RH.NB.HilbertData
 import Mathlib.Algebra.Order.Floor.Ring
+import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
@@ -65,7 +66,8 @@ private theorem rho_tail_eq (n : ℕ) {x : ℝ} (hx : 1 < x) :
   unfold rhoRepresentative rhoBase
   apply Int.fract_eq_self.2
   have hx0 : 0 < x := by linarith
-  have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by positivity
+  have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by
+    exact_mod_cast rhoIndex_pos n
   have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := mul_pos ha0 hx0
   constructor
   · exact le_of_lt (one_div_pos.mpr hden)
@@ -89,7 +91,8 @@ private theorem rho_sq_integrableOn_Ioi (n : ℕ) :
     exact_mod_cast Nat.succ_le_iff.2 (rhoIndex_pos n)
   rw [rho_tail_eq n hx1]
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-  have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by positivity
+  have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by
+    exact_mod_cast rhoIndex_pos n
   have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := mul_pos ha0 hx0
   have hle : 1 / (((rhoIndex n : ℕ) : ℝ) * x) ≤ 1 / x := by
     apply one_div_le_one_div_of_le hx0
@@ -99,11 +102,8 @@ private theorem rho_sq_integrableOn_Ioi (n : ℕ) :
     have hright : 0 ≤ 1 / x := le_of_lt (one_div_pos.mpr hx0)
     nlinarith
   have hrpow_eq : x ^ (-2 : ℝ) = (1 / x) ^ 2 := by
-    calc
-      x ^ (-2 : ℝ) = (x ^ (2 : ℝ))⁻¹ := by
-        rw [show (-2 : ℝ) = -(2 : ℝ) by norm_num, Real.rpow_neg hx0.le]
-      _ = (x ^ (2 : ℕ))⁻¹ := by rw [Real.rpow_natCast]
-      _ = (1 / x) ^ 2 := by field_simp
+    rw [show (-2 : ℝ) = -(2 : ℝ) by norm_num, Real.rpow_neg hx0.le, Real.rpow_two]
+    field_simp
   rw [hrpow_eq]
   exact hsq
 
