@@ -41,6 +41,33 @@ jobs:
           ! grep -n -E '(DNLimit|DNToZero|RiemannHypothesis|RH_PROVED)' "$F"
       - name: Build concrete rho preflight
         run: lake build MCore.RH.R0.RhoConcrete
+      - name: Analytic API preflight
+        run: |
+          cat > RhoAnalyticAPI.lean <<'EOF'
+          import MCore.RH.R0.RhoConcrete
+          import Mathlib.MeasureTheory.Function.Floor
+          import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+          open MeasureTheory Set
+          open MCore.RH.R0
+          #check Int.measurable_fract
+          #check Measurable.fract
+          #check Int.fract_nonneg
+          #check Int.fract_lt_one
+          #check Int.fract_eq_self
+          #check memLp_two_iff_integrable_sq
+          #check integrableOn_Ioi_rpow_of_lt
+          #check Measurable.aestronglyMeasurable
+          example (n : ℕ) : Measurable (rhoRepresentative n) := by
+            unfold rhoRepresentative rhoBase rhoIndex
+            fun_prop
+          example (t : ℝ) : 0 ≤ Int.fract t := Int.fract_nonneg t
+          example (t : ℝ) : Int.fract t < 1 := Int.fract_lt_one t
+          example (t : ℝ) (h0 : 0 ≤ t) (h1 : t < 1) : Int.fract t = t := by
+            exact Int.fract_eq_self.2 ⟨h0, h1⟩
+          example (a : ℝ) (ha : 0 < a) : IntegrableOn (fun x : ℝ => x ^ (-2 : ℝ)) (Ioi a) := by
+            exact integrableOn_Ioi_rpow_of_lt (by norm_num) ha
+          EOF
+          lake env lean RhoAnalyticAPI.lean
       - name: API and axiom audit
         run: |
           cat > RhoAudit.lean <<'EOF'
