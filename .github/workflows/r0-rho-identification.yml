@@ -1,0 +1,90 @@
+name: r0-rho-identification
+
+on:
+  push:
+    branches: [audit/r0-rho-identification]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pinned Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve pinned dependencies
+        run: |
+          rm -f lake-manifest.json
+          lake update
+          lake exe cache get
+      - name: Frozen R0.4 provenance
+        run: |
+          set -euo pipefail
+          SHA=c0fe29a5f4c430312432affabc55066083903438
+          git cat-file -e "$SHA^{commit}"
+          test "$(git merge-base "$SHA" HEAD)" = "$SHA"
+          grep -q "$SHA" audit/R0_RHO_IDENTIFICATION_ASSUMPTIONS.json
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          F=lean/MCore/RH/R0/RhoConcrete.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$F"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$F"
+          ! grep -n -E '(DNLimit|DNToZero|RiemannHypothesis|RH_PROVED)' "$F"
+      - name: Build concrete rho preflight
+        run: lake build MCore.RH.R0.RhoConcrete
+      - name: API and axiom audit
+        run: |
+          cat > RhoAudit.lean <<'EOF'
+          import MCore.RH.R0.RhoConcrete
+          open MCore.RH.R0
+          #check rhoBase
+          #check rhoIndex
+          #check rhoIndex_pos
+          #check rhoIndex_injective
+          #check rhoRepresentative
+          #check rhoRepresentative_index_formula
+          #check RhoMemLpTwo
+          #check rhoLp
+          #check ConcreteH
+          #check concreteNBData
+          #check concreteGeneratorFamily
+          #print axioms rhoIndex_pos
+          #print axioms rhoIndex_injective
+          #print axioms rhoRepresentative_index_formula
+          EOF
+          lake env lean RhoAudit.lean | tee rho-axioms.txt
+          ! grep -E 'depends on axioms:.*sorryAx' rho-axioms.txt
+      - name: Index boundary tests
+        run: |
+          cat > RhoIndexTests.lean <<'EOF'
+          import MCore.RH.R0.RhoConcrete
+          open MCore.RH.R0
+          example : rhoIndex 0 = 1 := by rfl
+          example : rhoIndex 1 = 2 := by rfl
+          example (n : ℕ) : rhoIndex n ≠ 0 := rhoIndex_ne_zero n
+          example (m n : ℕ) (h : rhoIndex m = rhoIndex n) : m = n := rhoIndex_injective h
+          EOF
+          lake env lean RhoIndexTests.lean
+      - name: Frontier semantic audit
+        run: |
+          python3 - <<'PY'
+          import json
+          a=json.load(open('audit/R0_RHO_IDENTIFICATION_ASSUMPTIONS.json'))
+          assert a['assumes']==[]
+          assert a['cross_repo_imports']==[]
+          assert a['cross_repo_search_result']=='NO_CERTIFIED_EXACT_OR_ADAPTED_IMPORT_FOUND'
+          gaps={x['name']:x['status'] for x in a['open_bridges']}
+          assert gaps['RHO_DILATE_MEMLP_TWO']=='OPEN_BRIDGE'
+          assert a['dnlimit_eq_zero_proved'] is False
+          assert a['rh_proved'] is False
+          print('rho identification preflight semantic audit GREEN')
+          PY
