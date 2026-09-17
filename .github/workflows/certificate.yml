@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: leanprover/lean-action@v1
       - name: G0 fail-closed source hygiene
         run: |
