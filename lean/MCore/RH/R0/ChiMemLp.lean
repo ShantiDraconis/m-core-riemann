@@ -11,27 +11,27 @@ theorem chiRepresentative_norm_le_one (x : BaseDomain) :
   · simp [chiRepresentative, hx]
   · simp [chiRepresentative, hx]
 
-/-- The concrete indicator is measurable.  We prove this directly as a
-measurable piecewise function, avoiding dependence on an indicator-specific
-API name. -/
+/-- The concrete target representative is measurable.  Use the original
+if-then-else presentation directly; this avoids indicator/piecewise API and
+its Decidable-membership elaboration entirely. -/
 theorem chiRepresentative_measurable : Measurable chiRepresentative := by
-  have hset : MeasurableSet chiSupport := measurableSet_Ioo
-  have hpw : Measurable (chiSupport.piecewise (fun _ : BaseDomain => (1 : ℝ)) (fun _ => 0)) :=
-    hset.piecewise measurable_const measurable_const
-  have heq : chiRepresentative = chiSupport.piecewise (fun _ : BaseDomain => (1 : ℝ)) (fun _ => 0) := by
-    funext x
-    by_cases hx : x ∈ chiSupport
-    · have hcond : 0 < x ∧ x < 1 := hx
-      simp [chiRepresentative, Set.piecewise, hx, hcond]
-    · have hcond : ¬ (0 < x ∧ x < 1) := by
-        simpa [chiSupport] using hx
-      simp [chiRepresentative, Set.piecewise, hx, hcond]
-  rw [heq]
-  exact hpw
+  unfold chiRepresentative
+  exact Measurable.ite
+    (measurableSet_Ioi.measurableSet.and measurableSet_Iio.measurableSet)
+    measurable_const measurable_const
 
-/-- R0.4 isolates the remaining quantitative square-integrability statement
-without importing an integration API merely to name the proposition. -/
+/-- A reusable quantitative bound for the square of the target. -/
+theorem chiRepresentative_square_le_one (x : BaseDomain) :
+    ‖chiRepresentative x‖ ^ 2 ≤ 1 := by
+  have h := chiRepresentative_norm_le_one x
+  nlinarith [norm_nonneg (chiRepresentative x)]
+
+/-- R0.4's elementary quantitative obligation is closed explicitly. -/
 def ChiIntegrableSquare : Prop :=
   ∃ C : ℝ, 0 ≤ C ∧ ∀ x : BaseDomain, ‖chiRepresentative x‖ ^ 2 ≤ C
+
+theorem chiIntegrableSquare_bound : ChiIntegrableSquare := by
+  refine ⟨1, by norm_num, ?_⟩
+  exact chiRepresentative_square_le_one
 
 end MCore.RH.R0
