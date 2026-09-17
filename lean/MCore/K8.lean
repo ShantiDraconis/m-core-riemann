@@ -8,16 +8,25 @@ namespace MCore
 abbrev OfficialSpecRH : Prop :=
   RiemannHypothesis
 
-/-- Scientific bridge interface. This is data, not an axiom: constructing a
-value requires supplying the exact endpoint proof. -/
-structure RHAdapterObligations where
-  main : RiemannHypothesis
+/-- Strict structural bridge carrier.  It is deliberately polymorphic in the
+endpoint proposition so the projection theorem itself has no dependency on
+how an external scientific specification is implemented. -/
+structure AdapterObligations (P : Prop) where
+  main : P
 
-/-- Definitionally transparent projection from the bridge package.  Keeping
-this endpoint free of rewriting avoids importing proof-irrelevance/extensional
-machinery merely to unwrap a field. -/
-theorem rh_endpoint_of_adapter (h : RHAdapterObligations) : RiemannHypothesis := by
+/-- The zero-axiom structural projection certified by G4. -/
+theorem endpoint_of_adapter {P : Prop} (h : AdapterObligations P) : P := by
   exact h.main
+
+/-- Scientific RH specialization.  This is data, not an axiom: constructing a
+value requires supplying Mathlib's exact RH proposition. -/
+abbrev RHAdapterObligations := AdapterObligations RiemannHypothesis
+
+/-- Official Mathlib endpoint.  Its statement mentions `RiemannHypothesis`, so
+its foundational dependencies are kept outside the strict structural-core
+certificate rather than being laundered into it. -/
+theorem rh_endpoint_of_adapter (h : RHAdapterObligations) : RiemannHypothesis := by
+  exact endpoint_of_adapter h
 
 /-- K7 remains an audit/open-bridge certificate and supplies no ProofCertificate
     for its frozen target. K8 does not reinterpret that target as RH. -/
