@@ -49,7 +49,7 @@ jobs:
           import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
           open MeasureTheory Set
           open MCore.RH.R0
-          #check Int.measurable_fract
+          #check measurable_fract
           #check Measurable.fract
           #check Int.fract_nonneg
           #check Int.fract_lt_one
