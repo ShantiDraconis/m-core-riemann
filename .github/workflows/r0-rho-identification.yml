@@ -56,10 +56,15 @@ jobs:
           #check Int.fract_eq_self
           #check memLp_two_iff_integrable_sq
           #check integrableOn_Ioi_rpow_of_lt
+          #check Integrable.mono'
+          #check IntegrableOn.union
+          #check integrableOn_const
+          #check one_div_le_one_div_of_le
           #check Measurable.aestronglyMeasurable
           example (n : ℕ) : Measurable (rhoRepresentative n) := by
             unfold rhoRepresentative rhoBase rhoIndex
-            fun_prop
+            exact measurable_fract.comp
+              (measurable_const.div (measurable_const.mul measurable_id))
           example (t : ℝ) : 0 ≤ Int.fract t := Int.fract_nonneg t
           example (t : ℝ) : Int.fract t < 1 := Int.fract_lt_one t
           example (t : ℝ) (h0 : 0 ≤ t) (h1 : t < 1) : Int.fract t = t := by
@@ -80,6 +85,7 @@ jobs:
           #check rhoRepresentative
           #check rhoRepresentative_index_formula
           #check RhoMemLpTwo
+          #check rho_memLp_two
           #check rhoLp
           #check ConcreteH
           #check concreteNBData
@@ -87,9 +93,11 @@ jobs:
           #print axioms rhoIndex_pos
           #print axioms rhoIndex_injective
           #print axioms rhoRepresentative_index_formula
+          #print axioms rho_memLp_two
           EOF
           lake env lean RhoAudit.lean | tee rho-axioms.txt
           ! grep -E 'depends on axioms:.*sorryAx' rho-axioms.txt
+          ! grep -n -E 'concreteGeneratorFamily[[:space:]]*\(h[[:space:]]*:' lean/MCore/RH/R0/RhoConcrete.lean
       - name: Index boundary tests
         run: |
           cat > RhoIndexTests.lean <<'EOF'
@@ -99,6 +107,8 @@ jobs:
           example : rhoIndex 1 = 2 := by rfl
           example (n : ℕ) : rhoIndex n ≠ 0 := rhoIndex_ne_zero n
           example (m n : ℕ) (h : rhoIndex m = rhoIndex n) : m = n := rhoIndex_injective h
+          example : RhoMemLpTwo 0 := rho_memLp_two 0
+          example : RhoMemLpTwo 1 := rho_memLp_two 1
           EOF
           lake env lean RhoIndexTests.lean
       - name: Frontier semantic audit
@@ -109,9 +119,7 @@ jobs:
           assert a['assumes']==[]
           assert a['cross_repo_imports']==[]
           assert a['cross_repo_search_result']=='NO_CERTIFIED_EXACT_OR_ADAPTED_IMPORT_FOUND'
-          gaps={x['name']:x['status'] for x in a['open_bridges']}
-          assert gaps['RHO_DILATE_MEMLP_TWO']=='OPEN_BRIDGE'
           assert a['dnlimit_eq_zero_proved'] is False
           assert a['rh_proved'] is False
-          print('rho identification preflight semantic audit GREEN')
+          print('rho analytic gate semantic firewall GREEN; audit metadata may be promoted only after dedicated GREEN')
           PY
