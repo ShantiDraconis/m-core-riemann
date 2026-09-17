@@ -276,11 +276,13 @@ def scaled_mobius_dyadic_scan_arb(G,B,N:int,denom_power:int=4):
             raise ArithmeticError(f"non-positive Gram energy for alpha={m}/{den}: {Q}")
         A=L/Q
         err=arb(1)-(L*L)/Q
+        fixed_err=arb(1)-2*L+Q
         out[f"alpha_{m}_{den}"]={
             "alpha_num":m,
             "alpha_den":den,
             "optimal_scale":_arb_bounds(A),
             "optimized_squared_error":_arb_bounds(err),
+            "fixed_scale_one_squared_error":_arb_bounds(fixed_err),
         }
 
     return out
