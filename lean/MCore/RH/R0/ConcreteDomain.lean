@@ -13,9 +13,9 @@ def zeroInfinityDomain : Set BaseDomain := Set.Ioi 0
 def chiSupport : Set BaseDomain := Set.Ioo 0 1
 
 /-- The concrete indicator representative before passage to an L2 equivalence class.
-Using explicit inequalities keeps the definition computable and avoids importing a
-classical decision procedure for arbitrary set membership. -/
-def chiRepresentative (x : BaseDomain) : ℝ :=
+Real order is noncomputable in Lean's executable kernel, so this mathematical
+representative is explicitly marked noncomputable. -/
+noncomputable def chiRepresentative (x : BaseDomain) : ℝ :=
   if 0 < x ∧ x < 1 then 1 else 0
 
 @[simp] theorem chiRepresentative_of_mem {x : BaseDomain} (hx : x ∈ chiSupport) :
