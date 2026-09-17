@@ -1,0 +1,52 @@
+{
+  "stage": "R0.rho-identification",
+  "classification": "PROVED_LEAN_RHO_MEMLP_TWO_AND_CONCRETE_NB_IDENTIFICATION",
+  "source_repository": "ShantiDraconis/m-core-riemann",
+  "source_sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+  "frozen_ref": "frozen/r0-rho-identification-green-66a9b18",
+  "workflow": "r0-rho-identification",
+  "workflow_run_id": 35265739399,
+  "workflow_job_id": 105352341006,
+  "certified_at": "2026-09-17T19:37:39Z",
+  "lean": {
+    "version": "4.19.0",
+    "commit": "6caaee842e94"
+  },
+  "mathlib_sha": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+  "consumes": {
+    "stage": "R0.4",
+    "source_sha": "c0fe29a5f4c430312432affabc55066083903438",
+    "frozen_ref": "frozen/r0-4-chi-memlp-green-c0fe29a"
+  },
+  "source_theorems": [
+    "MCore.RH.R0.rhoIndex_pos",
+    "MCore.RH.R0.rhoIndex_ne_zero",
+    "MCore.RH.R0.rhoIndex_injective",
+    "MCore.RH.R0.rhoRepresentative_index_formula",
+    "MCore.RH.R0.rho_memLp_two",
+    "MCore.RH.R0.rhoLp",
+    "MCore.RH.R0.concreteNBData",
+    "MCore.RH.R0.concreteGeneratorFamily"
+  ],
+  "allowed_axioms": ["propext", "Classical.choice", "Quot.sound"],
+  "assumes": [],
+  "certified_scope": [
+    "rhoRepresentative uses the frozen positive indexing rhoIndex n = n + 1",
+    "rhoRepresentative is measurable",
+    "rhoRepresentative squared is integrable on (0,1] by boundedness of Int.fract",
+    "rhoRepresentative squared is integrable on (1,∞) by exact tail reduction and inverse-square domination",
+    "RhoMemLpTwo is proved unconditionally for every natural index",
+    "rhoLp is constructed unconditionally on the frozen L2 carrier",
+    "concreteNBData uses the same frozen L2 carrier as chiLpConcrete",
+    "concreteGeneratorFamily is unconditional and has no universal MemLp hypothesis",
+    "analytic API preflight, axiom audit, n=0 boundary tests, and frontier semantic firewall all passed"
+  ],
+  "open_bridges": [
+    "R0_CERT_COMPOSITION",
+    "R1_BAEZ_DUARTE_CRITERION_INTERFACE",
+    "DNLimit_EQ_ZERO"
+  ],
+  "cross_repo_imports_used": [],
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false
+}
