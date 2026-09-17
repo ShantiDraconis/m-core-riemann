@@ -1,0 +1,39 @@
+{
+  "stage": "R0.3",
+  "classification": "PROVED_LEAN_CHI_L2_REALIZATION_FRONTIER",
+  "SOURCE_SHA": "67c9055c6e0778d9e46abab211aafa569dfcc280",
+  "FROZEN_REF": "frozen/r0-3-chi-l2-green-67c9055",
+  "workflow": "r0-3-chi-l2",
+  "run_id": 35194529553,
+  "job_id": 105114516204,
+  "checks": {
+    "pinned_lean": "GREEN",
+    "clean_dependency_resolution": "GREEN",
+    "r0_2_provenance": "GREEN",
+    "source_firewall": "GREEN",
+    "lean_build": "GREEN",
+    "api_axiom_audit": "GREEN",
+    "restricted_measure_adversarial_firewall": "GREEN",
+    "semantic_frontier_firewall": "GREEN",
+    "assumptions_firewall": "GREEN"
+  },
+  "consumes": {
+    "R0_2_SOURCE_SHA": "be25ead1e1433c4e2094ab67ca53cae31cb0ab4c",
+    "R0_2_FROZEN_REF": "frozen/r0-2-concrete-domain-green-be25ead"
+  },
+  "certified_scope": {
+    "l2_measure": "Lebesgue volume restricted to (0,infinity)",
+    "exponent": 2,
+    "chi_memlp_obligation_stated": true,
+    "chi_lp_constructed_conditionally_on_memlp": true,
+    "chi_memlp_proved": false
+  },
+  "open_bridges": [
+    "CHI_MEMLP_TWO_PROOF",
+    "CHI_NORM_VALUE",
+    "RHO_DILATE_MEMLP_TWO",
+    "NB_HILBERT_IDENTIFICATION"
+  ],
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false
+}
