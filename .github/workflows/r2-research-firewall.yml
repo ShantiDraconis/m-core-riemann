@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Verify R1 base and no Lean writes
         shell: bash
         run: |
@@ -26,22 +27,53 @@ jobs:
             echo "R2 research phase must not modify lean/ before an unconditional bound exists"
             exit 1
           fi
+
       - name: Verify R2 status firewall
         shell: python
         run: |
           import json
+
           with open("audit/R2_ROUTE_MATRIX.json", encoding="utf-8") as f:
-              r=json.load(f)
-          assert r["status"]=="OPEN_BRIDGE"
+              r = json.load(f)
+
+          assert r["status"] == "OPEN_BRIDGE"
           assert r["dnlimit_eq_zero_proved"] is False
           assert r["rh_proved"] is False
           assert r["new_lean_theorem"] is False
           assert r["project_axiom_added"] is False
-          routes={x["id"]:x["state"] for x in r["routes"]}
-          assert routes["BAEZ_DUARTE_DAMPED_MOBIUS"]=="CIRCULAR_CONDITIONAL_ROUTE"
-          assert routes["FINITE_GRAM_NUMERICS"]=="MODEL_EVIDENCE_ONLY"
+
+          assert r["normalization"]["ambient"] == "L2((0,infinity), dx)"
+          assert r["normalization"]["rho_a"] == "fract(1/(a*x))"
+          assert r["normalization"]["frozen_semantics"] == "dN = residual norm; DN = dN^2"
+
+          routes = {x["id"]: x["state"] for x in r["routes"]}
+          assert routes["BAEZ_DUARTE_DAMPED_MOBIUS"] == "CIRCULAR_CONDITIONAL_ROUTE"
+          assert routes["FINITE_GRAM_ARB"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
+          assert routes["BURNOL_LOWER_BOUND"] == "ASYMPTOTIC_RATE_FLOOR_ONLY"
+
+          finite = r["finite_interval_evidence"]
+          assert finite["latest_N"] == 256
+          assert finite["classification"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
+
+          mob = r["finite_mobius_diagnostics"]
+          assert mob["N"] == 256
+          assert mob["classification"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
+          assert mob["optimal_coefficient_pattern"]["minus_mobius_sign_matches"] == 157
+          assert mob["optimal_coefficient_pattern"]["minus_mobius_sign_match_rate"] == 1.0
+          assert "finite N only" in mob["inference_limit"]
+
+          guard = r["rate_guardrail"]
+          assert guard["known_lower_bound_type"] == "asymptotic liminf, not pointwise"
+          assert guard["finite_data_do_not_establish_asymptotic"] is True
+
+          nxt = r["next_mathematical_task"]
+          assert nxt["status"] == "OPEN_MATH"
+
       - name: R2 research status
         run: |
           echo "R2=OPEN_BRIDGE"
+          echo "FINITE_GRAM=INTERVAL_CERTIFIED_THROUGH_N256"
+          echo "MOBIUS_DIAGNOSTICS=FINITE_N_ONLY"
+          echo "UNIFORM_UPPER_BOUND=OPEN_MATH"
           echo "DNLimit_EQ_ZERO=false"
           echo "RH_PROVED=false"
