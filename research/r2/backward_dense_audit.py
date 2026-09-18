@@ -84,6 +84,77 @@ def audit_dependency_pin() -> None:
         fail(f"manifest Mathlib pin mismatch: {pkg}")
 
 
+def lean_code_only(text: str) -> str:
+    """Remove Lean comments and string contents while preserving newlines.
+
+    Lean block comments are nestable. This scanner is intentionally small but
+    fail-closed for source hygiene: only tokens that occur in executable/source
+    syntax are audited, not words in documentation comments or string literals.
+    """
+    out = []
+    i = 0
+    block_depth = 0
+    in_string = False
+    escape = False
+    while i < len(text):
+        ch = text[i]
+        nxt = text[i + 1] if i + 1 < len(text) else ""
+
+        if block_depth:
+            if ch == "/" and nxt == "-":
+                block_depth += 1
+                out.extend("  ")
+                i += 2
+                continue
+            if ch == "-" and nxt == "/":
+                block_depth -= 1
+                out.extend("  ")
+                i += 2
+                continue
+            out.append("\n" if ch == "\n" else " ")
+            i += 1
+            continue
+
+        if in_string:
+            if ch == "\n":
+                out.append("\n")
+            else:
+                out.append(" ")
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            i += 1
+            continue
+
+        if ch == "-" and nxt == "-":
+            while i < len(text) and text[i] != "\n":
+                out.append(" ")
+                i += 1
+            continue
+        if ch == "/" and nxt == "-":
+            block_depth = 1
+            out.extend("  ")
+            i += 2
+            continue
+        if ch == '"':
+            in_string = True
+            out.append(" ")
+            i += 1
+            continue
+
+        out.append(ch)
+        i += 1
+
+    if block_depth:
+        fail("unterminated Lean block comment encountered by source auditor")
+    if in_string:
+        fail("unterminated Lean string encountered by source auditor")
+    return "".join(out)
+
+
 def audit_all_riemann_lean() -> None:
     lean_files = sorted((ROOT / "lean/MCore/RH").rglob("*.lean"))
     if not lean_files:
@@ -92,11 +163,12 @@ def audit_all_riemann_lean() -> None:
     bad_decls = []
     for path in lean_files:
         text = path.read_text(encoding="utf-8")
-        for i, line in enumerate(text.splitlines(), 1):
+        code = lean_code_only(text)
+        for i, line in enumerate(code.splitlines(), 1):
             if FORBIDDEN_LEAN_TOKENS.search(line):
                 bad_tokens.append((str(path), i, line.strip()))
-        for m in FORBIDDEN_DECL.finditer(text):
-            line = text.count("\n", 0, m.start()) + 1
+        for m in FORBIDDEN_DECL.finditer(code):
+            line = code.count("\n", 0, m.start()) + 1
             bad_decls.append((str(path), line, m.group(0).strip()))
     if bad_tokens:
         fail(f"forbidden placeholder/bypass tokens in Riemann Lean: {bad_tokens[:20]}")
