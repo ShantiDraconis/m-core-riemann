@@ -234,6 +234,90 @@ truncated-integral check in \`research/r2/validate_vasyunin.py\`.
 
 It remains external mathematics, not a Lean theorem and not a project axiom.
 
+### 3.5 Exact diagonal Gram entry
+
+The diagonal does not require the external cotangent formula. For every
+positive integer \(a\),
+
+\[
+G_{a,a}
+=
+\int_0^\infty
+\left\{\frac1{ax}\right\}^2 dx.
+\]
+
+With \(t=1/(ax)\),
+
+\[
+G_{a,a}
+=
+\frac1a
+\int_0^\infty \frac{\{t\}^2}{t^2}\,dt.
+\]
+
+Write
+
+\[
+J=\int_0^\infty \frac{\{t\}^2}{t^2}\,dt.
+\]
+
+On \([0,1]\), the integrand is identically \(1\). For every integer
+\(n\ge1\), \(\lfloor t\rfloor=n\) on \([n,n+1)\), so
+
+\[
+\int_n^{n+1}\frac{\{t\}^2}{t^2}\,dt
+=
+1-2n\log\left(1+\frac1n\right)+\frac{n}{n+1}.
+\]
+
+Consequently, for integer \(N\ge1\),
+
+\[
+J_N
+:=
+\int_0^N \frac{\{t\}^2}{t^2}\,dt
+=
+2N-H_N-2(N-1)\log N+2\log((N-1)!).
+\]
+
+Using
+
+\[
+H_N=\log N+\gamma+o(1)
+\]
+
+and Stirling's formula for \((N-1)!\), all divergent terms cancel and
+
+\[
+\boxed{
+J=\log(2\pi)-\gamma.
+}
+\]
+
+Therefore
+
+\[
+\boxed{
+G_{a,a}
+=
+\frac{\log(2\pi)-\gamma}{a}.
+}
+\]
+
+Classification:
+
+\[
+\texttt{DERIVED\_EXACTLY\_IN\_MODEL}.
+\]
+
+This is an analytic derivation in the audit layer, not a new Lean theorem.
+It is independent of the external Vasyunin formula and therefore supplies an
+internal anchor for the Gram implementation.
+
+The same identity is also the \(p=q=1\) specialization of the implemented
+Vasyunin formula, so the two routes can be cross-checked without circularly
+using the cotangent sum to derive the diagonal.
+
 ## 4. Mellin representation
 
 For \(0<\Re s<1\),
@@ -277,6 +361,37 @@ G_{a,b}
 
 This is a representation of the same real Gram entry; conjugation symmetry
 makes the total integral real.
+
+Using the evenness of
+\(|\zeta(\tfrac12+it)|^2/(\tfrac14+t^2)\), the equivalent real form is
+
+\[
+\boxed{
+G_{a,b}
+=
+\frac1{\pi\sqrt{ab}}
+\int_0^\infty
+\cos\left(t\log\frac ba\right)
+\frac{|\zeta(\tfrac12+it)|^2}{\tfrac14+t^2}\,dt.
+}
+\]
+
+Absolute convergence is anchored internally by the diagonal \(a=b=1\):
+the exact identity
+
+\[
+G_{1,1}=\log(2\pi)-\gamma<\infty
+\]
+
+is equivalent through Mellin-Plancherel to finiteness of the positive weighted
+second-moment integral. Hence the cosine representation does not rely on a
+formal oscillatory principal-value interpretation.
+
+Classification:
+
+\[
+\texttt{DERIVED\_FROM\_MELLIN\_PLANCHEREL}.
+\]
 
 R1 remains the authoritative RH criterion interface. R2 does not replace R1
 with an informal Mellin argument.

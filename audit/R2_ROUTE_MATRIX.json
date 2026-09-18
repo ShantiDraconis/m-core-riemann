@@ -28,6 +28,24 @@
         "Baez-Duarte, Harmonic Series Summation Lemma and Vasyunin's Formulas, POMI 282 (2001)",
         "Bettin-Conrey, Period functions and cotangent sums, ANT 7 (2013), formula (13)"
       ]
+    },
+    "G_aa": {
+      "status": "DERIVED_EXACTLY_IN_MODEL",
+      "formula": "(log(2*pi)-gamma)/a",
+      "derivation": "interval decomposition of integral fract(t)^2/t^2 plus harmonic-number asymptotics and Stirling",
+      "external_formula_required": false,
+      "lean_theorem": false
+    },
+    "G_ab_plancherel": {
+      "status": "DERIVED_FROM_MELLIN_PLANCHEREL",
+      "full_line_formula": "(2*pi*sqrt(a*b))^-1 * integral_R (b/a)^(i*t) |zeta(1/2+i*t)|^2/(1/4+t^2) dt",
+      "cosine_formula": "(pi*sqrt(a*b))^-1 * integral_0^infinity cos(t*log(b/a)) |zeta(1/2+i*t)|^2/(1/4+t^2) dt",
+      "absolute_convergence_anchor": "G_11 = log(2*pi)-gamma < infinity",
+      "lean_theorem": false
+    },
+    "tail_exact": {
+      "status": "DERIVED_EXACTLY_IN_MODEL",
+      "formula": "integral_X^infinity rho_a(x)rho_b(x) dx = 1/(a*b*X), for X>=1"
     }
   },
   "finite_interval_evidence": {

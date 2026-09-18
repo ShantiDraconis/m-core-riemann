@@ -46,6 +46,14 @@ jobs:
           assert r["normalization"]["rho_a"] == "fract(1/(a*x))"
           assert r["normalization"]["frozen_semantics"] == "dN = residual norm; DN = dN^2"
 
+          analytic = r["analytic_inputs"]
+          assert analytic["G_aa"]["status"] == "DERIVED_EXACTLY_IN_MODEL"
+          assert analytic["G_aa"]["formula"] == "(log(2*pi)-gamma)/a"
+          assert analytic["G_aa"]["external_formula_required"] is False
+          assert analytic["G_ab_plancherel"]["status"] == "DERIVED_FROM_MELLIN_PLANCHEREL"
+          assert analytic["G_ab_plancherel"]["absolute_convergence_anchor"] == "G_11 = log(2*pi)-gamma < infinity"
+          assert analytic["tail_exact"]["status"] == "DERIVED_EXACTLY_IN_MODEL"
+
           routes = {x["id"]: x for x in r["routes"]}
           assert routes["BAEZ_DUARTE_DAMPED_MOBIUS"]["state"] == "CIRCULAR_CONDITIONAL_ROUTE"
           assert routes["FINITE_GRAM_ARB"]["state"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
