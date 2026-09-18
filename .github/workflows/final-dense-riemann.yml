@@ -93,10 +93,14 @@ jobs:
           lake exe cache get
 
       - name: T4 authoritative Lake build
-        run: lake build
+        run: |
+          lake build
+          lake build MCore.RH.R0.RhoConcrete MCore.RH.NB.ZeroLimitFrontier
 
       - name: T5 runtime axiom audit
+        shell: bash
         run: |
+          set -euo pipefail
           cat > DenseAxiomAudit.lean <<'EOF'
           import MCore.RH.R0.RhoConcrete
           import MCore.RH.NB.ZeroLimitFrontier
