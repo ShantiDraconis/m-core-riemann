@@ -1,0 +1,122 @@
+{
+  "stage": "RH_LEGACY_STATUS_SUPERSESSION",
+  "classification": "DOCUMENTARY_PROVENANCE_MAP_NO_MATHEMATICAL_PROMOTION",
+  "status": "GREEN_BY_PROVENANCE",
+  "policy": {
+    "preserve_historical_snapshots": true,
+    "rewrite_old_status_files": false,
+    "rule": "Historical PRE_CI/OPEN/PLANNED files remain evidence of their time; current status is taken only from the authoritative superseding sources below."
+  },
+  "authoritative_current_chain": {
+    "R0_CERT": {
+      "status": "GREEN",
+      "commit": "f902fca1a59f750cb6d4a7b2d16fbc74715be1df",
+      "workflow_run_id": 35278378430
+    },
+    "R1": {
+      "status": "GREEN_EXTERNAL_INTERFACE",
+      "commit": "53d97bc0a3e64de419f4214625ae75a9e1ecb178",
+      "workflow_run_id": 35282001164
+    },
+    "R2": {
+      "status": "OPEN_BRIDGE",
+      "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+      "dnlimit_eq_zero_proved": false,
+      "rh_proved": false
+    }
+  },
+  "historical_snapshots": [
+    {
+      "path": "audit/NB16_PLAN.json",
+      "historical_role": "PRE_EXECUTION_PLAN",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": [
+        "NB16 source 540066e741d0cfb88e9cf5b84364ab0715afab1d",
+        "NB_TOTAL source 38aad03c90103ad9b6cf0a31169b1855869cba11"
+      ]
+    },
+    {
+      "path": "audit/R0_0_ASSUMPTIONS.json",
+      "historical_role": "R0.0_PRE_CI_ASSUMPTION_SNAPSHOT",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": "R0.0 source 93982aefdbe796fd7e760fb4bcce61c28dfbdc14"
+    },
+    {
+      "path": "audit/R0_1_ASSUMPTIONS.json",
+      "historical_role": "R0.1_PRE_GATE_SNAPSHOT",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": "R0.1 source 6905ef324641c7fe2572d5839331eb6dff298c13"
+    },
+    {
+      "path": "audit/R0_2_ASSUMPTIONS.json",
+      "historical_role": "R0.2_PRE_GATE_SNAPSHOT",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": "R0.2 source be25ead1e1433c4e2094ab67ca53cae31cb0ab4c"
+    },
+    {
+      "path": "audit/R0_3_ASSUMPTIONS.json",
+      "historical_role": "R0.3_PRE_GATE_SNAPSHOT",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": "R0.3 source 67c9055c6e0778d9e46abab211aafa569dfcc280"
+    },
+    {
+      "path": "audit/R0_4_ASSUMPTIONS.json",
+      "historical_role": "R0.4_FRONTIER_SNAPSHOT",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": "R0.4 source c0fe29a5f4c430312432affabc55066083903438"
+    },
+    {
+      "path": "audit/R0_GATE_PLAN.json",
+      "historical_role": "ORIGINAL_FINE_GATE_PLAN",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": "R0_CERT f902fca1a59f750cb6d4a7b2d16fbc74715be1df"
+    },
+    {
+      "path": "audit/R0_RHO_IDENTIFICATION_ASSUMPTIONS.json",
+      "historical_role": "RHO_PRE_CLOSURE_SNAPSHOT",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": {
+        "source_sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+        "frozen_ref": "frozen/r0-rho-identification-green-66a9b18",
+        "certificate_doc_sha": "8a77227890003bbff297474e6861beed2cfc8de6"
+      }
+    },
+    {
+      "path": "audit/RH_NB_TWO_PHASE_STATUS.md",
+      "historical_role": "OLD_BRANCH_RESEARCH_STATUS",
+      "non_authoritative_for_current_status": true,
+      "superseded_by": [
+        "NB_TOTAL 38aad03c90103ad9b6cf0a31169b1855869cba11",
+        "R0_CERT f902fca1a59f750cb6d4a7b2d16fbc74715be1df",
+        "R1 53d97bc0a3e64de419f4214625ae75a9e1ecb178"
+      ]
+    },
+    {
+      "path": "audit/RH_K9_CRITERION_ROUTES.md",
+      "historical_role": "RESEARCH_ROUTE_CATALOG",
+      "non_authoritative_for_current_status": true,
+      "current_use": "source catalog only; no endpoint status authority"
+    },
+    {
+      "path": "audit/RH_K9_RESEARCH_MAP.md",
+      "historical_role": "RESEARCH_ROUTE_CATALOG",
+      "non_authoritative_for_current_status": true,
+      "current_use": "source catalog only; no endpoint status authority"
+    }
+  ],
+  "current_status_authority": [
+    "R0_CERT.json",
+    "audit/R1_BAEZ_DUARTE_INTERFACE.json",
+    "audit/R2_ROUTE_MATRIX.json",
+    "audit/BACKWARD_DENSE_MATCHES.json",
+    "audit/R2_BACKWARD_DENSE_FILE_AUDIT.json",
+    "papers/final-dense/"
+  ],
+  "endpoint": {
+    "material_gate_count": 1,
+    "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false,
+    "rh_false_proved": false
+  }
+}
