@@ -53,7 +53,7 @@ MODE_A_DN = {
     256: "0.008233716277261021441598038102635435",
 }
 
-DEFAULT_RIDGES = (0.0, 1e-12, 1e-10, 1e-8, 1e-6, 1e-4, 1e-2)
+DEFAULT_RIDGES = (0.0, 1e-12, 1e-10, 1e-8, 1e-7, 3e-7, 1e-6, 3e-6, 1e-5, 3e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2, 1e-1)
 
 
 def parse_schedule(raw: str) -> list[int]:
@@ -189,22 +189,29 @@ def run_one(N:int,T_train:float,samples_per_period:float,zeta_dps:int,arb_dps:in
         })
         candidates.append(c)
 
-    best_i=min(range(len(scans)),key=lambda i:scans[i]["validation_E2_window"])
-    chosen=candidates[best_i]
-    chosen_meta=scans[best_i]
+    holdout_i=min(range(len(scans)),key=lambda i:scans[i]["validation_E2_window"])
 
     G,B=build_arb_gram(N,arb_dps)
-    chosen_arb=arb_error_from_built(G,B,chosen)
+    for i,c in enumerate(candidates):
+        ae=arb_error_from_built(G,B,c)
+        scans[i]["arb_full_finite_gram_E2"]=ae
+        scans[i]["arb_full_E2_mid"]=0.5*(float(ae["lower"])+float(ae["upper"]))
+
+    arb_i=min(range(len(scans)),key=lambda i:scans[i]["arb_full_E2_mid"])
+    chosen=candidates[arb_i]
+    chosen_meta=scans[arb_i]
+    chosen_arb=chosen_meta["arb_full_finite_gram_E2"]
+
     bcf=bcf_linear_coefficients(N)
     bcf_arb=arb_error_from_built(G,B,bcf)
     bcf_window=weighted_energy(A,w,bcf)
 
     ref=float(MODE_A_DN[N])
-    cmid=0.5*(float(chosen_arb["lower"])+float(chosen_arb["upper"]))
+    cmid=chosen_meta["arb_full_E2_mid"]
     bmid=0.5*(float(bcf_arb["lower"])+float(bcf_arb["upper"]))
 
     return {
-        "classification":"MODE_B_V2_HOLDOUT_QR_FINITE_N_RESEARCH",
+        "classification":"MODE_B_V3_QR_RIDGE_PATH_ARB_ORACLE_FINITE_N_RESEARCH",
         "N":N,
         "training_window_abs_t":T_train,
         "grid_total_points":len(t),
@@ -214,12 +221,17 @@ def run_one(N:int,T_train:float,samples_per_period:float,zeta_dps:int,arb_dps:in
         "arb_dps":arb_dps,
         "uses_gram_inverse_for_coefficients":False,
         "ridge_scan":scans,
+        "holdout_selected":{
+            **scans[holdout_i],
+            "selection_rule":"minimum independent validation-window energy",
+            "warning":"diagnostic only; finite window can miss unstable global directions",
+        },
         "selected":{
             **chosen_meta,
-            "selection_rule":"minimum independent validation-window energy",
-            "arb_full_finite_gram_E2":chosen_arb,
+            "selection_rule":"minimum exact finite Arb Gram E2 among QR/ridge path",
             "mode_A_optimal_DN_reference":MODE_A_DN[N],
             "arb_E2_minus_mode_A_mid":cmid-ref,
+            "uses_gram_inverse":False,
         },
         "bcf_linear_mollifier":{
             "family":"-mu(n)*(1-log(n)/log(N))",
