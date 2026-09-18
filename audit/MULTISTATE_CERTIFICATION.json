@@ -1,0 +1,35 @@
+{
+  "schema": "multistate-certification-v1",
+  "research_line": "Riemann",
+  "branch": "audit/multistate-proof-refutation-v1",
+  "promotion": "SOURCE_CATALOG_ONLY / NO_MATHEMATICAL_PROMOTION",
+  "state_machine": [
+    "OPEN",
+    "MEIO_TERMO",
+    "FECHADO",
+    "REFUTADO",
+    "INDETERMINATE_WITH_RESIDUE"
+  ],
+  "axes": {
+    "MECHANICAL_STATUS": "NOT_RUN",
+    "MATHEMATICAL_STATUS": "SOURCE_CATALOG_ONLY"
+  },
+  "closed_prefix": [],
+  "real_frontiers": [],
+  "proof_search": {
+    "status": "NOT_RUN"
+  },
+  "falsification_search": {
+    "status": "NOT_RUN"
+  },
+  "six_dimensions": {
+    "HYPOTHESIS_MATCH": "PENDING",
+    "CONCLUSION_MATCH": "PENDING",
+    "QUANTIFIER_MATCH": "PENDING",
+    "SCALING_MATCH": "PENDING",
+    "CONSTANT_MATCH": "PENDING",
+    "AXIOM_AUDIT": "PENDING"
+  },
+  "residue": null,
+  "problem_specific": "RH target and its negation are kept literal; computational zero verification is evidence, not quantified closure."
+}
