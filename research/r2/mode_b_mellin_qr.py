@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
 """
-R2 Mode B: Mellin-side weighted QR solver and BCF/Selberg mollifier test.
+R2 Mode B v2: Mellin-side QR with holdout-selected regularization.
 
-This solver NEVER inverts the finite Gram matrix to obtain coefficients.
+Goal: construct useful finite coefficient vectors without inverting G_N.
 
-For v_N = sum_{n<=N} c_n rho_n and
-  M[rho_n](s) = - zeta(s) n^(-s) / s,
-the Mellin residual is
-  M[chi-v_N](s) = (1 + zeta(s) P_c(s)) / s,
-  P_c(s) = sum c_n n^(-s).
+For v_N = sum c_n rho_n,
+  M(chi-v_N)(s) = (1 + zeta(s) P_c(s))/s,
+  P_c(s)=sum c_n n^(-s).
 
-Mode B approximates the weighted critical-line least-squares problem on
-|t| <= T using Gauss-Legendre quadrature after
-  t = (1/2) tan(theta),
-which exactly removes the factor dt/(1/4+t^2).
+The first global QR experiment on |t|<=N^2 with O(N) samples was deliberately
+kept as a falsification result: from N=64 onward it under-resolved the
+Dirichlet oscillations, overfit the sampled continuum, and Arb evaluation
+showed huge true L2 errors.
 
-The sampled QR coefficients are then evaluated in the exact finite Gram
-quadratic form using Arb:
-  E_N^2 = 1 - 2 b^T c + c^T G c.
-This is an independent solver check: G is used only to evaluate the candidate,
-not to solve for c.
+v2 therefore:
+  * trains only on a resolved finite window |t|<=T_train;
+  * uses a uniform midpoint grid fine enough for the largest log-frequency;
+  * splits alternating nodes into train/validation sets;
+  * column-scales the real design matrix;
+  * scans ridge strengths, each solved by QR/LAPACK GELSY;
+  * selects lambda by independent validation energy;
+  * evaluates the selected decimal coefficient vector in the exact finite
+    Gram quadratic form with Arb.
 
-Finite quadrature and finite-N Arb evaluation do NOT prove DNLimit=0 or RH.
+The finite Mellin window is a coefficient-construction heuristic. Arb Gram
+evaluation, not the sampled residual, is the authoritative finite L2 error.
+No finite result proves DNLimit=0 or RH.
 """
 from __future__ import annotations
 
@@ -40,95 +44,6 @@ sys.path.insert(0, str(HERE))
 from gram_engine import b_arb, gram_arb, mobius_int
 
 
-def parse_schedule(raw: str) -> list[int]:
-    out = [int(x.strip()) for x in raw.split(",") if x.strip()]
-    if not out or any(n < 2 for n in out):
-        raise ValueError("schedule must contain integers N >= 2")
-    return out
-
-
-def positive_theta_rule(N: int, samples_factor: int, T: float):
-    m = max(samples_factor * N, 64)
-    x, w = np.polynomial.legendre.leggauss(m)
-    theta_max = math.atan(2.0 * T)
-    theta = 0.5 * theta_max * (x + 1.0)
-    wt_theta = 0.5 * theta_max * w
-    t = 0.5 * np.tan(theta)
-    weights = (2.0 / math.pi) * wt_theta
-    return t, weights
-
-
-def critical_design(N: int, t: np.ndarray, weights: np.ndarray, zeta_dps: int):
-    mp.mp.dps = zeta_dps
-    logs = np.log(np.arange(1, N + 1, dtype=np.float64))
-    A = np.empty((len(t), N), dtype=np.complex128)
-
-    for k, tk in enumerate(t):
-        s_mp = mp.mpf("0.5") + 1j * mp.mpf(repr(float(tk)))
-        z = complex(mp.zeta(s_mp))
-        phase = np.exp((-0.5 - 1j * tk) * logs)
-        A[k, :] = z * phase
-
-    root_w = np.sqrt(weights)
-    Aw = A * root_w[:, None]
-    target = -root_w
-
-    M = np.vstack([Aw.real, Aw.imag])
-    y = np.concatenate([target, np.zeros_like(target)])
-    return M, y, A
-
-
-def qr_solve_real(M: np.ndarray, y: np.ndarray):
-    c, _, rank, _ = scipy.linalg.lstsq(
-        M, y, cond=None, lapack_driver="gelsy", check_finite=True
-    )
-    residual = M @ c - y
-    sampled_e2 = float(np.dot(residual, residual))
-    svals = scipy.linalg.svdvals(M)
-    cond = float(svals[0] / svals[-1]) if svals[-1] > 0 else math.inf
-    return c, sampled_e2, int(rank), cond
-
-
-def bcf_linear_coefficients(N: int) -> np.ndarray:
-    logN = math.log(N)
-    vals = np.zeros(N, dtype=np.float64)
-    for n in range(1, N + 1):
-        mu = mobius_int(n)
-        if mu:
-            vals[n - 1] = -mu * (1.0 - math.log(n) / logN)
-    return vals
-
-
-def sampled_energy(A: np.ndarray, weights: np.ndarray, c: np.ndarray) -> float:
-    residual = 1.0 + A @ c
-    return float(np.sum(weights * np.abs(residual) ** 2))
-
-
-def arb_candidate_error(N: int, coeff: np.ndarray, dps: int):
-    from flint import arb, arb_mat, ctx
-
-    ctx.dps = dps
-    entries = [arb(0) for _ in range(N * N)]
-    bvals = []
-    for i in range(N):
-        a = i + 1
-        bvals.append(b_arb(a, dps))
-        for j in range(i + 1):
-            g = gram_arb(a, j + 1, dps)
-            entries[i * N + j] = g
-            entries[j * N + i] = g
-
-    G = arb_mat(N, N, entries)
-    B = arb_mat(N, 1, bvals)
-    C = arb_mat(N, 1, [arb(format(float(x), ".17g")) for x in coeff])
-    e2 = arb(1) - 2 * (B.transpose() * C)[0, 0] + (C.transpose() * G * C)[0, 0]
-    return {
-        "ball": e2.str(50, more=True),
-        "lower": e2.lower().str(50, radius=False),
-        "upper": e2.upper().str(50, radius=False),
-    }
-
-
 MODE_A_DN = {
     8: "0.02416142158589668502280894301085134",
     16: "0.01789402347696943509905506314795876",
@@ -138,87 +53,216 @@ MODE_A_DN = {
     256: "0.008233716277261021441598038102635435",
 }
 
+DEFAULT_RIDGES = (0.0, 1e-12, 1e-10, 1e-8, 1e-6, 1e-4, 1e-2)
 
-def run_one(N: int, samples_factor: int, zeta_dps: int, arb_dps: int):
-    T = float(N * N)
-    t, weights = positive_theta_rule(N, samples_factor, T)
-    M, y, A = critical_design(N, t, weights, zeta_dps)
 
-    c_qr, sampled_qr_e2, rank, design_cond = qr_solve_real(M, y)
-    qr_arb = arb_candidate_error(N, c_qr, arb_dps)
+def parse_schedule(raw: str) -> list[int]:
+    out=[int(x.strip()) for x in raw.split(",") if x.strip()]
+    if not out or any(n < 2 for n in out):
+        raise ValueError("schedule must contain N >= 2")
+    return out
 
-    c_bcf = bcf_linear_coefficients(N)
-    sampled_bcf_e2 = sampled_energy(A, weights, c_bcf)
-    bcf_arb = arb_candidate_error(N, c_bcf, arb_dps)
 
-    ref = float(MODE_A_DN[N])
-    qr_mid = 0.5 * (float(qr_arb["lower"]) + float(qr_arb["upper"]))
-    bcf_mid = 0.5 * (float(bcf_arb["lower"]) + float(bcf_arb["upper"]))
+def resolved_grid(N: int, T_train: float, samples_per_period: float):
+    """Midpoint grid resolving exp(-it log n) up to n=N.
+
+    The shortest phase period is 2*pi/log(N). We request
+    samples_per_period points per shortest period, then double the grid so
+    alternating points form independent train/validation sets.
+    """
+    shortest = 2.0 * math.pi / math.log(N)
+    dt_target = shortest / samples_per_period
+    half_count = max(64, math.ceil(T_train / dt_target))
+    total = 2 * half_count
+    dt = T_train / total
+    t = (np.arange(total, dtype=np.float64) + 0.5) * dt
+    # Full even Mellin energy on positive t has factor 1/pi.
+    weights = np.full(total, dt / math.pi, dtype=np.float64) / (0.25 + t*t)
+    return t, weights, dt
+
+
+def complex_design(N: int, t: np.ndarray, zeta_dps: int):
+    mp.mp.dps=zeta_dps
+    logs=np.log(np.arange(1,N+1,dtype=np.float64))
+    A=np.empty((len(t),N),dtype=np.complex128)
+    for k,tk in enumerate(t):
+        s=mp.mpf("0.5")+1j*mp.mpf(repr(float(tk)))
+        z=complex(mp.zeta(s))
+        A[k,:]=z*np.exp((-0.5-1j*tk)*logs)
+    return A
+
+
+def real_weighted_system(A: np.ndarray, weights: np.ndarray):
+    root=np.sqrt(weights)
+    Aw=A*root[:,None]
+    target=-root
+    M=np.vstack([Aw.real,Aw.imag])
+    y=np.concatenate([target,np.zeros_like(target)])
+    return M,y
+
+
+def scaled_qr_ridge(M: np.ndarray, y: np.ndarray, lam: float):
+    col=np.linalg.norm(M,axis=0)
+    col=np.where(col>0,col,1.0)
+    Ms=M/col[None,:]
+    ys=y
+    if lam>0:
+        n=Ms.shape[1]
+        Ms=np.vstack([Ms,math.sqrt(lam)*np.eye(n)])
+        ys=np.concatenate([ys,np.zeros(n)])
+    z,_,rank,_=scipy.linalg.lstsq(
+        Ms,ys,cond=None,lapack_driver="gelsy",check_finite=True
+    )
+    c=z/col
+    svals=scipy.linalg.svdvals(M/col[None,:])
+    cond=float(svals[0]/svals[-1]) if svals[-1]>0 else math.inf
+    return c,int(rank),cond
+
+
+def weighted_energy(A: np.ndarray,weights: np.ndarray,c: np.ndarray):
+    r=1.0+A@c
+    return float(np.sum(weights*np.abs(r)**2))
+
+
+def bcf_linear_coefficients(N:int):
+    logN=math.log(N)
+    c=np.zeros(N,dtype=np.float64)
+    for n in range(1,N+1):
+        mu=mobius_int(n)
+        if mu:
+            c[n-1]=-mu*(1.0-math.log(n)/logN)
+    return c
+
+
+def build_arb_gram(N:int,dps:int):
+    from flint import arb,arb_mat,ctx
+    ctx.dps=dps
+    entries=[arb(0) for _ in range(N*N)]
+    bvals=[]
+    for i in range(N):
+        a=i+1
+        bvals.append(b_arb(a,dps))
+        for j in range(i+1):
+            g=gram_arb(a,j+1,dps)
+            entries[i*N+j]=g
+            entries[j*N+i]=g
+    return arb_mat(N,N,entries),arb_mat(N,1,bvals)
+
+
+def arb_error_from_built(G,B,c:np.ndarray):
+    from flint import arb,arb_mat
+    C=arb_mat(len(c),1,[arb(format(float(x),".17g")) for x in c])
+    e=arb(1)-2*(B.transpose()*C)[0,0]+(C.transpose()*G*C)[0,0]
+    return {
+        "ball":e.str(50,more=True),
+        "lower":e.lower().str(50,radius=False),
+        "upper":e.upper().str(50,radius=False),
+    }
+
+
+def run_one(N:int,T_train:float,samples_per_period:float,zeta_dps:int,arb_dps:int):
+    t,w,dt=resolved_grid(N,T_train,samples_per_period)
+    A=complex_design(N,t,zeta_dps)
+
+    train=np.arange(len(t))%2==0
+    valid=~train
+    Mtr,ytr=real_weighted_system(A[train],2*w[train])
+    # doubled weights compensate for using half of midpoint nodes
+    Aval=A[valid]
+    wval=2*w[valid]
+
+    scans=[]
+    candidates=[]
+    for lam in DEFAULT_RIDGES:
+        c,rank,cond=scaled_qr_ridge(Mtr,ytr,lam)
+        tr=weighted_energy(A[train],2*w[train],c)
+        va=weighted_energy(Aval,wval,c)
+        scans.append({
+            "lambda":lam,
+            "train_E2_window":tr,
+            "validation_E2_window":va,
+            "rank":rank,
+            "scaled_design_condition":cond,
+            "coeff_l2":float(np.linalg.norm(c)),
+            "coeff_l1":float(np.linalg.norm(c,ord=1)),
+            "max_abs_coeff":float(np.max(np.abs(c))),
+        })
+        candidates.append(c)
+
+    best_i=min(range(len(scans)),key=lambda i:scans[i]["validation_E2_window"])
+    chosen=candidates[best_i]
+    chosen_meta=scans[best_i]
+
+    G,B=build_arb_gram(N,arb_dps)
+    chosen_arb=arb_error_from_built(G,B,chosen)
+    bcf=bcf_linear_coefficients(N)
+    bcf_arb=arb_error_from_built(G,B,bcf)
+    bcf_window=weighted_energy(A,w,bcf)
+
+    ref=float(MODE_A_DN[N])
+    cmid=0.5*(float(chosen_arb["lower"])+float(chosen_arb["upper"]))
+    bmid=0.5*(float(bcf_arb["lower"])+float(bcf_arb["upper"]))
 
     return {
-        "classification": "MODE_B_FINITE_N_RESEARCH_WITH_ARB_CANDIDATE_EVALUATION",
-        "N": N,
-        "T": T,
-        "samples_positive": len(t),
-        "samples_factor": samples_factor,
-        "zeta_dps": zeta_dps,
-        "arb_dps": arb_dps,
-        "solver": "scipy.linalg.lstsq LAPACK GELSY pivoted QR; real coefficients",
-        "uses_gram_inverse_for_coefficients": False,
-        "design_rank": rank,
-        "design_condition_number": design_cond,
-        "mode_b_qr": {
-            "sampled_truncated_E2": sampled_qr_e2,
-            "arb_full_finite_gram_E2": qr_arb,
-            "mode_A_optimal_DN_reference": MODE_A_DN[N],
-            "arb_E2_minus_mode_A_mid": qr_mid - ref,
-            "coeff_l2": float(np.linalg.norm(c_qr)),
-            "coeff_l1": float(np.linalg.norm(c_qr, ord=1)),
-            "max_abs_coeff": float(np.max(np.abs(c_qr))),
+        "classification":"MODE_B_V2_HOLDOUT_QR_FINITE_N_RESEARCH",
+        "N":N,
+        "training_window_abs_t":T_train,
+        "grid_total_points":len(t),
+        "grid_dt":dt,
+        "samples_per_shortest_period_target":samples_per_period,
+        "zeta_dps":zeta_dps,
+        "arb_dps":arb_dps,
+        "uses_gram_inverse_for_coefficients":False,
+        "ridge_scan":scans,
+        "selected":{
+            **chosen_meta,
+            "selection_rule":"minimum independent validation-window energy",
+            "arb_full_finite_gram_E2":chosen_arb,
+            "mode_A_optimal_DN_reference":MODE_A_DN[N],
+            "arb_E2_minus_mode_A_mid":cmid-ref,
         },
-        "bcf_linear_mollifier": {
-            "family": "-mu(n)*(1-log(n)/log(N))",
-            "sampled_truncated_E2": sampled_bcf_e2,
-            "arb_full_finite_gram_E2": bcf_arb,
-            "E2_logN_mid": bcf_mid * math.log(N),
-            "coeff_l2": float(np.linalg.norm(c_bcf)),
-            "coeff_l1": float(np.linalg.norm(c_bcf, ord=1)),
+        "bcf_linear_mollifier":{
+            "family":"-mu(n)*(1-log(n)/log(N))",
+            "window_E2":bcf_window,
+            "arb_full_finite_gram_E2":bcf_arb,
+            "E2_logN_mid":bmid*math.log(N),
+            "coeff_l2":float(np.linalg.norm(bcf)),
+            "coeff_l1":float(np.linalg.norm(bcf,ord=1)),
         },
-        "quadrature_scope": {
-            "critical_line_window": f"|t| <= {int(T)}",
-            "tail_certified": False,
-            "statement": (
-                "QR sampling chooses coefficients without Gram inversion. "
-                "Arb Gram evaluation certifies only the exact finite L2 error "
-                "of the resulting decimal coefficient vector. The sampled "
-                "Mellin tail beyond T is not used as a proof."
-            ),
+        "scope":{
+            "window_tail_certified":False,
+            "statement":(
+                "The window/holdout system constructs coefficients only. "
+                "The Arb Gram quadratic form certifies the exact finite L2 "
+                "error of the selected decimal vector. No Mellin-window tail "
+                "estimate is used to promote DNLimit or RH."
+            )
         },
-        "dnlimit_eq_zero_proved": False,
-        "rh_proved": False,
+        "dnlimit_eq_zero_proved":False,
+        "rh_proved":False,
     }
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--schedule", default="8,16,32,64,128,256")
-    ap.add_argument("--samples-factor", type=int, default=4)
-    ap.add_argument("--zeta-dps", type=int, default=50)
-    ap.add_argument("--arb-dps", type=int, default=100)
-    ap.add_argument("--jsonl", default="")
-    args = ap.parse_args()
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--schedule",default="8,16,32,64,128,256")
+    ap.add_argument("--T-train",type=float,default=250.0)
+    ap.add_argument("--samples-per-period",type=float,default=8.0)
+    ap.add_argument("--zeta-dps",type=int,default=50)
+    ap.add_argument("--arb-dps",type=int,default=100)
+    ap.add_argument("--jsonl",default="")
+    a=ap.parse_args()
 
-    rows = []
-    for N in parse_schedule(args.schedule):
-        row = run_one(N, args.samples_factor, args.zeta_dps, args.arb_dps)
-        rows.append(row)
-        print(json.dumps(row, sort_keys=True))
+    rows=[]
+    for N in parse_schedule(a.schedule):
+        r=run_one(N,a.T_train,a.samples_per_period,a.zeta_dps,a.arb_dps)
+        rows.append(r)
+        print(json.dumps(r,sort_keys=True))
+    if a.jsonl:
+        with open(a.jsonl,"w",encoding="utf-8") as f:
+            for r in rows:
+                f.write(json.dumps(r,sort_keys=True)+"\n")
 
-    if args.jsonl:
-        with open(args.jsonl, "w", encoding="utf-8") as f:
-            for row in rows:
-                f.write(json.dumps(row, sort_keys=True) + "\n")
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
