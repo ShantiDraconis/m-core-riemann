@@ -1,0 +1,382 @@
+{
+  "stage": "R2_BACKWARD_DENSE_FILE_AUDIT",
+  "status": "GREEN_ALL_FILE_INTEGRITY__AWAITING_EXACT_PIN_FINAL_DENSE_REBUILD",
+  "repository": "ShantiDraconis/m-core-riemann",
+  "branch": "research/r2-dnlimit-zero",
+  "integrity_source_sha": "579044eda7b44fb670e5d68f3e7c20ddb616b678",
+  "integrity_workflow": "r2-research-firewall",
+  "integrity_run_id": 35395323323,
+  "integrity_job_id": 105762730114,
+  "coverage": {
+    "riemann_lean_files_audited": 24,
+    "json_files_parsed": 6,
+    "r2_python_files_compiled": 6,
+    "invisible_control_byte_scan": "GREEN",
+    "project_axiom_and_placeholder_scan": "GREEN_AFTER_LEAN_COMMENT_STRING_LEXING",
+    "frozen_history_modified": false
+  },
+  "issues_found_and_fixed": [
+    {
+      "id": "INVISIBLE_LATEX_CONTROL_BYTES",
+      "classification": "MECHANICAL_DOCUMENT_CORRUPTION",
+      "repair_commit": "7550b4b6b21e4d04c076e8e809f7b88ab6f7bb93",
+      "status": "FIXED_GREEN"
+    },
+    {
+      "id": "LEAN_SOURCE_FIREWALL_TOO_NARROW",
+      "classification": "TEST_COVERAGE_GAP",
+      "previous_scope": "3 endpoint Lean files",
+      "current_scope": "all 24 lean/MCore/RH/**/*.lean files",
+      "auditor_commit": "84065e876342e54c334b0c4679eba9e5bafc4fdc",
+      "lexer_fix_commit": "579044eda7b44fb670e5d68f3e7c20ddb616b678",
+      "status": "FIXED_GREEN"
+    },
+    {
+      "id": "MATHLIB_TAG_NOT_FAIL_CLOSED_TO_EXACT_SHA",
+      "classification": "REPRODUCIBILITY_GAP",
+      "certified_sha": "c44e0c8ee63ca166450922a373c7409c5d26b00b",
+      "lakefile_pin_commit": "a7e92ef93f3cfe52bce069974657621bdda9d01e",
+      "manifest_pin_commit": "99201d3f8eb46863cf76b53e88ec58c927e51b56",
+      "tag_resolution_verified": "v4.19.0 -> c44e0c8ee63ca166450922a373c7409c5d26b00b",
+      "status": "FIXED_CONFIG__AWAITING_FINAL_DENSE_BUILD"
+    }
+  ],
+  "authoritative_semantics": {
+    "normalization": "L2((0,infinity), dx), rho_a=fract(1/(a*x))",
+    "dN": "residual norm",
+    "DN": "dN^2 squared residual",
+    "finite_gram_through_N": 256,
+    "finite_n_asymptotic_promotion": false,
+    "DN_convergence": "PROVED_LEAN_FROZEN_NB14"
+  },
+  "material_gate_count": 1,
+  "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+  "endpoint_status": "OPEN_BRIDGE",
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false,
+  "rh_false_proved": false,
+  "no_new_lean_theorem": true,
+  "no_new_frozen_ref": true,
+  "inventory": [
+    {
+      "path": ".github/workflows/final-dense-riemann.yml",
+      "blob_sha": "c7966180a23141959b0c251fa8e48a87d45c3743",
+      "type": "blob"
+    },
+    {
+      "path": ".github/workflows/r2-research-firewall.yml",
+      "blob_sha": "4836b8acec5569d40b5e23d4ad2727769824ff82",
+      "type": "blob"
+    },
+    {
+      "path": "audit/BACKWARD_DENSE_AXIOM_AUDIT.txt",
+      "blob_sha": "654b5fd59b58fe0afd34d2474294dee1edacc1e3",
+      "type": "blob"
+    },
+    {
+      "path": "audit/BACKWARD_DENSE_MATCHES.json",
+      "blob_sha": "b27ecc1779a945e62bdaed882c51c2f3ae786eca",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R1_BAEZ_DUARTE_INTERFACE.json",
+      "blob_sha": "bc81c96bdc79e67a2a2919c94570e1701ff8b157",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_BCF_UNCONDITIONAL_DECOMPOSITION.md",
+      "blob_sha": "a34cb3dcdf1b6c7cf2ba99378280bb7ed8fee2ca",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_COEFFICIENT_STRUCTURE.md",
+      "blob_sha": "03e6e88c95f1dbb52eabbf5adeff780ed51adedc",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_CONSOLIDATED_ANALYTIC_LEDGER.md",
+      "blob_sha": "97ec72542a809acd703a0b8fc14dfd3e91776b2f",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_FALSE_RH_BACKWARD_DENSE.md",
+      "blob_sha": "c3bad45be81ff3e9d213f77a0429a078bcab9442",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_FORMALIZATION_CORRECTIONS.md",
+      "blob_sha": "c6720143ba1adf963362071d29ba566db776a64c",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_GRAM_FINITE_CERT.json",
+      "blob_sha": "65a4eafa587275b71c95925c7ad9c12d8cbf2e1f",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_MOBIUS_DYADIC_PROBE.md",
+      "blob_sha": "ca8ac985811969c3b1b6389bba9babddc55ec994",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_NATURAL_MOBIUS_PRUNE.md",
+      "blob_sha": "9a2895499781c6e0a0099b7a525ad9c523e83f02",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_RECENT_LITERATURE_SWEEP.md",
+      "blob_sha": "d6166654bed04df5901e5061bf91a350095e5b3c",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_ROUTE_MATRIX.json",
+      "blob_sha": "b58839a7a0b9778e2807adea77c8dd16e9fd6359",
+      "type": "blob"
+    },
+    {
+      "path": "audit/R2_ZERO_RESIDUE_OBSTRUCTION.md",
+      "blob_sha": "54a3cec12164fdae18dfcc619cd173fde7cfa6a4",
+      "type": "blob"
+    },
+    {
+      "path": "certificates/PROOF_CLOSURE_TRIPLE_CERT.json",
+      "blob_sha": "71c2ddc3286bb01d6daf28ea57406b5fe3e402bc",
+      "type": "blob"
+    },
+    {
+      "path": "lake-manifest.json",
+      "blob_sha": "3af220a57475d1507bc110fa70d511c8c7dccae0",
+      "type": "blob"
+    },
+    {
+      "path": "lakefile.toml",
+      "blob_sha": "61a47b6f4679410b3fa7d432d55cb528b8ddbde3",
+      "type": "blob"
+    },
+    {
+      "path": "lean-toolchain",
+      "blob_sha": "7aca1d8a939cc24c413eddd793671cdce7070b74",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/K09_Continuation.lean",
+      "blob_sha": "6fb04adf30b8de290e2bc4a5e7e55a1524428536",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/K9_CriterionRoutes.lean",
+      "blob_sha": "68c24ce24d7e23efa6af9861a82878d5589f8697",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/K9_Regularization.lean",
+      "blob_sha": "7f8b6a7a16ab68cc5ec307656255cb0f36cc1fa5",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/K9_RiemannHypothesis.lean",
+      "blob_sha": "3d07142d3c3ce74958c67d7b7688cc70bfe56ee7",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/K9_RigidityRoutes.lean",
+      "blob_sha": "1bb3b99f5b2185a9b537251e4c7afc8b652fba83",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/K9_ZetaBridge.lean",
+      "blob_sha": "2abd5bdb64c7ae4a2a43df38a61df37fb02cd8c1",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB",
+      "blob_sha": "4cbcfc2cebdb0f8e19ea17d3681a01bbb74d18ca",
+      "type": "tree"
+    },
+    {
+      "path": "lean/MCore/RH/NB/A14NonImplication.lean",
+      "blob_sha": "79f7a8d5517d7cb58c2901da0c356019564cac6a",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/Antitone.lean",
+      "blob_sha": "2c4fe8885eeaa88e2df688703922dc1de53ba773",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/Distance.lean",
+      "blob_sha": "f6eefb370a0d3a72e0e745a7c5983c44e6be5cb7",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/FiniteSpan.lean",
+      "blob_sha": "afa704028605c3ee4412faa33813449b17dd5efa",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/FunctionalInterface.lean",
+      "blob_sha": "8bb4536e164fa922f7d04df4cf212a37b733bca6",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/FunctionalLawLogic.lean",
+      "blob_sha": "9b6dc4a0c0ff8af577fbbbac8ab303d04f87c26c",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/HilbertData.lean",
+      "blob_sha": "e2adb5f84d971daa802efa119f00b247c427a930",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/Limit.lean",
+      "blob_sha": "5d69d195506d35a600e33a732427d5cc4ca4e2a7",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/Nesting.lean",
+      "blob_sha": "72e42268ea46f316961be8a0ae1c7f6560f5bfa9",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/Projection.lean",
+      "blob_sha": "ed7c360ce9cfcdacbfff92bfff75ed6f62de1314",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/Total.lean",
+      "blob_sha": "efa09ac2f6dc9e1e491c54dc86d54e1387e2ae39",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/NB/ZeroLimitFrontier.lean",
+      "blob_sha": "bfa37d1c6d7391a1a1839902984f25ecba3a36fe",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/R0",
+      "blob_sha": "e6089803603cf8c45c2fb8b55a4cd0d858ede444",
+      "type": "tree"
+    },
+    {
+      "path": "lean/MCore/RH/R0/AmbientCarrier.lean",
+      "blob_sha": "7e4bb4949ca3140559e6a1ed2305d66aaae6b5bb",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/R0/ChiL2.lean",
+      "blob_sha": "d4dab463ece2b273f7c5f660d59adb61be13bcce",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/R0/ChiMemLp.lean",
+      "blob_sha": "858bc0b64b031097dd4144bc1fd2cb4ddd01283f",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/R0/ConcreteDomain.lean",
+      "blob_sha": "17d010fc7815fef4a64b768364c9bf072d169fa0",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/R0/Normalization.lean",
+      "blob_sha": "70cbbadaee0cfb546e1856dbfa9c52803a958f43",
+      "type": "blob"
+    },
+    {
+      "path": "lean/MCore/RH/R0/RhoConcrete.lean",
+      "blob_sha": "c37c88e0968b620cef38e6a8b4f5d53cae0f32f4",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/01-final-statement.tex",
+      "blob_sha": "47c1724c900549e431bbe8fc303192059aafd580",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/02-chain.tex",
+      "blob_sha": "456a79c789a409f0dfc25645dcfebc78f8247eea",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/03-backward-collapse.tex",
+      "blob_sha": "f8ab1d8ad09595d61d8409ffabe93d0b173daaa5",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/04-matches.tex",
+      "blob_sha": "fca3e3a67337ee7eed6827f9afffdae5f9ef582a",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/05-first-residue.tex",
+      "blob_sha": "3cb8bbda5e6349f79d857b2327f9d446f946d47c",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/06-build.tex",
+      "blob_sha": "81d3415abc77d0dc53f57140c525c7814b5c87fe",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/appendix-frozen.tex",
+      "blob_sha": "30e45bf987ded11ce613631bdd25b25cddae13a8",
+      "type": "blob"
+    },
+    {
+      "path": "papers/final-dense/main.tex",
+      "blob_sha": "7e6d08a988ea52d982f9dc60b91dad85cde26c64",
+      "type": "blob"
+    },
+    {
+      "path": "R0_CERT.json",
+      "blob_sha": "87f1d78e965e1848f1527d8260428727bc125a3e",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/backward_dense_audit.py",
+      "blob_sha": "04306a65c4e5a04ee737e7e37fe9175e45677234",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/DNLimitZeroAttack.md",
+      "blob_sha": "90c119a3972f87d16545d3f865f78af2fda7511f",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/gram_engine.py",
+      "blob_sha": "fda608d689e7812df38c7b43d49e8212a1274ad0",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/GramAnalytic.md",
+      "blob_sha": "4589250e95374cad51bbd5aea8d779409383dbd9",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/mellin_band_probe.py",
+      "blob_sha": "3c03dceedb9782c07cdcc434b94ed7cf09737408",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/mode_b_mellin_qr.py",
+      "blob_sha": "e2d6662ac53232097a1fb7284255c144ab97b22b",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/probe_arb.py",
+      "blob_sha": "6b3dc67774d941a466747efe5b2347effd9107f1",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/requirements-r2.txt",
+      "blob_sha": "9661cba5f1a03b49b8644eff2b1c98dc7e6370c0",
+      "type": "blob"
+    },
+    {
+      "path": "research/r2/validate_vasyunin.py",
+      "blob_sha": "b98d45d22b9e5e84f3be26278a4cb2b7bb9ad038",
+      "type": "blob"
+    }
+  ]
+}
