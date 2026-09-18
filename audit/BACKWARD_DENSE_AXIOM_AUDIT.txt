@@ -3,18 +3,37 @@ Repository: ShantiDraconis/m-core-riemann
 Branch: research/r2-dnlimit-zero
 BASE: 53d97bc0a3e64de419f4214625ae75a9e1ecb178
 GENERATION_HEAD: cc5d99748130b3ab6a1e04e63020bbbef4443e3e
-STATUS: AWAITING_FINAL_DENSE_CI
+AUDITED_SOURCE_SHA: 6e45cea29e11e29fafee258dda9935fb47b4bfcc
+STATUS: GREEN
 
-Runtime targets:
+Authoritative dense CI:
+- workflow: final-dense-riemann
+- run_id: 35374710727
+- job_id: 105696567343
+- conclusion: success
+- artifact_id: 10559512788
+- artifact_digest: sha256:ba5b6eb5d50b2bb08d9de2f91d9d84b5d27c7d636eaeb8ab8971016430281f2f
+
+Runtime #print axioms:
 - MCore.RH.R0.rho_memLp_two
+  [propext, Classical.choice, Quot.sound]
 - MCore.RH.NB.NBHilbertData.tendsto_DN_DNLimit
+  [propext, Classical.choice, Quot.sound]
 - MCore.RH.NB.NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+  [propext, Classical.choice, Quot.sound]
 
-Policy:
-- project scientific axiom: forbidden
-- sorry / admit / sorryAx: forbidden
-- foundational Lean/Mathlib axioms may be reported explicitly
-- external mathematics remains explicit and is never encoded as a project axiom
+Interpretation:
+- no sorryAx
+- no project scientific axiom
+- only foundational Lean/Mathlib axioms reported above
+- external mathematics remains explicit in audit/BACKWARD_DENSE_MATCHES.json
+- this GREEN certifies build/audit consistency, not RiemannHypothesis
 
-Post-run action:
-Seal exact #print axioms output plus authoritative dense CI run/job IDs.
+Current endpoint state:
+- BEGIN = CLOSED_CERTIFIED
+- MIDDLE = OPEN_FRONTIER
+- FINAL = BLOCKED_BY_MIDDLE
+- material gate = ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL
+- dnlimit_eq_zero_proved = false
+- rh_proved = false
+- rh_false_proved = false

@@ -1,20 +1,28 @@
 \section{Axiom audit and build}
-The source chain already has the following authoritative evidence:
+The source chain has the following authoritative evidence:
 \begin{itemize}
 \item R0 concrete rho source \texttt{66a9b18f26fd714a968c1d33935d54dde4e6bf30}, dedicated run \texttt{35265739399}, GREEN.
 \item R0\_CERT composition \texttt{f902fca1a59f750cb6d4a7b2d16fbc74715be1df}, GREEN.
 \item R1 external interface \texttt{53d97bc0a3e64de419f4214625ae75a9e1ecb178}, GREEN.
-\item Triple-closure state audit at generation HEAD: run \texttt{35365515356}, GREEN.
+\item Triple-closure state audit: run \texttt{35365515356}, GREEN.
+\item Backward-dense audited source \texttt{6e45cea29e11e29fafee258dda9935fb47b4bfcc}: run \texttt{35374710727}, job \texttt{105696567343}, GREEN.
+\item Final-dense artifact \texttt{10559512788}, digest \texttt{sha256:ba5b6eb5d50b2bb08d9de2f91d9d84b5d27c7d636eaeb8ab8971016430281f2f}.
 \end{itemize}
 
-The backward-dense workflow performs in one run:
-\begin{enumerate}
-\item immutable-ref and no-\texttt{lean/}-write checks;
-\item machine validation of all match classifications;
-\item pinned Lean/Mathlib resolution and \texttt{lake build};
-\item \texttt{\#print axioms} for the key frozen R0/NB theorems;
-\item a placeholder/project-axiom firewall;
-\item compilation of this paper.
-\end{enumerate}
+The fail-closed dense run passed immutable-ref checks, match validation, the project-axiom/placeholder firewall, explicit builds of the audited Lean modules, runtime axiom inspection, and compilation of this paper.
 
-At generation time the dedicated final-dense run is not yet sealed into this section. Its exact run/job identifiers and exact axiom output are added only after the run is GREEN. A GREEN paper/build audit certifies consistency of the compressed chain; it does not certify RH.
+The exact runtime results were:
+\begin{align*}
+\texttt{rho\_memLp\_two} &:\ [\texttt{propext},\ \texttt{Classical.choice},\ \texttt{Quot.sound}],\\
+\texttt{tendsto\_DN\_DNLimit} &:\ [\texttt{propext},\ \texttt{Classical.choice},\ \texttt{Quot.sound}],\\
+\texttt{DNToZero\_iff\_DNLimit\_eq\_zero} &:\ [\texttt{propext},\ \texttt{Classical.choice},\ \texttt{Quot.sound}].
+\end{align*}
+
+No \texttt{sorryAx} and no project scientific axiom occurs in these audited theorems. The listed axioms are foundational Lean/Mathlib axioms. External mathematics is kept explicit in the match audit instead of being encoded as a project axiom.
+
+This GREEN certifies consistency of the backward-dense chain and the generated paper. It does not prove RH. The state remains
+\[
+\mathrm{BEGIN=CLOSED\_CERTIFIED},\quad
+\mathrm{MIDDLE=OPEN\_FRONTIER},\quad
+\mathrm{FINAL=BLOCKED\_BY\_MIDDLE}.
+\]
