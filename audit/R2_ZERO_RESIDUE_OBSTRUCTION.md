@@ -167,3 +167,184 @@ The following do **not** reduce the gate:
 `DNLimit_EQ_ZERO = false`
 
 `RH_PROVED = false`
+
+
+## 6. Backward-dense unconditional estimate sweep
+
+This section tests the standard unconditional estimate families directly against
+the one material gate. The result is deliberately conservative:
+
+NO_SURFACED_UNCONDITIONAL_CLOSING_ESTIMATE_IN_TESTED_FAMILIES
+
+This is not a proof that no such estimate can exist. It is an audit result:
+the tested classical families do not match the hypothesis/conclusion/quantifier
+profile needed to close the complete BCF residue contribution.
+
+### 6.1 Zero-free region
+
+Modern Vinogradov--Korobov type zero-free regions exclude zeros only in a strip
+very close to Re(s)=1. They do not exclude zeros with
+
+1/2 < beta < 1 - eta(|gamma|).
+
+Therefore they leave exactly the possibility that produces the BCF factor
+
+N^(beta-1/2).
+
+Classification:
+- HYPOTHESIS_MATCH: PASS
+- CONCLUSION_MATCH: FAIL_FOR_CRITICAL_CLOSURE
+- QUANTIFIER_MATCH: FAIL_FOR_ALL_NONTRIVIAL_ZEROS
+- status: INSUFFICIENT_ZERO_FREE_REGION
+
+Reference audited: Kevin Ford, Zero-free regions for the Riemann zeta
+function, 2019, arXiv:1910.08205.
+
+### 6.2 Zero-density estimates
+
+A zero-density theorem controls N(sigma,T), the number of zeros with
+beta >= sigma up to height T. Guth--Maynard prove unconditionally an estimate
+of the form
+
+N(sigma,T) <= T^(30(1-sigma)/13+o(1)).
+
+This is a strong counting theorem, but it is still compatible with finitely
+many off-critical zeros. One such zero is enough to leave a term at the raw
+scale N^(beta-1/2). Moreover, zero-density counts zeros; the BCF residue also
+depends on local Laurent data such as 1/zeta'(rho) for simple zeros.
+
+Classification:
+- HYPOTHESIS_MATCH: PASS
+- CONCLUSION_MATCH: FAIL_FOR_WEIGHTED_RESIDUE_VANISHING
+- QUANTIFIER_MATCH: FAIL__COUNTING_AVERAGE_DOES_NOT_EXCLUDE_SINGLE_OFF_LINE_ZERO
+- status: INSUFFICIENT_ZERO_DENSITY
+
+Reference audited: Larry Guth and James Maynard, New large value estimates for
+Dirichlet polynomials, 2024, arXiv:2405.20552.
+
+### 6.3 Positive proportion of simple critical-line zeros
+
+Current unconditional work proves that a large positive proportion of
+non-trivial zeros are simple and on the critical line. This is genuine progress
+on the zero set, but the R2 gate is universal: even a single remaining
+off-critical zero can contribute the N^(beta-1/2) scale.
+
+Classification:
+- HYPOTHESIS_MATCH: PASS
+- CONCLUSION_MATCH: FAIL_FOR_ALL_ZEROS
+- QUANTIFIER_MATCH: FAIL__POSITIVE_PROPORTION_VS_UNIVERSAL_CONTROL
+- status: INSUFFICIENT_CRITICAL_LINE_PROPORTION
+
+Reference audited: Levent Alpoge and Ralph Furman, More than two thirds of the
+zeta zeros are simple and on the critical line, 2026, arXiv:2608.13637.
+
+### 6.4 Termwise absolute-value estimate
+
+For a simple zero,
+
+|R_N(rho,s)| =
+N^(beta-Re(s)) / (|zeta'(rho)| |rho-s|^2).
+
+Taking absolute values destroys any possible cancellation and immediately
+requires reciprocal derivative control. On the critical line this leads to
+negative moments of zeta'(rho); off the line it also retains the factor
+N^(beta-1/2).
+
+BCF explicitly note that convergence issues involving sums of 1/zeta'(rho)
+force them to assume their derivative-moment condition in the conditional
+closing theorem.
+
+Classification:
+- HYPOTHESIS_MATCH: FAIL_WITHOUT_NEW_RECIPROCAL_DERIVATIVE_INPUT
+- CONCLUSION_MATCH: POTENTIALLY_STRONG_IF_HYPOTHESIS_WERE_AVAILABLE
+- status: BLOCKED_NEGATIVE_ZETA_DERIVATIVE_MOMENT
+
+### 6.5 Cauchy--Schwarz
+
+A natural attempt factors the complete residue sum into a negative
+zeta-derivative moment and a weighted zero-location sum. This does not eliminate
+the obstruction. The first factor is exactly the type of input used by BCF,
+while the second still sees off-critical exponents beta>1/2.
+
+Recent negative-moment results found in the audit are themselves conditional on
+RH and/or simplicity in the strength relevant here; they cannot be imported as
+unconditional closing evidence.
+
+Classification:
+- HYPOTHESIS_MATCH: FAIL__REINTRODUCES_BCF_NEGATIVE_DERIVATIVE_MOMENT
+- status: CIRCULAR_OR_UNAVAILABLE_CAUCHY_SCHWARZ_ROUTE
+
+### 6.6 Functional-equation pairing
+
+The functional equation pairs an off-critical zero rho=beta+i gamma with
+1-rho and with conjugates. At Re(s)=1/2, their raw N-weights are respectively
+
+N^(beta-1/2) and N^(1/2-beta).
+
+These are reciprocal scales, not equal scales. Symmetry of the zero set alone
+therefore does not provide a uniform cancellation identity for the BCF residue
+sum. Any cancellation theorem strong enough to remove the growing component
+would be new mathematical input and must be stated explicitly.
+
+Classification:
+- HYPOTHESIS_MATCH: PASS_FOR_ZERO_SYMMETRY
+- CONCLUSION_MATCH: FAIL__NO_UNCONDITIONAL_CANCELLATION_IDENTITY
+- status: SYMMETRY_ONLY_NOT_CONTROL
+
+### 6.7 Multiple zeros
+
+The convenient formula
+
+R_N(rho,s)=N^(rho-s)/(zeta'(rho)(rho-s)^2)
+
+is valid only for simple zeros. If rho has multiplicity m>1, then 1/zeta(z)
+has a pole of order m, and the residue contains derivatives of N^(z-s), hence
+powers of log N, together with higher Laurent coefficients of 1/zeta.
+
+Therefore an unconditional argument cannot silently assume simplicity merely to
+make the residue sum termwise manageable.
+
+Classification:
+- SIMPLE_ZERO_FORMULA: CONDITIONAL_ON_SIMPLICITY
+- MULTIPLE_ZERO_CASE: REQUIRES_HIGHER_ORDER_RESIDUE_CONTROL
+- status: MULTIPLICITY_NOT_ELIMINATED
+
+### 6.8 Finite verification
+
+Checking all zeros up to any finite height T0 cannot prove the N->infinity
+residue estimate, because unverified zeros above T0 remain in the complete BCF
+sum.
+
+Classification:
+- CONCLUSION_MATCH: FAIL_FOR_INFINITE_ZERO_SUM
+- QUANTIFIER_MATCH: FAIL__FINITE_HEIGHT_VS_ALL_ZEROS
+- status: FINITE_VERIFICATION_NOT_CLOSING
+
+## 7. Dense residue conclusion
+
+The sweep leaves the compressed DAG unchanged:
+
+BCF Lemma 2
+  -> ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL
+  -> DNLimit=0.
+
+What survived:
+- BCF_LEMMA2 = PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY
+- zero-free regions = valid but insufficient
+- zero-density estimates = valid but insufficient
+- positive-proportion critical-line/simple-zero results = valid but insufficient
+- termwise absolute value / Cauchy--Schwarz = blocked by reciprocal
+  zeta'(rho) moments and off-critical growth
+- functional-equation symmetry = no closing cancellation theorem
+- multiple-zero case remains part of the same material obligation
+- finite verification cannot change the asymptotic quantifier
+
+Therefore:
+
+ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL = OPEN_MATH
+
+MATERIAL_GATE_COUNT = 1
+
+DNLimit_EQ_ZERO = false
+
+RH_PROVED = false
