@@ -37,3 +37,31 @@ Current endpoint state:
 - dnlimit_eq_zero_proved = false
 - rh_proved = false
 - rh_false_proved = false
+
+
+BACKWARD-DENSE ALL-FILE HARDENING EXTENSION
+Integrity evidence source before this seal: 866cd6a2654953a40c6b6db676de7003483cd64b
+All-file auditor source: research/r2/backward_dense_audit.py
+All-file GREEN:
+- workflow: r2-research-firewall
+- run_id: 35395323323
+- job_id: 105762730114
+- Riemann Lean files audited: 24
+- R2 JSON files parsed: 6
+- R2 Python files syntax-compiled: 6
+- invisible control-byte evidence corruption: repaired and checked
+- no lean/ or frozen source modified
+
+Dependency hardening:
+- Lean: leanprover/lean4:v4.19.0
+- Mathlib exact certified SHA: c44e0c8ee63ca166450922a373c7409c5d26b00b
+- lakefile.toml and lake-manifest.json pinned to the exact SHA
+- tag v4.19.0 independently verified to resolve to that same SHA
+- exact-pin final-dense Lake rebuild: AWAITING_CI
+
+Material endpoint remains unchanged:
+- material gate count = 1
+- material gate = ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL
+- dnlimit_eq_zero_proved = false
+- rh_proved = false
+- rh_false_proved = false
