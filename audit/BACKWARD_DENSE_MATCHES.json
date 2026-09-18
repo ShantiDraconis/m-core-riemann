@@ -121,7 +121,67 @@
       "RH-equivalent zero-location assumption",
       "BCF Lemma 3 or Theorem 1 as unconditional input",
       "finite-N numerical extrapolation"
-    ]
+    ],
+    "dense_unconditional_estimate_sweep": {
+      "status": "BLOCKING_AFTER_TESTED_UNCONDITIONAL_FAMILIES",
+      "conclusion": "NO_SURFACED_UNCONDITIONAL_CLOSING_ESTIMATE_IN_TESTED_FAMILIES",
+      "impossibility_claim": false,
+      "tested": [
+        {
+          "route": "ZERO_FREE_REGION",
+          "hypothesis_match": "PASS",
+          "conclusion_match": "FAIL_FOR_CRITICAL_CLOSURE",
+          "quantifier_match": "FAIL_FOR_ALL_NONTRIVIAL_ZEROS",
+          "classification": "INSUFFICIENT_ZERO_FREE_REGION"
+        },
+        {
+          "route": "ZERO_DENSITY",
+          "hypothesis_match": "PASS",
+          "conclusion_match": "FAIL_FOR_WEIGHTED_RESIDUE_VANISHING",
+          "quantifier_match": "FAIL__COUNTING_AVERAGE_DOES_NOT_EXCLUDE_SINGLE_OFF_LINE_ZERO",
+          "classification": "INSUFFICIENT_ZERO_DENSITY"
+        },
+        {
+          "route": "POSITIVE_PROPORTION_SIMPLE_ON_CRITICAL_LINE",
+          "hypothesis_match": "PASS",
+          "conclusion_match": "FAIL_FOR_ALL_ZEROS",
+          "quantifier_match": "FAIL__POSITIVE_PROPORTION_VS_UNIVERSAL_CONTROL",
+          "classification": "INSUFFICIENT_CRITICAL_LINE_PROPORTION"
+        },
+        {
+          "route": "TERM_BY_TERM_ABSOLUTE_VALUE",
+          "hypothesis_match": "FAIL_WITHOUT_NEW_RECIPROCAL_DERIVATIVE_INPUT",
+          "conclusion_match": "POTENTIALLY_STRONG_IF_HYPOTHESIS_WERE_AVAILABLE",
+          "classification": "BLOCKED_NEGATIVE_ZETA_DERIVATIVE_MOMENT"
+        },
+        {
+          "route": "CAUCHY_SCHWARZ",
+          "hypothesis_match": "FAIL__REINTRODUCES_BCF_NEGATIVE_DERIVATIVE_MOMENT",
+          "classification": "CIRCULAR_OR_UNAVAILABLE_CAUCHY_SCHWARZ_ROUTE"
+        },
+        {
+          "route": "FUNCTIONAL_EQUATION_PAIRING",
+          "hypothesis_match": "PASS_FOR_ZERO_SYMMETRY",
+          "conclusion_match": "FAIL__NO_UNCONDITIONAL_CANCELLATION_IDENTITY",
+          "classification": "SYMMETRY_ONLY_NOT_CONTROL"
+        },
+        {
+          "route": "MULTIPLE_ZEROS",
+          "hypothesis_match": "SIMPLE_ZERO_FORMULA_NOT_UNCONDITIONAL",
+          "conclusion_match": "REQUIRES_HIGHER_ORDER_RESIDUE_CONTROL",
+          "classification": "MULTIPLICITY_NOT_ELIMINATED"
+        },
+        {
+          "route": "FINITE_ZERO_VERIFICATION",
+          "conclusion_match": "FAIL_FOR_INFINITE_ZERO_SUM",
+          "quantifier_match": "FAIL__FINITE_HEIGHT_VS_ALL_ZEROS",
+          "classification": "FINITE_VERIFICATION_NOT_CLOSING"
+        }
+      ],
+      "strongest_surviving_input": "BCF_LEMMA2_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
+      "material_gate_unchanged": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+      "material_gate_count": 1
+    }
   },
   "current_claims": {
     "dnlimit_eq_zero_proved": false,
