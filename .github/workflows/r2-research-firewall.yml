@@ -46,10 +46,18 @@ jobs:
           assert r["normalization"]["rho_a"] == "fract(1/(a*x))"
           assert r["normalization"]["frozen_semantics"] == "dN = residual norm; DN = dN^2"
 
-          routes = {x["id"]: x["state"] for x in r["routes"]}
-          assert routes["BAEZ_DUARTE_DAMPED_MOBIUS"] == "CIRCULAR_CONDITIONAL_ROUTE"
-          assert routes["FINITE_GRAM_ARB"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
-          assert routes["BURNOL_LOWER_BOUND"] == "ASYMPTOTIC_RATE_FLOOR_ONLY"
+          routes = {x["id"]: x for x in r["routes"]}
+          assert routes["BAEZ_DUARTE_DAMPED_MOBIUS"]["state"] == "CIRCULAR_CONDITIONAL_ROUTE"
+          assert routes["FINITE_GRAM_ARB"]["state"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
+          assert routes["BURNOL_LOWER_BOUND"]["state"] == "ASYMPTOTIC_RATE_FLOOR_ONLY"
+          assert routes["FRACTIONAL_RIESZ_MOBIUS_SCAN"]["state"] == "PREASYMPTOTIC_FINITE_N_DIAGNOSTIC"
+
+          bcf = routes["BCF_LINEAR_RIESZ_MOBIUS"]
+          assert bcf["state"] == "OPEN_AFTER_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY"
+          assert bcf["unconditional_component"]["classification"] == "PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY"
+          assert bcf["conditional_component"]["classification"] == "CIRCULAR_CONDITIONAL_ASYMPTOTIC"
+          assert bcf["blocker"] == "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+          assert "RH" in bcf["conditional_component"]["hypotheses"]
 
           finite = r["finite_interval_evidence"]
           assert finite["latest_N"] == 256
@@ -62,18 +70,26 @@ jobs:
           assert mob["optimal_coefficient_pattern"]["minus_mobius_sign_match_rate"] == 1.0
           assert "finite N only" in mob["inference_limit"]
 
+          mb = r["mellin_band_probe"]
+          assert mb["classification"] == "MODEL_EVIDENCE_ONLY_NUMERICAL_MELLIN_BANDS"
+          assert "no tail bound" in mb["inference_limit"]
+
           guard = r["rate_guardrail"]
           assert guard["known_lower_bound_type"] == "asymptotic liminf, not pointwise"
           assert guard["finite_data_do_not_establish_asymptotic"] is True
 
           nxt = r["next_mathematical_task"]
+          assert nxt["id"] == "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
           assert nxt["status"] == "OPEN_MATH"
+          assert nxt["external_identity_available"] is True
 
       - name: R2 research status
         run: |
           echo "R2=OPEN_BRIDGE"
           echo "FINITE_GRAM=INTERVAL_CERTIFIED_THROUGH_N256"
-          echo "MOBIUS_DIAGNOSTICS=FINITE_N_ONLY"
-          echo "UNIFORM_UPPER_BOUND=OPEN_MATH"
+          echo "MELLIN_BANDS=MODEL_EVIDENCE_ONLY"
+          echo "BCF_LEMMA2=PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY"
+          echo "BCF_THEOREM1=CIRCULAR_CONDITIONAL_ASYMPTOTIC"
+          echo "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL=OPEN_MATH"
           echo "DNLimit_EQ_ZERO=false"
           echo "RH_PROVED=false"

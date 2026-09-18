@@ -2,8 +2,8 @@
 
 Base: R1 GREEN_EXTERNAL_INTERFACE @ 53d97bc0a3e64de419f4214625ae75a9e1ecb178
 
-Current research head before this ledger consolidation:
-77be7ec1a7d4e8c834a1afc8dc30cbcf62d61ec1
+Current research head before this analytic consolidation:
+fa5b81a72a9ce400193ec8550785f3ab9c261524
 
 Scientific status:
 - target: \`concreteNBData.DNLimit concreteGeneratorFamily = 0\`
@@ -547,3 +547,91 @@ The finite data therefore select a concrete family to study, but they do not
 reduce the epistemic status of the final bridge:
 
 `UNIFORM_UPPER_BOUND = OPEN_MATH`.
+
+
+## 12. Bettin–Conrey–Farmer: unconditional decomposition, conditional close
+
+The literature audit now separates a substantially stronger fact from the
+finite taper scan. Bettin–Conrey–Farmer use the explicit linear polynomial
+
+[
+V_N(s)=sum_{nle N}
+left(1-rac{log n}{log N}ight)rac{mu(n)}{n^s}.
+]
+
+Their Lemma 2 is explicitly unconditional. For (0<Re(s)<1),
+
+[
+V_N(s)
+=
+rac1{zeta(s)}
+left(1-rac1{log N}rac{zeta'}{zeta}(s)ight)
++
+rac1{log N}sum_ho R_N(ho,s)
++
+rac1{log N}F_s(1/N),
+]
+
+with
+
+[
+R_N(ho,s)
+=
+operatorname{Res}_{z=ho}
+rac{N^{z-s}}{zeta(z)(z-s)^2}.
+]
+
+Therefore
+
+[
+1-zeta(s)V_N(s)
+=
+rac1{log N}
+left[
+rac{zeta'}{zeta}(s)
+-zeta(s)sum_ho R_N(ho,s)
+-zeta(s)F_s(1/N)
+ight].
+]
+
+Repository classification of this identity:
+
+`PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY`.
+
+BCF's asymptotic evaluation is a different statement: their Theorem 1 assumes
+RH plus
+(sum_{|Imho|le T}|zeta'(ho)|^{-2}ll T^{3/2-delta}).
+Their Lemma 3, which supplies the zero-residue estimate, also uses RH and
+simplicity of the zeros. Those steps are therefore
+`CIRCULAR_CONDITIONAL_ASYMPTOTIC` for R2 and cannot be imported as a close.
+
+This changes the research frontier. The fractional (alphain[3/16,1/4])
+band remains useful only as a pre-asymptotic finite-(N) diagnostic. The
+highest-value analytic blocker is now:
+
+[
+oxed{	exttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}.
+]
+
+The detailed source audit is
+`audit/R2_BCF_UNCONDITIONAL_DECOMPOSITION.md`.
+
+## 13. Mellin band probe: where the finite fractional error lives
+
+The dedicated run `35291411995` reconstructed approximately 96--97% of the
+fixed (alpha=3/16) Gram error by direct Mellin quadrature on
+(|t|le500). This is numerical model evidence, not interval-certified
+quadrature and not a tail theorem.
+
+For (N=256), the largest recorded contributions are
+
+[
+E^2_{|t|<1}approx0.00844086,qquad
+E^2_{10<|t|<20}approx0.00429602,qquad
+E^2_{20<|t|<50}approx0.00569178.
+]
+
+Thus the finite error is distributed across low frequency and the first-zero
+region; it is not explained by a single removable high-frequency tail. This
+supports shifting effort from further blind finite-(N) scans to the BCF
+zero-residue decomposition.

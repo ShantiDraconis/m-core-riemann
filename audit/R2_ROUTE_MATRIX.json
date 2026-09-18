@@ -72,12 +72,30 @@
       "reason": "finite N data cannot certify the infinite limit"
     },
     {
-      "id": "FIXED_SCALE_RIESZ_MOBIUS_FRACTIONAL_TAPER",
-      "state": "RESEARCH_CANDIDATE_FINITE_N_ONLY",
-      "family": "c_N,n = -mu(n)*(1-log(n)/log(N))^alpha",
-      "candidate_alpha_band": "[3/16,1/4]",
-      "analytic_target": "weighted Mellin mean square of 1-zeta(s)P_N,alpha(s) tends to zero",
-      "blocker": "no unconditional all-N mean-square bound known/proved"
+      "id": "FRACTIONAL_RIESZ_MOBIUS_SCAN",
+      "state": "PREASYMPTOTIC_FINITE_N_DIAGNOSTIC",
+      "family": "c_N,n=-mu(n)*(1-log(n)/log(N))^alpha",
+      "finite_candidate_alpha_band": "[3/16,1/4]",
+      "reason": "best tested finite-N band through N=256; no asymptotic theorem"
+    },
+    {
+      "id": "BCF_LINEAR_RIESZ_MOBIUS",
+      "state": "OPEN_AFTER_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
+      "family": "V_N(s)=sum_{n<=N}(1-log(n)/log(N))*mu(n)/n^s",
+      "unconditional_component": {
+        "classification": "PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
+        "source": "Bettin-Conrey-Farmer, Lemma 2, arXiv:1211.5191 / Steklov 280 Suppl.2 (2013)",
+        "identity": "V_N = zeta^-1*(1-(zeta'/zeta)/logN) + (sum_rho R_N + F_s(1/N))/logN"
+      },
+      "conditional_component": {
+        "classification": "CIRCULAR_CONDITIONAL_ASYMPTOTIC",
+        "hypotheses": [
+          "RH",
+          "sum_{|Im rho|<=T} 1/|zeta'(rho)|^2 << T^(3/2-delta)"
+        ],
+        "conclusion": "Mellin/NB error ~ (2+gamma-log(4*pi))/log N"
+      },
+      "blocker": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
     }
   ],
   "rate_guardrail": {
@@ -87,11 +105,12 @@
     "finite_data_do_not_establish_asymptotic": true
   },
   "next_mathematical_task": {
-    "id": "RIESZ_MOBIUS_WEIGHTED_MEAN_SQUARE",
+    "id": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
     "status": "OPEN_MATH",
-    "objective": "For one fixed explicit alpha (current finite candidate band [3/16,1/4]) or another explicit weight, prove unconditionally that ||chi + sum_{n<=N} mu(n) w_N(n) rho_n||_2^2 -> 0.",
-    "equivalent_mellin_target": "(1/(2*pi))*integral_R |1-zeta(1/2+it)P_N(1/2+it)|^2/(1/4+t^2) dt -> 0",
-    "note": "Finite Arb evidence selects the family only; proving this limit is already the RH-equivalent open bridge."
+    "objective": "Use the unconditional BCF Lemma 2 decomposition to obtain enough unconditional weighted L2 control of the zero-residue contribution (and companion terms) to force the linear Riesz-Mobius residual to vanish.",
+    "external_identity_available": true,
+    "forbidden_shortcut": "BCF Lemma 3 and Theorem 1 require RH plus a zeta-prime zero-moment hypothesis and cannot close R2.",
+    "note": "Any unconditional vanishing bound here is already at the RH-equivalent frontier exposed by R1."
   },
   "finite_mobius_diagnostics": {
     "source_sha": "77be7ec1a7d4e8c834a1afc8dc30cbcf62d61ec1",
@@ -144,5 +163,31 @@
       "N256": 0.1370818210256597
     },
     "inference_limit": "finite interval data only; no uniform C/log N bound or limiting exponent theorem"
+  },
+  "mellin_band_probe": {
+    "classification": "MODEL_EVIDENCE_ONLY_NUMERICAL_MELLIN_BANDS",
+    "source_sha": "fa5b81a72a9ce400193ec8550785f3ab9c261524",
+    "workflow_run_id": 35291411995,
+    "workflow_job_id": 105434858973,
+    "artifact_id": 10526726244,
+    "artifact_sha256": "312a44e5d6e11ef1c6f9a007442b408beea14c9c2095d77c8ff40a036d95ab43",
+    "family_alpha": "3/16",
+    "captured_fraction_through_abs_t_500": {
+      "N32": "0.96694882830968924283",
+      "N64": "0.97295656306325286818",
+      "N128": "0.95937652366751050589",
+      "N256": "0.96170536412017173124"
+    },
+    "N256_bands": {
+      "0_1": "0.00844086375858139596819074394379",
+      "1_3": "0.000323790319662896971647822199043",
+      "3_10": "0.000337162592845932443308588614917",
+      "10_20": "0.00429602206252519947135250062118",
+      "20_50": "0.00569177811927411389730404030989",
+      "50_100": "0.00264383829304608289499964035014",
+      "100_200": "0.00119226445118221834816214024611",
+      "200_500": "0.000848510159043059787812072172792"
+    },
+    "inference_limit": "quadrature/model evidence only; unresolved remainder combines |t|>500 energy and numerical error; no tail bound"
   }
 }
