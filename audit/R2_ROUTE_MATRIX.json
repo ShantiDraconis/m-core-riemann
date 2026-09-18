@@ -294,5 +294,41 @@
       "surviving_question": "Whether selected subsequences or distinct regularizations can yield useful critical H2 approximation remains open; this does not create a material gate.",
       "material_gate_unchanged": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
     }
+  },
+  "formalization_audit": {
+    "source_base_sha": "43766dd47983dd5dbd16caa5e2d9d468485b02ff",
+    "document": "audit/R2_FORMALIZATION_CORRECTIONS.md",
+    "classification": "AUDIT_CORRECTION_NO_NEW_GATE",
+    "corrected_semantics": {
+      "dN": "residual norm",
+      "DN": "dN^2 = squared residual",
+      "mellin_formula_object": "DN, not DN^2",
+      "finite_generators": "internal Fin N maps to concrete a=1,...,N"
+    },
+    "corrected_mellin_criterion": {
+      "valid": "weighted residual 1 + zeta*P_N tends to zero in L2(dt/(1/4+t^2))",
+      "invalid": "unweighted P_N -> -1/zeta in L2(dt/(1/4+t^2))",
+      "reason": "division by zeta changes the measure by |zeta|^2 and is singular at zeros"
+    },
+    "rejected_claims": [
+      "critical zeros are peaks/resonant poles of |zeta|^2 in the Gram density",
+      "G_1_2 approximately 0.912",
+      "DN_N convergence/monotonicity is an open gap",
+      "raw Mellin point evaluation at Re(s)>1/2 is automatically a bounded L2 functional",
+      "bare weighted zeta tail is O(1/T) without logarithmic loss",
+      "Weyl t^(1/6) pointwise bound gives a T^(-4/3) squared tail before polynomial factors"
+    ],
+    "gap_reclassification": {
+      "A_VASYUNIN": "CLOSED_EXTERNAL_INPUT_NOT_MATERIAL_GATE",
+      "B_UNIFORM_VANISHING": "OPEN_MATH_SINGLE_MATERIAL_GATE",
+      "C_FINITE_NUMERICS": "INTERVAL_CERTIFIED_THROUGH_N256",
+      "D_ZETA_LEAN": "FUTURE_FORMALIZATION_NOT_CURRENT_GATE",
+      "E_EXPLICIT_SEPARATOR": "OWNED_BY_R1_EXTERNAL_INTERFACE_QUANTITATIVE_FORM_NOT_PROVED",
+      "F_DN_CONVERGENCE": "PROVED_LEAN_FROZEN_NB14"
+    },
+    "material_gate_count": 1,
+    "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false
   }
 }
