@@ -38,6 +38,7 @@ EXPECTED = [
     "audit/R2_RECENT_LITERATURE_SWEEP.md",
     "audit/R2_ROUTE_MATRIX.json",
     "audit/R2_ZERO_RESIDUE_OBSTRUCTION.md",
+    "audit/RH_LEGACY_STATUS_SUPERSESSION.json",
     "audit/BACKWARD_DENSE_MATCHES.json",
     "audit/BACKWARD_DENSE_AXIOM_AUDIT.txt",
     "certificates/PROOF_CLOSURE_TRIPLE_CERT.json",
@@ -213,6 +214,7 @@ def audit_text_hygiene() -> None:
 def audit_json() -> None:
     json_files = sorted((ROOT / "audit").glob("R2_*.json")) + [
         ROOT / "audit/BACKWARD_DENSE_MATCHES.json",
+        ROOT / "audit/RH_LEGACY_STATUS_SUPERSESSION.json",
         ROOT / "R0_CERT.json",
         ROOT / "audit/R1_BAEZ_DUARTE_INTERFACE.json",
         ROOT / "certificates/PROOF_CLOSURE_TRIPLE_CERT.json",
@@ -278,6 +280,17 @@ def audit_semantics() -> None:
     assert gram["interpretation"]["uniform_upper_bound_proved"] is False
     assert gram["dnlimit_eq_zero_proved"] is False
     assert gram["rh_proved"] is False
+
+    legacy = json.load(open(ROOT / "audit/RH_LEGACY_STATUS_SUPERSESSION.json", encoding="utf-8"))
+    assert legacy["classification"] == "DOCUMENTARY_PROVENANCE_MAP_NO_MATHEMATICAL_PROMOTION"
+    assert legacy["policy"]["preserve_historical_snapshots"] is True
+    assert legacy["policy"]["rewrite_old_status_files"] is False
+    assert len(legacy["historical_snapshots"]) >= 10
+    assert all(x["non_authoritative_for_current_status"] is True for x in legacy["historical_snapshots"])
+    assert legacy["endpoint"]["material_gate_count"] == 1
+    assert legacy["endpoint"]["material_gate"] == MATERIAL_GATE
+    assert legacy["endpoint"]["dnlimit_eq_zero_proved"] is False
+    assert legacy["endpoint"]["rh_proved"] is False
 
 
 def main() -> int:
