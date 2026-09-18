@@ -46,10 +46,10 @@ jobs:
 
       - name: Run Mellin QR Mode B and BCF mollifier
         env:
-          SCHEDULE: \${{ github.event.inputs.schedule || '8,16,32,64,128,256' }}
-          SAMPLES_FACTOR: \${{ github.event.inputs.samples_factor || '4' }}
-          ZETA_DPS: \${{ github.event.inputs.zeta_dps || '50' }}
-          ARB_DPS: \${{ github.event.inputs.arb_dps || '100' }}
+          SCHEDULE: ${{ github.event.inputs.schedule || '8,16,32,64,128,256' }}
+          SAMPLES_FACTOR: ${{ github.event.inputs.samples_factor || '4' }}
+          ZETA_DPS: ${{ github.event.inputs.zeta_dps || '50' }}
+          ARB_DPS: ${{ github.event.inputs.arb_dps || '100' }}
         run: |
           python research/r2/mode_b_mellin_qr.py \
             --schedule "$SCHEDULE" \
@@ -81,7 +81,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: r2-mode-b-\${{ github.sha }}
+          name: r2-mode-b-${{ github.sha }}
           path: research/r2/mode_b_mellin_qr.jsonl
           if-no-files-found: error
 
