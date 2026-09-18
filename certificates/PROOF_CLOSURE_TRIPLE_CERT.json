@@ -3,7 +3,7 @@
   "repository": "ShantiDraconis/m-core-riemann",
   "branch": "research/r2-dnlimit-zero",
   "audit_base_sha": "91dabbaa7a7a5d248a9fcc4341e9aab1d53edbb2",
-  "audit_status": "AWAITING_CI",
+  "audit_status": "GREEN_AUDIT",
   "classification": "TRIPLE_CLOSURE_STATE_CERTIFICATE",
   "policy": "BACKWARD_DENSE_FEW_DENSE_GATES",
   "beginning": {
@@ -92,5 +92,12 @@
     "true_lane": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
     "false_lane": "CERTIFIED_RIGHT_OFF_CRITICAL_ZERO"
   },
-  "workflow_evidence": null
+  "workflow_evidence": {
+    "workflow": "proof-closure-triple",
+    "source_sha": "e97a6d2fe79a26749d89924fc83fb3e5d098b3a2",
+    "workflow_run_id": 35365471331,
+    "workflow_job_id": 105666744931,
+    "conclusion": "success",
+    "certified_scope": "state-machine consistency and promotion firewall only"
+  }
 }
