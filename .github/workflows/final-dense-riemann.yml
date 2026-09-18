@@ -86,6 +86,7 @@ jobs:
         run: |
           curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.elan/bin:$PATH"
           $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
           rm -f lake-manifest.json
           lake update
