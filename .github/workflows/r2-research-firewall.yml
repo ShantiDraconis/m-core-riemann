@@ -105,6 +105,9 @@ jobs:
           assert src["MANZUR_NOOR_QUINTERO_2026"]["classification"] == "UNCONDITIONAL_HARDY_CONVERGENCE_ONLY_ALPHA_GT_1"
           assert all(x["reduces_material_gate"] is False for x in sweep["sources"])
 
+      - name: Backward-dense all-file Riemann audit
+        run: python research/r2/backward_dense_audit.py
+
       - name: R2 research status
         run: |
           echo "R2=OPEN_BRIDGE"
