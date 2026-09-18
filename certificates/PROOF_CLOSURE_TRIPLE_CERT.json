@@ -1,0 +1,96 @@
+{
+  "schema": "m-core-proof-triple-closure-v1",
+  "repository": "ShantiDraconis/m-core-riemann",
+  "branch": "research/r2-dnlimit-zero",
+  "audit_base_sha": "91dabbaa7a7a5d248a9fcc4341e9aab1d53edbb2",
+  "audit_status": "AWAITING_CI",
+  "classification": "TRIPLE_CLOSURE_STATE_CERTIFICATE",
+  "policy": "BACKWARD_DENSE_FEW_DENSE_GATES",
+  "beginning": {
+    "closed": true,
+    "status": "CLOSED_CERTIFIED",
+    "certificate_id": "BEGIN-CLOSED-RH-v1",
+    "evidence": {
+      "r0_cert_status": "GREEN",
+      "r0_cert_final_composition_sha": "f902fca1a59f750cb6d4a7b2d16fbc74715be1df",
+      "rho_frozen_ref": "frozen/r0-rho-identification-green-66a9b18",
+      "rho_source_sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+      "nb15_frozen_ref": "frozen/nb15-zero-limit-frontier-green-e7e36d6",
+      "nb15_source_sha": "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6",
+      "r1_status": "GREEN",
+      "r1_final_commit_sha": "53d97bc0a3e64de419f4214625ae75a9e1ecb178"
+    },
+    "scope": [
+      "concrete L2 carrier and normalization",
+      "chi and concrete rho family",
+      "frozen NB distance/limit semantics",
+      "R0 concrete composition",
+      "R1 criterion interface"
+    ],
+    "excludes": [
+      "DNLimit=0",
+      "RiemannHypothesis",
+      "not RiemannHypothesis"
+    ]
+  },
+  "middle": {
+    "closed": false,
+    "status": "OPEN_FRONTIER",
+    "xor_required": true,
+    "true_lane": {
+      "closed": false,
+      "status": "OPEN_MATH",
+      "endpoint": "DNLimit = 0",
+      "material_frontier": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+      "required_closing_classification": [
+        "PROVED_LEAN",
+        "PROVED_EXTERNAL_AUDITED_UNCONDITIONAL"
+      ],
+      "forbidden_closing_inputs": [
+        "RiemannHypothesis",
+        "RH-equivalent zero-location assumption",
+        "BCF conditional asymptotic",
+        "finite-N numerical extrapolation"
+      ],
+      "evidence": null
+    },
+    "false_lane": {
+      "closed": false,
+      "status": "HYPOTHETICAL_WITNESS_REQUIRED",
+      "endpoint": "DNLimit > 0",
+      "material_frontier": "CERTIFIED_RIGHT_OFF_CRITICAL_ZERO",
+      "witness_statement": "exists rho, zeta(rho)=0 and 1/2 < Re(rho) < 1",
+      "rigorous_witness_required": true,
+      "evidence": null
+    }
+  },
+  "final": {
+    "closed": false,
+    "status": "BLOCKED_BY_MIDDLE",
+    "true_endpoint": "RiemannHypothesis",
+    "false_endpoint": "not RiemannHypothesis",
+    "closure_rule": "BEGIN_CLOSED and exactly_one(MIDDLE_TRUE_CLOSED, MIDDLE_FALSE_CLOSED) and ENDPOINT_COMPOSITION_AUDITED",
+    "endpoint": null,
+    "evidence": null
+  },
+  "current_claims": {
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false,
+    "rh_false_proved": false
+  },
+  "invariants": {
+    "final_implies_begin": true,
+    "final_implies_middle": true,
+    "middle_true_false_mutually_exclusive": true,
+    "finite_n_cannot_promote_final": true,
+    "conditional_rh_input_cannot_close_true_lane": true,
+    "floating_zero_candidate_cannot_close_false_lane": true,
+    "no_new_lean_until_middle_closed": true,
+    "no_new_frozen_ref_created_by_this_certificate": true
+  },
+  "authoritative_frontier": {
+    "true_lane": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "false_lane": "CERTIFIED_RIGHT_OFF_CRITICAL_ZERO"
+  },
+  "workflow_evidence": null
+}

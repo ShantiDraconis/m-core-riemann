@@ -1,0 +1,176 @@
+name: proof-closure-triple
+
+on:
+  push:
+    branches:
+      - research/r2-dnlimit-zero
+    paths:
+      - 'audit/PROOF_CLOSURE_TRIPLE.md'
+      - 'certificates/PROOF_CLOSURE_TRIPLE_CERT.json'
+      - '.github/workflows/proof-closure-triple.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  closure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: T0 hygiene and immutable refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=91dabbaa7a7a5d248a9fcc4341e9aab1d53edbb2
+          git merge-base --is-ancestor "$BASE" HEAD
+
+          if git diff --name-only "$BASE"..HEAD | grep -q '^lean/'; then
+            echo "Triple-closure meta-audit must not modify lean/"
+            exit 1
+          fi
+
+          git fetch origin \
+            refs/heads/frozen/r0-rho-identification-green-66a9b18 \
+            refs/heads/frozen/nb15-zero-limit-frontier-green-e7e36d6
+
+          test "$(git rev-parse origin/frozen/r0-rho-identification-green-66a9b18)" = \
+            "66a9b18f26fd714a968c1d33935d54dde4e6bf30"
+          test "$(git rev-parse origin/frozen/nb15-zero-limit-frontier-green-e7e36d6)" = \
+            "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
+
+          if grep -Eiq '\b(sorry|admit|sorryAx)\b' \
+            audit/PROOF_CLOSURE_TRIPLE.md \
+            certificates/PROOF_CLOSURE_TRIPLE_CERT.json; then
+            echo "Forbidden proof placeholder in triple-closure artifacts"
+            exit 1
+          fi
+
+      - name: T1-T8 triple closure state machine
+        shell: python
+        run: |
+          import json
+
+          with open("R0_CERT.json", encoding="utf-8") as f:
+              r0 = json.load(f)
+          with open("audit/R1_BAEZ_DUARTE_INTERFACE.json", encoding="utf-8") as f:
+              r1 = json.load(f)
+          with open("audit/R2_ROUTE_MATRIX.json", encoding="utf-8") as f:
+              r2 = json.load(f)
+          with open("certificates/PROOF_CLOSURE_TRIPLE_CERT.json", encoding="utf-8") as f:
+              c = json.load(f)
+
+          # T1 immutable beginning
+          assert r0["status"] == "GREEN"
+          assert r1["status"] == "GREEN"
+          assert c["beginning"]["closed"] is True
+          assert c["beginning"]["status"] == "CLOSED_CERTIFIED"
+          e = c["beginning"]["evidence"]
+          assert e["rho_source_sha"] == "66a9b18f26fd714a968c1d33935d54dde4e6bf30"
+          assert e["nb15_source_sha"] == "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
+          assert e["r1_final_commit_sha"] == "53d97bc0a3e64de419f4214625ae75a9e1ecb178"
+
+          # T2 beginning never promotes endpoint
+          assert "DNLimit=0" in c["beginning"]["excludes"]
+          assert "RiemannHypothesis" in c["beginning"]["excludes"]
+
+          true_lane = c["middle"]["true_lane"]
+          false_lane = c["middle"]["false_lane"]
+          true_closed = bool(true_lane["closed"])
+          false_closed = bool(false_lane["closed"])
+
+          # T3 true lane
+          if true_closed:
+              assert true_lane["status"] == "CLOSED_UNCONDITIONAL"
+              assert r2["status"] != "OPEN_BRIDGE"
+              assert r2["dnlimit_eq_zero_proved"] is True
+              assert true_lane["evidence"] is not None
+              assert true_lane["evidence"].get("source_sha")
+              assert true_lane["evidence"].get("workflow_run_id")
+              assert true_lane["evidence"].get("workflow_job_id")
+          else:
+              assert true_lane["status"] in {"OPEN_MATH", "BLOCKED"}
+
+          # T4 false lane
+          if false_closed:
+              assert false_lane["status"] == "CLOSED_CERTIFIED_WITNESS"
+              assert false_lane["evidence"] is not None
+              assert false_lane["evidence"].get("rigorous_zero_witness") is True
+              assert false_lane["evidence"].get("right_half_strip_certified") is True
+              assert false_lane["evidence"].get("workflow_run_id")
+          else:
+              assert false_lane["status"] in {
+                  "HYPOTHETICAL_WITNESS_REQUIRED",
+                  "OPEN_MATH",
+                  "BLOCKED"
+              }
+
+          # T5 XOR
+          assert not (true_closed and false_closed)
+          expected_middle_closed = (true_closed != false_closed)
+          assert c["middle"]["closed"] is expected_middle_closed
+          if expected_middle_closed:
+              assert c["middle"]["status"] in {"CLOSED_TRUE", "CLOSED_FALSE"}
+          else:
+              assert c["middle"]["status"] == "OPEN_FRONTIER"
+
+          # T6 final dependency
+          final = c["final"]
+          expected_final_closed = c["beginning"]["closed"] and expected_middle_closed
+          assert final["closed"] is expected_final_closed
+
+          if expected_final_closed:
+              assert final["status"] in {"CLOSED_TRUE", "CLOSED_FALSE"}
+              assert final["evidence"] is not None
+              assert final["endpoint"] in {
+                  "RiemannHypothesis",
+                  "not RiemannHypothesis"
+              }
+              if true_closed:
+                  assert final["endpoint"] == "RiemannHypothesis"
+              if false_closed:
+                  assert final["endpoint"] == "not RiemannHypothesis"
+          else:
+              assert final["status"] == "BLOCKED_BY_MIDDLE"
+              assert final["endpoint"] is None
+
+          # T7 current-state honesty
+          claims = c["current_claims"]
+          if r2["status"] == "OPEN_BRIDGE":
+              assert r2["dnlimit_eq_zero_proved"] is False
+              assert r2["rh_proved"] is False
+              assert claims["dnlimit_eq_zero_proved"] is False
+              assert claims["rh_proved"] is False
+
+          if not false_closed:
+              assert claims["rh_false_proved"] is False
+
+          # T8 backward-dense compression
+          assert c["authoritative_frontier"]["true_lane"] == \
+              "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+          assert c["authoritative_frontier"]["false_lane"] == \
+              "CERTIFIED_RIGHT_OFF_CRITICAL_ZERO"
+
+          nxt = r2["next_mathematical_task"]
+          assert nxt["id"] == "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+          assert nxt["status"] == "OPEN_MATH"
+
+          assert c["invariants"]["finite_n_cannot_promote_final"] is True
+          assert c["invariants"]["conditional_rh_input_cannot_close_true_lane"] is True
+          assert c["invariants"]["floating_zero_candidate_cannot_close_false_lane"] is True
+
+          print("BEGIN=CLOSED_CERTIFIED")
+          print("MIDDLE=OPEN_FRONTIER")
+          print("FINAL=BLOCKED_BY_MIDDLE")
+          print("TRUE_FRONTIER=ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL")
+          print("FALSE_FRONTIER=CERTIFIED_RIGHT_OFF_CRITICAL_ZERO")
+          print("RH_PROVED=false")
+          print("RH_FALSE_PROVED=false")
+
+      - name: Triple closure audit GREEN
+        run: |
+          echo "PROOF_CLOSURE_TRIPLE_AUDIT=GREEN"
+          echo "This GREEN certifies state consistency, not RH."
