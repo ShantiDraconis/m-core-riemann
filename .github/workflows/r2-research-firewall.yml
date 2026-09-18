@@ -51,6 +51,9 @@ jobs:
           assert routes["FINITE_GRAM_ARB"]["state"] == "INTERVAL_CERTIFIED_FINITE_N_MODEL_EVIDENCE"
           assert routes["BURNOL_LOWER_BOUND"]["state"] == "ASYMPTOTIC_RATE_FLOOR_ONLY"
           assert routes["FRACTIONAL_RIESZ_MOBIUS_SCAN"]["state"] == "PREASYMPTOTIC_FINITE_N_DIAGNOSTIC"
+          assert routes["NATURAL_MOBIUS"]["state"] == "REFUTED_FULL_SEQUENCE_AT_CRITICAL_L2__SUBSEQUENCE_OPEN"
+          assert routes["NATURAL_MOBIUS"]["full_sequence_close_candidate"] is False
+          assert routes["NATURAL_MOBIUS"]["subsequence_status"] == "OPEN_RESEARCH_ONLY_NOT_A_GATE"
 
           bcf = routes["BCF_LINEAR_RIESZ_MOBIUS"]
           assert bcf["state"] == "OPEN_AFTER_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY"

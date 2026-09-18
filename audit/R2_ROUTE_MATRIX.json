@@ -53,9 +53,16 @@
     },
     {
       "id": "NATURAL_MOBIUS",
-      "state": "HIGH_RISK_L2",
-      "reason": "pointwise/L1 convergence does not guarantee L2 convergence",
-      "source": "arXiv:math/0011254"
+      "state": "REFUTED_FULL_SEQUENCE_AT_CRITICAL_L2__SUBSEQUENCE_OPEN",
+      "reason": "The natural Möbius partial-sum approximation converges pointwise/L1 but diverges in the critical L2/Hilbert norm; only subsequence or regularized variants remain research candidates.",
+      "source": "arXiv:math/0011254",
+      "sources": [
+        "Baez-Duarte, New versions of the Nyman-Beurling criterion for the Riemann hypothesis, IJMMS 31 (2002), Proposition 4.9 / Section 4",
+        "Baez-Duarte, A strengthening of the Nyman-Beurling criterion for the Riemann hypothesis, 2003",
+        "Manzur-Noor-Quintero, arXiv:2606.16097 (2026), discussion of critical H2 divergence"
+      ],
+      "full_sequence_close_candidate": false,
+      "subsequence_status": "OPEN_RESEARCH_ONLY_NOT_A_GATE"
     },
     {
       "id": "BURNOL_LOWER_BOUND",
@@ -261,5 +268,13 @@
     "strongest_current_exact_input": "BCF_LEMMA2_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
     "material_gate_unchanged": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
     "gate_count_after_sweep": 1
+  },
+  "route_pruning": {
+    "natural_mobius_full_sequence": {
+      "classification": "REFUTED_ROUTE_AT_CRITICAL_L2",
+      "result": "Do not use the undamped natural Möbius full partial-sum sequence as an R2 close candidate.",
+      "surviving_question": "Whether selected subsequences or distinct regularizations can yield useful critical H2 approximation remains open; this does not create a material gate.",
+      "material_gate_unchanged": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+    }
   }
 }
