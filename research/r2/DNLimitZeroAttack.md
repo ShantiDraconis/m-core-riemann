@@ -481,7 +481,7 @@ It tests the explicit weights
 [
 w_{N,alpha}(n)
 =
-left(rac{log(N/n)}{log N}ight)^alpha
+left(\frac{log(N/n)}{log N}\right)^alpha
 quad (1le nle N),
 ]
 
@@ -501,7 +501,7 @@ Define
 [
 P_{N,alpha}(s)
 =
-sum_{nle N}rac{mu(n)w_{N,alpha}(n)}{n^s}.
+sum_{nle N}\frac{mu(n)w_{N,alpha}(n)}{n^s}.
 ]
 
 For
@@ -509,20 +509,20 @@ For
 [
 v_{N,alpha}
 =
--sum_{nle N}mu(n)w_{N,alpha}(n)ho_n,
+-sum_{nle N}mu(n)w_{N,alpha}(n)\rho_n,
 ]
 
 Mellin–Plancherel yields the exact finite identity
 
 [
-oxed{
+\boxed{
 |chi-v_{N,alpha}|_2^2
 =
-rac1{2pi}int_{mathbb R}
-rac{
-|1-zeta(	frac12+it)P_{N,alpha}(	frac12+it)|^2
+\frac1{2pi}int_{mathbb R}
+\frac{
+|1-zeta(\tfrac12+it)P_{N,alpha}(\tfrac12+it)|^2
 }{
-	frac14+t^2
+\tfrac14+t^2
 },dt.
 }
 ]
@@ -530,12 +530,12 @@ Mellin–Plancherel yields the exact finite identity
 This converts the selected R2 route into one sharp analytic obligation:
 
 [
-existsalpha	ext{ explicit},qquad
+existsalpha\text{ explicit},qquad
 int_{mathbb R}
-rac{
-|1-zeta(	frac12+it)P_{N,alpha}(	frac12+it)|^2
+\frac{
+|1-zeta(\tfrac12+it)P_{N,alpha}(\tfrac12+it)|^2
 }{
-	frac14+t^2
+\tfrac14+t^2
 },dt
 longrightarrow0.
 ]
@@ -556,7 +556,7 @@ finite taper scan. Bettin–Conrey–Farmer use the explicit linear polynomial
 
 [
 V_N(s)=sum_{nle N}
-left(1-rac{log n}{log N}ight)rac{mu(n)}{n^s}.
+left(1-\frac{log n}{log N}\right)\frac{mu(n)}{n^s}.
 ]
 
 Their Lemma 2 is explicitly unconditional. For (0<Re(s)<1),
@@ -564,21 +564,21 @@ Their Lemma 2 is explicitly unconditional. For (0<Re(s)<1),
 [
 V_N(s)
 =
-rac1{zeta(s)}
-left(1-rac1{log N}rac{zeta'}{zeta}(s)ight)
+\frac1{zeta(s)}
+left(1-\frac1{log N}\frac{zeta'}{zeta}(s)\right)
 +
-rac1{log N}sum_ho R_N(ho,s)
+\frac1{log N}sum_\rho R_N(\rho,s)
 +
-rac1{log N}F_s(1/N),
+\frac1{log N}F_s(1/N),
 ]
 
 with
 
 [
-R_N(ho,s)
+R_N(\rho,s)
 =
-operatorname{Res}_{z=ho}
-rac{N^{z-s}}{zeta(z)(z-s)^2}.
+operatorname{Res}_{z=\rho}
+\frac{N^{z-s}}{zeta(z)(z-s)^2}.
 ]
 
 Therefore
@@ -586,12 +586,12 @@ Therefore
 [
 1-zeta(s)V_N(s)
 =
-rac1{log N}
+\frac1{log N}
 left[
-rac{zeta'}{zeta}(s)
--zeta(s)sum_ho R_N(ho,s)
+\frac{zeta'}{zeta}(s)
+-zeta(s)sum_\rho R_N(\rho,s)
 -zeta(s)F_s(1/N)
-ight].
+\right].
 ]
 
 Repository classification of this identity:
@@ -600,7 +600,7 @@ Repository classification of this identity:
 
 BCF's asymptotic evaluation is a different statement: their Theorem 1 assumes
 RH plus
-(sum_{|Imho|le T}|zeta'(ho)|^{-2}ll T^{3/2-delta}).
+(sum_{|Im\rho|le T}|zeta'(\rho)|^{-2}ll T^{3/2-delta}).
 Their Lemma 3, which supplies the zero-residue estimate, also uses RH and
 simplicity of the zeros. Those steps are therefore
 `CIRCULAR_CONDITIONAL_ASYMPTOTIC` for R2 and cannot be imported as a close.
@@ -610,7 +610,7 @@ band remains useful only as a pre-asymptotic finite-(N) diagnostic. The
 highest-value analytic blocker is now:
 
 [
-oxed{	exttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}.
+\boxed{\texttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}.
 ]
 
 The detailed source audit is

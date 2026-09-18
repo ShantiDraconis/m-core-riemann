@@ -13,7 +13,7 @@ frontier rather than being split into artificial “technical” gates.
 For the linear Riesz–Möbius polynomial
 
 [
-V_N(s)=sum_{nle N}left(1-rac{log n}{log N}ight)rac{mu(n)}{n^s},
+V_N(s)=sum_{nle N}left(1-\frac{log n}{log N}\right)\frac{mu(n)}{n^s},
 ]
 
 Bettin–Conrey–Farmer Lemma 2 gives unconditionally
@@ -21,36 +21,36 @@ Bettin–Conrey–Farmer Lemma 2 gives unconditionally
 [
 1-zeta(s)V_N(s)
 =
-rac1{log N}
+\frac1{log N}
 left[
-rac{zeta'}{zeta}(s)
--zeta(s)sum_ho R_N(ho,s)
+\frac{zeta'}{zeta}(s)
+-zeta(s)sum_\rho R_N(\rho,s)
 -zeta(s)F_s(1/N)
-ight],
+\right],
 ]
 
 where
 
 [
-R_N(ho,s)=
-operatorname{Res}_{z=ho}
-rac{N^{z-s}}{zeta(z)(z-s)^2}.
+R_N(\rho,s)=
+operatorname{Res}_{z=\rho}
+\frac{N^{z-s}}{zeta(z)(z-s)^2}.
 ]
 
-For a simple zero (ho),
+For a simple zero (\rho),
 
 [
-R_N(ho,s)
+R_N(\rho,s)
 =
-rac{N^{ho-s}}
-{zeta'(ho)(ho-s)^2}.
+\frac{N^{\rho-s}}
+{zeta'(\rho)(\rho-s)^2}.
 ]
 
-Thus a zero (ho=sigma+igamma) with (sigma>1/2), evaluated near the
+Thus a zero (\rho=sigma+igamma) with (sigma>1/2), evaluated near the
 critical line, carries the explicit growth scale
 
 [
-|N^{ho-s}|asymp N^{sigma-1/2}.
+|N^{\rho-s}|asymp N^{sigma-1/2}.
 ]
 
 This does not by itself prove a lower bound because different residue terms can
@@ -72,25 +72,25 @@ sigma_0pm igamma_0,qquad 1-sigma_0pm igamma_0,
 qquad sigma_0>1/2,
 ]
 
-plus a discrete (1/|zeta'(ho)|^2) growth hypothesis, their Theorem 1.1
+plus a discrete (1/|zeta'(\rho)|^2) growth hypothesis, their Theorem 1.1
 obtains a main scale
 
 [
-rac{N^{2sigma_0-1}}{(log N)^2}
+\frac{N^{2sigma_0-1}}{(log N)^2}
 left[
 Acos(2gamma_0log N)
 +Bsin(2gamma_0log N)
 +C
-ight]
+\right]
 ]
 
 up to a relative error of order
-(N^{1/2-sigma_0+arepsilon}).
+(N^{1/2-sigma_0+\varepsilon}).
 
 Classification here:
 
 [
-	exttt{CONDITIONAL_OFF_CRITICAL_OBSTRUCTION_MODEL}.
+\texttt{CONDITIONAL_OFF_CRITICAL_OBSTRUCTION_MODEL}.
 ]
 
 It is not an unconditional theorem about the actual zeta zero set. Its value
@@ -103,7 +103,7 @@ The R2 endpoint is already equivalent to RH through the certified R1
 interface. Therefore a bound strong enough to prove
 
 [
-|1-zeta V_N|^2_{mathrm{Mellin}}	o0
+|1-zeta V_N|^2_{mathrm{Mellin}}\to0
 ]
 
 cannot be expected to emerge from a routine estimate that remains agnostic
@@ -122,9 +122,9 @@ The third item already contains the essential RH obstruction.
 The correct minimal DAG is therefore still
 
 [
-	ext{BCF Lemma 2 (external, unconditional)}
+\text{BCF Lemma 2 (external, unconditional)}
 longrightarrow
-oxed{	exttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}
+\boxed{\texttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}
 longrightarrow
 DNLimit=0.
 ]
@@ -148,7 +148,7 @@ The following do **not** reduce the gate:
 
 - bounds conditional on RH;
 - simplicity of all zeros plus RH-dependent estimates;
-- the BCF (sum 1/|zeta'(ho)|^2) hypothesis used together with RH;
+- the BCF (sum 1/|zeta'(\rho)|^2) hypothesis used together with RH;
 - finite zero verification;
 - finite-(N) Arb or Mellin numerics;
 - splitting the residue sum into more files without a new unconditional

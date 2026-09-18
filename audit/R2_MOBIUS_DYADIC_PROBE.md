@@ -33,7 +33,7 @@ For dyadic exponents alpha=m/16, define
 [
 w_{N,alpha}(n)
 =
-left(1-rac{log n}{log N}ight)^alpha,
+left(1-\frac{log n}{log N}\right)^alpha,
 qquad
 1le nle N,
 ]
@@ -49,9 +49,9 @@ Two finite problems were tested:
 1. fixed scale (A=1);
 2. Gram-energy optimized scalar
    [
-   A_*=rac{b^Tv}{v^TGv},
+   A_*=\frac{b^Tv}{v^TGv},
    qquad
-   E_*^2=1-rac{(b^Tv)^2}{v^TGv}.
+   E_*^2=1-\frac{(b^Tv)^2}{v^TGv}.
    ]
 
 The second is diagnostic only because (A_*) itself depends on the finite Gram
@@ -100,7 +100,7 @@ Let
 P_{N,alpha}(s)
 =
 sum_{nle N}
-rac{mu(n)w_{N,alpha}(n)}{n^s}.
+\frac{mu(n)w_{N,alpha}(n)}{n^s}.
 ]
 
 For the explicit approximant
@@ -108,15 +108,15 @@ For the explicit approximant
 [
 v_{N,alpha}
 =
--sum_{nle N}mu(n)w_{N,alpha}(n)ho_n,
+-sum_{nle N}mu(n)w_{N,alpha}(n)\rho_n,
 ]
 
 the Mellin transforms
 
 [
-mathcal Mchi(s)=rac1s,
+mathcal Mchi(s)=\frac1s,
 qquad
-mathcal Mho_n(s)=-rac{zeta(s)}{s,n^s}
+mathcal M\rho_n(s)=-\frac{zeta(s)}{s,n^s}
 ]
 
 give the residual transform
@@ -124,22 +124,22 @@ give the residual transform
 [
 mathcal M(chi-v_{N,alpha})(s)
 =
-rac{1-zeta(s)P_{N,alpha}(s)}{s}.
+\frac{1-zeta(s)P_{N,alpha}(s)}{s}.
 ]
 
 Therefore Mellin–Plancherel on Re(s)=1/2 gives
 
 [
-oxed{
+\boxed{
 E_{N,alpha}^2
 =
-rac1{2pi}
+\frac1{2pi}
 int_{-infty}^{infty}
-rac{
-left|1-zeta(	frac12+it)
-P_{N,alpha}(	frac12+it)ight|^2
+\frac{
+left|1-zeta(\tfrac12+it)
+P_{N,alpha}(\tfrac12+it)\right|^2
 }{
-	frac14+t^2
+\tfrac14+t^2
 },dt.
 }
 ]

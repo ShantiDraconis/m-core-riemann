@@ -26,29 +26,29 @@ BCF define
 V_N(s)
 =
 sum_{n=1}^{N}
-left(1-rac{log n}{log N}ight)
-rac{mu(n)}{n^s}.
+left(1-\frac{log n}{log N}\right)
+\frac{mu(n)}{n^s}.
 ]
 
 This is exactly the project’s fixed-scale Riesz–Möbius family with exponent
 (alpha=1):
 
 [
-w_N(n)=1-rac{log n}{log N},
+w_N(n)=1-\frac{log n}{log N},
 qquad
 v_N
 =
--sum_{nle N}mu(n)w_N(n)ho_n.
+-sum_{nle N}mu(n)w_N(n)\rho_n.
 ]
 
 With the project Mellin convention
 
 [
-mathcal Mho_n(s)
+mathcal M\rho_n(s)
 =
--rac{zeta(s)}{s,n^s},
+-\frac{zeta(s)}{s,n^s},
 qquad
-mathcal Mchi(s)=rac1s,
+mathcal Mchi(s)=\frac1s,
 ]
 
 the residual is
@@ -56,7 +56,7 @@ the residual is
 [
 mathcal M(chi-v_N)(s)
 =
-rac{1-zeta(s)V_N(s)}{s}.
+\frac{1-zeta(s)V_N(s)}{s}.
 ]
 
 Thus no measure or normalization conversion is needed: BCF’s Dirichlet
@@ -70,23 +70,23 @@ For (0<Re(s)<1), BCF prove unconditionally
 [
 V_N(s)
 =
-rac1{zeta(s)}
+\frac1{zeta(s)}
 left(
-1-rac1{log N}rac{zeta'}{zeta}(s)
-ight)
+1-\frac1{log N}\frac{zeta'}{zeta}(s)
+\right)
 +
-rac1{log N}sum_ho R_N(ho,s)
+\frac1{log N}sum_\rho R_N(\rho,s)
 +
-rac1{log N}F_s(1/N),
+\frac1{log N}F_s(1/N),
 ]
 
 where the sum is over distinct non-trivial zeros and
 
 [
-R_N(ho,s)
+R_N(\rho,s)
 =
-operatorname{Res}_{z=ho}
-rac{N^{z-s}}{zeta(z)(z-s)^2}.
+operatorname{Res}_{z=\rho}
+\frac{N^{z-s}}{zeta(z)(z-s)^2}.
 ]
 
 They also give the explicit entire function
@@ -96,14 +96,14 @@ F_s(z)
 =
 pi z^s
 sum_{n=1}^{infty}
-rac{(-1)^n(2pi)^{2n+1}z^{2n}}
+\frac{(-1)^n(2pi)^{2n+1}z^{2n}}
 {(2n)!,zeta(2n+1)(2n+s)^2}.
 ]
 
 Classification in this repository:
 
 [
-oxed{	exttt{PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY}}
+\boxed{\texttt{PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY}}
 ]
 
 This classification applies only to the identity above, not to convergence of
@@ -112,15 +112,15 @@ the Nyman–Beurling error.
 Multiplying by (zeta(s)) gives the exact residual decomposition
 
 [
-oxed{
+\boxed{
 1-zeta(s)V_N(s)
 =
-rac1{log N}
+\frac1{log N}
 left[
-rac{zeta'}{zeta}(s)
--zeta(s)sum_ho R_N(ho,s)
+\frac{zeta'}{zeta}(s)
+-zeta(s)sum_\rho R_N(\rho,s)
 -zeta(s)F_s(1/N)
-ight].
+\right].
 }
 ]
 
@@ -132,8 +132,8 @@ linear candidate.
 BCF Theorem 1 assumes RH and
 
 [
-sum_{|Imho|le T}
-rac1{|zeta'(ho)|^2}
+sum_{|Im\rho|le T}
+\frac1{|zeta'(\rho)|^2}
 ll T^{3/2-delta}
 ]
 
@@ -142,27 +142,27 @@ for some (delta>0). The condition implicitly requires simple zeros.
 Under those assumptions they obtain the asymptotic
 
 [
-rac1{2pi}
+\frac1{2pi}
 int_{-infty}^{infty}
-rac{
-|1-zeta(	frac12+it)V_N(	frac12+it)|^2
+\frac{
+|1-zeta(\tfrac12+it)V_N(\tfrac12+it)|^2
 }{
-	frac14+t^2
+\tfrac14+t^2
 },dt
 sim
-rac{2+gamma-log(4pi)}{log N}.
+\frac{2+gamma-log(4pi)}{log N}.
 ]
 
 For the present R2 chain this is
 
 [
-oxed{	exttt{CIRCULAR_CONDITIONAL_ASYMPTOTIC}}
+\boxed{\texttt{CIRCULAR_CONDITIONAL_ASYMPTOTIC}}
 ]
 
 because RH is one of its hypotheses. It cannot be used to prove R2.
 
 BCF Lemma 3 is likewise conditional: it assumes RH, simple zeros, and the
-discrete (zeta'(ho)) moment bound to control the zero-residue sum.
+discrete (zeta'(\rho)) moment bound to control the zero-residue sum.
 
 ## 5. New narrowed frontier
 
@@ -171,17 +171,17 @@ undifferentiated “prove its mean square tends to zero” frontier. It decompos
 into three analytic pieces:
 
 1. the logarithmic-derivative term (zeta'/zeta);
-2. the zero-residue term (sum_ho R_N(ho,s));
+2. the zero-residue term (sum_\rho R_N(\rho,s));
 3. the entire remainder (F_s(1/N)).
 
 BCF’s proof handles the entire remainder by elementary decay and obtains the
 needed zero-residue estimates only after imposing RH plus the
-(zeta'(ho))-moment hypothesis.
+(zeta'(\rho))-moment hypothesis.
 
 Therefore the highest-value open obligation is recorded as
 
 [
-oxed{	exttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}
+\boxed{\texttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}
 ]
 
 meaning: obtain enough unconditional weighted (L^2) control of the BCF
@@ -206,7 +206,7 @@ stated hypotheses.
 Accordingly the fractional band is now classified as
 
 [
-	exttt{PREASYMPTOTIC_FINITE_N_DIAGNOSTIC},
+\texttt{PREASYMPTOTIC_FINITE_N_DIAGNOSTIC},
 ]
 
 not as an asymptotic theorem or preferred final route.

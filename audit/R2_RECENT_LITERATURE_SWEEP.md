@@ -49,7 +49,7 @@ conditions imply zero-free half-planes. In particular, for Hardy spaces
 
 [
 zeta(s)
-e0quad	ext{for}quad Re(s)>1/p.
+e0quad\text{for}quad Re(s)>1/p.
 ]
 
 The paper also emphasizes that the critical (H^2) density problem is the RH
@@ -108,20 +108,20 @@ They work with
 
 [
 E(s)=1/s,qquad
-G_k(s)=rac{(k^{-s}-k^{-1})zeta(s)}{s}.
+G_k(s)=\frac{(k^{-s}-k^{-1})zeta(s)}{s}.
 ]
 
 Their main unconditional convergence theorem proves
 
 [
-sum_{k=2}^{infty}mu(k)G_k 	o E
-quad	ext{in }H^2(mathbb C_{1/2+	au})
+sum_{k=2}^{infty}mu(k)G_k \to E
+quad\text{in }H^2(mathbb C_{1/2+\tau})
 ]
 
-for every (	au>1/2). Therefore the proved half-plane parameter is
+for every (\tau>1/2). Therefore the proved half-plane parameter is
 
 [
-alpha=1/2+	au>1.
+alpha=1/2+\tau>1.
 ]
 
 This is strictly to the right of the critical strip and is compatible with the
@@ -176,20 +176,20 @@ Riesz–Möbius route remains Bettin–Conrey–Farmer Lemma 2:
 [
 1-zeta(s)V_N(s)
 =
-rac1{log N}
+\frac1{log N}
 left[
-rac{zeta'}{zeta}(s)
--zeta(s)sum_ho R_N(ho,s)
+\frac{zeta'}{zeta}(s)
+-zeta(s)sum_\rho R_N(\rho,s)
 -zeta(s)F_s(1/N)
-ight].
+\right].
 ]
 
 Therefore the material DAG remains unchanged:
 
 [
-	ext{BCF Lemma 2}
+\text{BCF Lemma 2}
 longrightarrow
-oxed{	exttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}
+\boxed{\texttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}
 longrightarrow
 DNLimit=0.
 ]

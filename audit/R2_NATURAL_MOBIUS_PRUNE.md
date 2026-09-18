@@ -5,7 +5,7 @@ Status: **refuted full-sequence route at the critical Hilbert norm**.
 The concrete R2 model uses the integer generators
 
 [
-ho_a(x)=left{rac1{ax}ight}.
+\rho_a(x)=left{\frac1{ax}\right}.
 ]
 
 The most direct Möbius approximation uses coefficients proportional to
@@ -65,7 +65,7 @@ critical (L^2) bound.
 The single material frontier remains
 
 [
-oxed{	exttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}.
+\boxed{\texttt{ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL}}.
 ]
 
 No Lean write. No project axiom. `DNLimit=0` remains unproved.
