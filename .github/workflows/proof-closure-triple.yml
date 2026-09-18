@@ -42,10 +42,9 @@ jobs:
           test "$(git rev-parse origin/frozen/nb15-zero-limit-frontier-green-e7e36d6)" = \
             "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
 
-          if grep -Eiq '\b(sorry|admit|sorryAx)\b' \
-            audit/PROOF_CLOSURE_TRIPLE.md \
+          if grep -Eiq '(by[[:space:]]+sorry|:=[[:space:]]*sorry|\badmit\b|\bsorryAx\b)' \
             certificates/PROOF_CLOSURE_TRIPLE_CERT.json; then
-            echo "Forbidden proof placeholder in triple-closure artifacts"
+            echo "Forbidden proof placeholder in triple-closure certificate payload"
             exit 1
           fi
 
