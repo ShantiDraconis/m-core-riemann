@@ -213,5 +213,53 @@
       "use": "boundary sanity check only; not a theorem about the actual zero set"
     },
     "inference": "A vanishing unconditional BCF residual estimate must genuinely overcome/exclude off-critical-zero residue contributions; this is not a routine remainder estimate."
+  },
+  "literature_sweep_through_2026_09_18": {
+    "classification": "AUDIT_ONLY_NO_NEW_GATE",
+    "exhaustive_claim": false,
+    "result": "NO_SURFACED_UNCONDITIONAL_CRITICAL_UPPER_BOUND_IN_AUDITED_SOURCES",
+    "sources": [
+      {
+        "id": "WEI_WU_2022",
+        "title": "A characterization of the zero-free region of the Riemann zeta function and its applications",
+        "classification": "ZERO_FREE_REGION_CHARACTERIZATION_ONLY",
+        "reduces_material_gate": false
+      },
+      {
+        "id": "GHOSH_KREMNIZER_NOOR_SANTOS_2024",
+        "title": "Zero-free half-planes of the zeta-function via spaces of analytic functions",
+        "classification": "ZERO_FREE_HALF_PLANE_FRAMEWORK_NO_CRITICAL_CLOSE",
+        "reduces_material_gate": false
+      },
+      {
+        "id": "YANG_2025_LOWER_BOUND",
+        "title": "A generalization of a result of Baez-Duarte, Balazard, Landreau, and Saias",
+        "classification": "LOWER_BOUND_GENERALIZATION_ONLY",
+        "reduces_material_gate": false
+      },
+      {
+        "id": "YANG_2026_FRIEDRICHS_ANGLE",
+        "title": "A Friedrichs angle between the Nyman-Beurling spaces and the Riemann hypothesis",
+        "classification": "GEOMETRIC_REFORMULATION_NO_UPPER_BOUND",
+        "reduces_material_gate": false
+      },
+      {
+        "id": "MANZUR_NOOR_QUINTERO_2026",
+        "title": "A Hardy space approximation supporting zero-free half-planes for the zeta-function",
+        "classification": "UNCONDITIONAL_HARDY_CONVERGENCE_ONLY_ALPHA_GT_1",
+        "proved_region": "H2(C_alpha) convergence for alpha=1/2+tau with tau>1/2, hence alpha>1",
+        "critical_interval": "1/2 <= alpha <= 1 remains numerical/open in the audited paper",
+        "reduces_material_gate": false
+      },
+      {
+        "id": "CALDERARO_MANZUR_NOOR_SANTOS",
+        "title": "Orthogonality questions in the Hardy space related to zeta-zeros",
+        "classification": "ORTHOGONALITY_STRUCTURE_NO_CRITICAL_UPPER_BOUND",
+        "reduces_material_gate": false
+      }
+    ],
+    "strongest_current_exact_input": "BCF_LEMMA2_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
+    "material_gate_unchanged": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "gate_count_after_sweep": 1
   }
 }

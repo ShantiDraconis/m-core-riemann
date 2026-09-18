@@ -83,6 +83,17 @@ jobs:
           assert nxt["status"] == "OPEN_MATH"
           assert nxt["external_identity_available"] is True
 
+          sweep = r["literature_sweep_through_2026_09_18"]
+          assert sweep["classification"] == "AUDIT_ONLY_NO_NEW_GATE"
+          assert sweep["exhaustive_claim"] is False
+          assert sweep["material_gate_unchanged"] == "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+          assert sweep["gate_count_after_sweep"] == 1
+          src = {x["id"]: x for x in sweep["sources"]}
+          assert src["YANG_2025_LOWER_BOUND"]["classification"] == "LOWER_BOUND_GENERALIZATION_ONLY"
+          assert src["YANG_2026_FRIEDRICHS_ANGLE"]["classification"] == "GEOMETRIC_REFORMULATION_NO_UPPER_BOUND"
+          assert src["MANZUR_NOOR_QUINTERO_2026"]["classification"] == "UNCONDITIONAL_HARDY_CONVERGENCE_ONLY_ALPHA_GT_1"
+          assert all(x["reduces_material_gate"] is False for x in sweep["sources"])
+
       - name: R2 research status
         run: |
           echo "R2=OPEN_BRIDGE"
