@@ -73,12 +73,12 @@ jobs:
           assert rows
           assert rows[-1]["N"] == 256
           for r in rows:
-              assert r["classification"] == "MODE_B_V2_HOLDOUT_QR_FINITE_N_RESEARCH"
+              assert r["classification"] == "MODE_B_V3_QR_RIDGE_PATH_ARB_ORACLE_FINITE_N_RESEARCH"
               assert r["uses_gram_inverse_for_coefficients"] is False
               assert r["scope"]["window_tail_certified"] is False
               assert r["dnlimit_eq_zero_proved"] is False
               assert r["rh_proved"] is False
-              assert r["selected"]["selection_rule"] == "minimum independent validation-window energy"
+              assert r["selected"]["selection_rule"] == "minimum exact finite Arb Gram E2 among QR/ridge path"
               lo=float(r["selected"]["arb_full_finite_gram_E2"]["lower"])
               hi=float(r["selected"]["arb_full_finite_gram_E2"]["upper"])
               ref=float(r["selected"]["mode_A_optimal_DN_reference"])
