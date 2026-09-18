@@ -8,6 +8,8 @@ on:
       - 'papers/final-dense/**'
       - 'audit/BACKWARD_DENSE_MATCHES.json'
       - 'audit/BACKWARD_DENSE_AXIOM_AUDIT.txt'
+      - 'audit/R2_ZERO_RESIDUE_OBSTRUCTION.md'
+      - 'audit/R2_ROUTE_MATRIX.json'
       - '.github/workflows/final-dense-riemann.yml'
   workflow_dispatch:
 
@@ -70,6 +72,60 @@ jobs:
           bcf=[x for x in m['matches'] if x['layer']=='BCF_LEMMA_3_AND_THEOREM_1'][0]
           assert bcf['HYPOTHESIS_MATCH'].startswith('FAIL_AS_UNCONDITIONAL_CLOSING_EVIDENCE')
           print('BACKWARD_DENSE_MATCHES=GREEN')
+          print('MATERIAL_GATE_COUNT=1')
+          print('RH_PROVED=false')
+
+      - name: T1b dense zero-residue estimate classifier
+        shell: python
+        run: |
+          import json
+          m=json.load(open('audit/BACKWARD_DENSE_MATCHES.json', encoding='utf-8'))
+          r2=json.load(open('audit/R2_ROUTE_MATRIX.json', encoding='utf-8'))
+
+          sweep=m['first_residue']['dense_unconditional_estimate_sweep']
+          assert sweep['status']=='BLOCKING_AFTER_TESTED_UNCONDITIONAL_FAMILIES'
+          assert sweep['conclusion']=='NO_SURFACED_UNCONDITIONAL_CLOSING_ESTIMATE_IN_TESTED_FAMILIES'
+          assert sweep['impossibility_claim'] is False
+          assert sweep['strongest_surviving_input']=='BCF_LEMMA2_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY'
+          assert sweep['material_gate_unchanged']=='ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL'
+          assert sweep['material_gate_count']==1
+
+          routes={x['route']:x for x in sweep['tested']}
+          assert routes['ZERO_FREE_REGION']['classification']=='INSUFFICIENT_ZERO_FREE_REGION'
+          assert routes['ZERO_DENSITY']['classification']=='INSUFFICIENT_ZERO_DENSITY'
+          assert routes['POSITIVE_PROPORTION_SIMPLE_ON_CRITICAL_LINE']['classification']=='INSUFFICIENT_CRITICAL_LINE_PROPORTION'
+          assert routes['TERM_BY_TERM_ABSOLUTE_VALUE']['classification']=='BLOCKED_NEGATIVE_ZETA_DERIVATIVE_MOMENT'
+          assert routes['CAUCHY_SCHWARZ']['classification']=='CIRCULAR_OR_UNAVAILABLE_CAUCHY_SCHWARZ_ROUTE'
+          assert routes['FUNCTIONAL_EQUATION_PAIRING']['classification']=='SYMMETRY_ONLY_NOT_CONTROL'
+          assert routes['MULTIPLE_ZEROS']['classification']=='MULTIPLICITY_NOT_ELIMINATED'
+          assert routes['FINITE_ZERO_VERIFICATION']['classification']=='FINITE_VERIFICATION_NOT_CLOSING'
+
+          bcf=[x for x in m['matches'] if x['layer']=='BCF_LEMMA_2'][0]
+          assert bcf['HYPOTHESIS_MATCH'].startswith('PASS__UNCONDITIONAL')
+          assert bcf['AXIOM_AUDIT']=='PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY'
+
+          assert r2['status']=='OPEN_BRIDGE'
+          assert r2['next_mathematical_task']['id']=='ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL'
+          assert r2['next_mathematical_task']['status']=='OPEN_MATH'
+          assert r2['dnlimit_eq_zero_proved'] is False
+          assert r2['rh_proved'] is False
+
+          obstruction=open('audit/R2_ZERO_RESIDUE_OBSTRUCTION.md', encoding='utf-8').read()
+          for token in [
+              'INSUFFICIENT_ZERO_FREE_REGION',
+              'INSUFFICIENT_ZERO_DENSITY',
+              'BLOCKED_NEGATIVE_ZETA_DERIVATIVE_MOMENT',
+              'SYMMETRY_ONLY_NOT_CONTROL',
+              'MULTIPLICITY_NOT_ELIMINATED',
+              'ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL = OPEN_MATH',
+          ]:
+              assert token in obstruction
+
+          print('BCF_UNCONDITIONAL=GREEN')
+          print('ZERO_FREE_REGION=CERTIFIED_INSUFFICIENT_FOR_CLOSE')
+          print('ZERO_DENSITY=CERTIFIED_INSUFFICIENT_FOR_CLOSE')
+          print('NEGATIVE_ZETA_DERIVATIVE_MOMENT=BLOCKING_IF_USED_TERMWISE')
+          print('ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL=OPEN_MATH')
           print('MATERIAL_GATE_COUNT=1')
           print('RH_PROVED=false')
 
