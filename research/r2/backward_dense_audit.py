@@ -5,6 +5,11 @@ This is an integrity/audit tool, not a mathematical proof. It checks the entire
 project Riemann namespace plus the dense R2 evidence surface and preserves the
 single material frontier:
   ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL.
+
+The identifier above is retained for certificate stability. Its authoritative
+mathematical semantics is the BCF cancellation-preserving combined block
+B_N(s) = (zeta'/zeta)(s) - zeta(s) * sum_rho R_N(rho,s), not a termwise
+absolute-value estimate of the residue sum.
 """
 from __future__ import annotations
 
@@ -28,6 +33,7 @@ EXPECTED = [
     "R0_CERT.json",
     "audit/R1_BAEZ_DUARTE_INTERFACE.json",
     "audit/R2_BCF_UNCONDITIONAL_DECOMPOSITION.md",
+    "audit/R2_BN_COMBINED_BLOCK.md",
     "audit/R2_COEFFICIENT_STRUCTURE.md",
     "audit/R2_CONSOLIDATED_ANALYTIC_LEDGER.md",
     "audit/R2_FALSE_RH_BACKWARD_DENSE.md",

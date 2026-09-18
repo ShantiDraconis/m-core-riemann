@@ -120,7 +120,17 @@
         ],
         "conclusion": "Mellin/NB error ~ (2+gamma-log(4*pi))/log N"
       },
-      "blocker": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+      "blocker": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+      "blocker_semantics": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL",
+      "combined_block": {
+        "definition": "B_N(s)=(zeta'/zeta)(s)-zeta(s)*sum_rho R_N(rho,s)",
+        "companion": "C_N(s)=zeta(s)*F_s(1/N)",
+        "exact_residual": "1-zeta(s)V_N(s)=(B_N(s)-C_N(s))/log(N)",
+        "weighted_norm": "||H||_W^2=(1/(2*pi))*integral_R |H(1/2+it)|^2/(1/4+t^2) dt",
+        "exact_energy": "E_N^2=||B_N-C_N||_W^2/(log N)^2",
+        "closure_sufficient_condition": "||B_N-C_N||_W=o(log N)",
+        "C_over_logN_rate_sufficient_condition": "||B_N-C_N||_W^2=O(log N)"
+      }
     }
   ],
   "rate_guardrail": {
@@ -131,11 +141,17 @@
   },
   "next_mathematical_task": {
     "id": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "canonical_mathematical_target": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL",
     "status": "OPEN_MATH",
-    "objective": "Use the unconditional BCF Lemma 2 decomposition to obtain enough unconditional weighted L2 control of the zero-residue contribution (and companion terms) to force the linear Riesz-Mobius residual to vanish.",
+    "objective": "Control the BCF combined block B_N(s)=(zeta'/zeta)(s)-zeta(s)*sum_rho R_N(rho,s), with the BCF zero sum interpreted in the source's canonical sense, strongly enough that ||B_N-zeta*F_s(1/N)||_W=o(log N). This is sufficient for the linear Riesz-Mobius residual energy to vanish.",
+    "exact_identity": "1-zeta*V_N=(B_N-zeta*F_s(1/N))/log N",
+    "weighted_norm": "||H||_W^2=(1/(2*pi))*integral_R |H(1/2+it)|^2/(1/4+t^2) dt",
+    "endpoint_condition": "||B_N-zeta*F_s(1/N)||_W=o(log N)",
+    "stronger_rate_condition": "||B_N-zeta*F_s(1/N)||_W^2=O(log N) implies E_N^2=O(1/log N)",
+    "cancellation_policy": "Do not estimate sum_rho R_N termwise in absolute value as the primary route; cancellation with zeta'/zeta is structural in the exact BCF identity.",
     "external_identity_available": true,
     "forbidden_shortcut": "BCF Lemma 3 and Theorem 1 require RH plus a zeta-prime zero-moment hypothesis and cannot close R2.",
-    "note": "Mode B finite-N solver instability is now mechanically addressed through N=256; the remaining obstruction is mathematical, not numerical.",
+    "note": "The legacy gate ID is retained for certificate stability. Its authoritative semantics is the combined B_N block, not absolute control of the residue sum alone.",
     "minimal_gate_count": 1,
     "no_gate_splitting_without_new_unconditional_estimate": true
   },
@@ -220,9 +236,10 @@
   "frontier_minimization": {
     "policy": "ONE_MATERIAL_OPEN_GATE",
     "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
-    "reason": "R1 already makes vanishing equivalent to RH; splitting control of off-critical residue contributions into nominal subgates would not reduce the mathematical obligation.",
-    "external_input": "BCF Lemma 2 unconditional residue decomposition",
-    "no_new_lean_until_closed": true
+    "reason": "R1 already makes vanishing equivalent to RH. BCF Lemma 2 shows the correct object is the cancellation-preserving combined block B_N=(zeta'/zeta)-zeta*sum R_N; splitting logarithmic derivative and zero residues into separate gates would destroy the structural cancellation and not reduce the obligation.",
+    "external_input": "BCF Lemma 2 unconditional combined residual decomposition",
+    "no_new_lean_until_closed": true,
+    "canonical_mathematical_target": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL"
   },
   "off_critical_residue_obstruction": {
     "classification": "STRUCTURAL_BOUNDARY_WITH_CONDITIONAL_STRESS_TEST",
@@ -389,5 +406,20 @@
       }
     ],
     "inference_limit": "finite N numerical infrastructure only; no asymptotic bound, DNLimit=0, or RH claim"
+  },
+  "combined_block_frontier": {
+    "classification": "SINGLE_OPEN_MATH_GATE_REFINED_SEMANTICS",
+    "legacy_gate_id": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "canonical_target": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL",
+    "B_N": "(zeta'/zeta)(s)-zeta(s)*sum_rho R_N(rho,s)",
+    "C_N": "zeta(s)*F_s(1/N)",
+    "exact_residual_identity": "1-zeta(s)V_N(s)=(B_N(s)-C_N(s))/log N",
+    "exact_weighted_energy_identity": "E_N^2=||B_N-C_N||_W^2/(log N)^2",
+    "weakest_sufficient_closure_scale": "||B_N-C_N||_W=o(log N)",
+    "sufficient_C_over_logN_scale": "||B_N-C_N||_W^2=O(log N)",
+    "termwise_absolute_residue_control_required": false,
+    "reason": "zeta'/zeta and the zero-residue block have matching singular structure; the exact finite Dirichlet-polynomial residual is regular only after the BCF-prescribed combination.",
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false
   }
 }

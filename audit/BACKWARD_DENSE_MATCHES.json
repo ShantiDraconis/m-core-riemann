@@ -15,7 +15,8 @@
     "R1": "GREEN_EXTERNAL_INTERFACE",
     "R2": "OPEN_BRIDGE",
     "material_gate_count": 1,
-    "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+    "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "material_gate_semantics": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL"
   },
   "matches": [
     {
@@ -115,11 +116,12 @@
   "first_residue": {
     "id": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
     "status": "OPEN_MATH",
-    "exact_closing_obligation": "Prove unconditionally that the weighted Mellin residual energy of an explicit admissible finite-span approximant tends to zero; on the current BCF route this requires sufficient unconditional control of the complete zero-residue contribution and companion terms in Lemma 2.",
+    "exact_closing_obligation": "Using the unconditional BCF Lemma 2 identity, prove that the cancellation-preserving combined block B_N(s)=(zeta'/zeta)(s)-zeta(s)*sum_rho R_N(rho,s), together with C_N(s)=zeta(s)F_s(1/N), satisfies ||B_N-C_N||_W=o(log N) in the project Mellin norm. Equivalently the linear Riesz-Mobius residual energy tends to zero.",
     "forbidden_inputs": [
       "RiemannHypothesis",
       "RH-equivalent zero-location assumption",
       "BCF Lemma 3 or Theorem 1 as unconditional input",
+      "termwise absolute-value replacement that destroys the BCF cancellation",
       "finite-N numerical extrapolation"
     ],
     "dense_unconditional_estimate_sweep": {
@@ -180,8 +182,10 @@
       ],
       "strongest_surviving_input": "BCF_LEMMA2_PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
       "material_gate_unchanged": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
-      "material_gate_count": 1
-    }
+      "material_gate_count": 1,
+      "canonical_mathematical_target": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL"
+    },
+    "canonical_mathematical_target": "BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL"
   },
   "current_claims": {
     "dnlimit_eq_zero_proved": false,
