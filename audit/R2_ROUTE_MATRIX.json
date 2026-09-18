@@ -135,7 +135,7 @@
     "objective": "Use the unconditional BCF Lemma 2 decomposition to obtain enough unconditional weighted L2 control of the zero-residue contribution (and companion terms) to force the linear Riesz-Mobius residual to vanish.",
     "external_identity_available": true,
     "forbidden_shortcut": "BCF Lemma 3 and Theorem 1 require RH plus a zeta-prime zero-moment hypothesis and cannot close R2.",
-    "note": "Any unconditional vanishing bound here is already at the RH-equivalent frontier exposed by R1.",
+    "note": "Mode B finite-N solver instability is now mechanically addressed through N=256; the remaining obstruction is mathematical, not numerical.",
     "minimal_gate_count": 1,
     "no_gate_splitting_without_new_unconditional_estimate": true
   },
@@ -321,7 +321,7 @@
     "gap_reclassification": {
       "A_VASYUNIN": "CLOSED_EXTERNAL_INPUT_NOT_MATERIAL_GATE",
       "B_UNIFORM_VANISHING": "OPEN_MATH_SINGLE_MATERIAL_GATE",
-      "C_FINITE_NUMERICS": "INTERVAL_CERTIFIED_THROUGH_N256",
+      "C_FINITE_NUMERICS": "CLOSED_MECHANICAL_THROUGH_N256__ARB_MODE_A_AND_MODE_B_QR_RIDGE",
       "D_ZETA_LEAN": "FUTURE_FORMALIZATION_NOT_CURRENT_GATE",
       "E_EXPLICIT_SEPARATOR": "OWNED_BY_R1_EXTERNAL_INTERFACE_QUANTITATIVE_FORM_NOT_PROVED",
       "F_DN_CONVERGENCE": "PROVED_LEAN_FROZEN_NB14"
@@ -330,5 +330,64 @@
     "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
     "dnlimit_eq_zero_proved": false,
     "rh_proved": false
+  },
+  "mode_b_solver": {
+    "classification": "MECHANICAL_FINITE_N_SOLVER_CLOSED_THROUGH_N256",
+    "source_sha": "705a4b853a7f49c49a65ec7a7e026d2d0480a306",
+    "workflow_run_id": 35298065818,
+    "workflow_job_id": 105454617620,
+    "artifact_id": 10528871706,
+    "artifact_sha256": "1847abe0bf8665e28f83895119ae2fef50cb832af84d8991f5605e545080aea5",
+    "coefficient_construction": "resolved Mellin critical-line QR/ridge path; no Gram inversion",
+    "candidate_selection": "minimum exact finite Arb Gram energy among QR/ridge path",
+    "global_unregularized_qr": {
+      "state": "REFUTED_NUMERICAL_METHOD",
+      "reason": "O(N) sampling over |t|<=N^2 under-resolved Dirichlet oscillations and produced false small sampled residuals with huge exact Gram energy for N>=64"
+    },
+    "stable_results": [
+      {
+        "N": 8,
+        "lambda": 0.0003,
+        "E2": "0.024175752552128147328877241182110705417043735155289",
+        "optimal_DN": "0.02416142158589668502280894301085134",
+        "gap": 0.000014330966231462794
+      },
+      {
+        "N": 16,
+        "lambda": 0.0003,
+        "E2": "0.017903037677080434392516642671468654654807357535630",
+        "optimal_DN": "0.01789402347696943509905506314795876",
+        "gap": 0.000009014200110998849
+      },
+      {
+        "N": 32,
+        "lambda": 0.0001,
+        "E2": "0.014061615993314225072050791470178559659319869691055",
+        "optimal_DN": "0.01405194369952985983642504072212329",
+        "gap": 0.00000967229378436539
+      },
+      {
+        "N": 64,
+        "lambda": 0.0001,
+        "E2": "0.011383614474800556229462646627370713684462078275052",
+        "optimal_DN": "0.01137604029967365814705897002932677",
+        "gap": 0.000007574175126898869
+      },
+      {
+        "N": 128,
+        "lambda": 0.0003,
+        "E2": "0.0097105332414463234564310491722901095942870735498498",
+        "optimal_DN": "0.009658549278111909910035392571452577",
+        "gap": 0.00005198396333441421
+      },
+      {
+        "N": 256,
+        "lambda": 0.0003,
+        "E2": "0.0084043790856408134470740207507981755103494739006525",
+        "optimal_DN": "0.008233716277261021441598038102635435",
+        "gap": 0.00017066280837979217
+      }
+    ],
+    "inference_limit": "finite N numerical infrastructure only; no asymptotic bound, DNLimit=0, or RH claim"
   }
 }
