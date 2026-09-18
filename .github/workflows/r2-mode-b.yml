@@ -13,10 +13,14 @@ on:
         description: 'comma-separated N values'
         required: false
         default: '8,16,32,64,128,256'
-      samples_factor:
-        description: 'positive Gauss-Legendre samples per N'
+      T_train:
+        description: 'positive Mellin training window'
         required: false
-        default: '4'
+        default: '250'
+      samples_per_period:
+        description: 'samples per shortest Dirichlet phase period'
+        required: false
+        default: '8'
       zeta_dps:
         description: 'mpmath precision used for zeta samples'
         required: false
@@ -44,16 +48,18 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r research/r2/requirements-r2.txt
 
-      - name: Run Mellin QR Mode B and BCF mollifier
+      - name: Run resolved Mellin QR Mode B v2 and BCF mollifier
         env:
           SCHEDULE: ${{ github.event.inputs.schedule || '8,16,32,64,128,256' }}
-          SAMPLES_FACTOR: ${{ github.event.inputs.samples_factor || '4' }}
+          T_TRAIN: ${{ github.event.inputs.T_train || '250' }}
+          SAMPLES_PER_PERIOD: ${{ github.event.inputs.samples_per_period || '8' }}
           ZETA_DPS: ${{ github.event.inputs.zeta_dps || '50' }}
           ARB_DPS: ${{ github.event.inputs.arb_dps || '100' }}
         run: |
           python research/r2/mode_b_mellin_qr.py \
             --schedule "$SCHEDULE" \
-            --samples-factor "$SAMPLES_FACTOR" \
+            --T-train "$T_TRAIN" \
+            --samples-per-period "$SAMPLES_PER_PERIOD" \
             --zeta-dps "$ZETA_DPS" \
             --arb-dps "$ARB_DPS" \
             --jsonl research/r2/mode_b_mellin_qr.jsonl
@@ -67,17 +73,21 @@ jobs:
           assert rows
           assert rows[-1]["N"] == 256
           for r in rows:
-              assert r["classification"] == "MODE_B_FINITE_N_RESEARCH_WITH_ARB_CANDIDATE_EVALUATION"
+              assert r["classification"] == "MODE_B_V2_HOLDOUT_QR_FINITE_N_RESEARCH"
               assert r["uses_gram_inverse_for_coefficients"] is False
-              assert r["design_rank"] == r["N"]
-              assert r["quadrature_scope"]["tail_certified"] is False
+              assert r["scope"]["window_tail_certified"] is False
               assert r["dnlimit_eq_zero_proved"] is False
               assert r["rh_proved"] is False
-              lo=float(r["mode_b_qr"]["arb_full_finite_gram_E2"]["lower"])
-              ref=float(r["mode_b_qr"]["mode_A_optimal_DN_reference"])
+              assert r["selected"]["selection_rule"] == "minimum independent validation-window energy"
+              lo=float(r["selected"]["arb_full_finite_gram_E2"]["lower"])
+              hi=float(r["selected"]["arb_full_finite_gram_E2"]["upper"])
+              ref=float(r["selected"]["mode_A_optimal_DN_reference"])
               assert lo >= ref - 1e-10
+              assert hi < 1.0
               blo=float(r["bcf_linear_mollifier"]["arb_full_finite_gram_E2"]["lower"])
+              bhi=float(r["bcf_linear_mollifier"]["arb_full_finite_gram_E2"]["upper"])
               assert blo >= ref - 1e-10
+              assert bhi < 1.0
 
       - uses: actions/upload-artifact@v4
         with:
@@ -87,9 +97,9 @@ jobs:
 
       - name: R2 Mode B status
         run: |
-          echo "MODE_B_MELLIN_QR=FINITE_N_TESTED"
+          echo "MODE_B_V2=FINITE_N_TESTED"
           echo "BCF_LINEAR_MOLLIFIER=FINITE_N_TESTED"
-          echo "TAIL_BOUND=OPEN_MATH"
+          echo "WINDOW_TAIL=UNPROVED_NOT_USED_FOR_PROMOTION"
           echo "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL=OPEN_MATH"
           echo "DNLIMIT_EQ_ZERO=false"
           echo "RH_PROVED=false"
