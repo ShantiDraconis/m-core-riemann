@@ -21,4 +21,13 @@ jobs:
           grep -F "'MCore.k6_source_open' does not depend on any axioms" K6AxiomAudit.log
           grep -F "'MCore.k6_target_open' does not depend on any axioms" K6AxiomAudit.log
           grep -F "'MCore.k6_target_not_certified' does not depend on any axioms" K6AxiomAudit.log
+      - name: Backward endpoint-type firewall
+        run: |
+          set -euo pipefail
+          lake build MCore.BackwardAudit.EndpointTypeResidue
+          test ! -e lean/MCore/BackwardAudit/HypotheticalClosureOracle.lean
+          lake env lean lean/MCore/BackwardAudit/EndpointTypeResidue.lean 2>&1 | tee BackwardEndpoint.log
+          if grep -E 'sorryAx' BackwardEndpoint.log; then exit 1; fi
+          grep -F "'MCore.BackwardAudit.endpoint_route_is_criticalLine' does not depend on any axioms" BackwardEndpoint.log
+          grep -F "'MCore.BackwardAudit.endpoint_proposition_still_untyped' does not depend on any axioms" BackwardEndpoint.log
       - {name: Clean reproduction, run: 'lake clean && lake build MCore.K6 && lake build MCore'}
