@@ -1,0 +1,133 @@
+name: final-dense-riemann
+
+on:
+  push:
+    branches:
+      - research/r2-dnlimit-zero
+    paths:
+      - 'papers/final-dense/**'
+      - 'audit/BACKWARD_DENSE_MATCHES.json'
+      - 'audit/BACKWARD_DENSE_AXIOM_AUDIT.txt'
+      - '.github/workflows/final-dense-riemann.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dense:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: T0 backward-dense hygiene and immutable refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=53d97bc0a3e64de419f4214625ae75a9e1ecb178
+          git merge-base --is-ancestor "$BASE" HEAD
+          if git diff --name-only "$BASE"..HEAD | grep -q '^lean/'; then
+            echo "Backward-dense R2 paper must not modify lean/"
+            exit 1
+          fi
+          git fetch origin \
+            refs/heads/frozen/r0-4-chi-memlp-green-c0fe29a \
+            refs/heads/frozen/r0-rho-identification-green-66a9b18 \
+            refs/heads/frozen/nb15-zero-limit-frontier-green-e7e36d6
+          test "$(git rev-parse origin/frozen/r0-4-chi-memlp-green-c0fe29a)" = \
+            "c0fe29a5f4c430312432affabc55066083903438"
+          test "$(git rev-parse origin/frozen/r0-rho-identification-green-66a9b18)" = \
+            "66a9b18f26fd714a968c1d33935d54dde4e6bf30"
+          test "$(git rev-parse origin/frozen/nb15-zero-limit-frontier-green-e7e36d6)" = \
+            "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
+
+      - name: T1 match matrix and endpoint honesty
+        shell: python
+        run: |
+          import json
+          m=json.load(open('audit/BACKWARD_DENSE_MATCHES.json', encoding='utf-8'))
+          r0=json.load(open('R0_CERT.json', encoding='utf-8'))
+          r1=json.load(open('audit/R1_BAEZ_DUARTE_INTERFACE.json', encoding='utf-8'))
+          r2=json.load(open('audit/R2_ROUTE_MATRIX.json', encoding='utf-8'))
+          tri=json.load(open('certificates/PROOF_CLOSURE_TRIPLE_CERT.json', encoding='utf-8'))
+          assert r0['status']=='GREEN'
+          assert r1['status']=='GREEN'
+          assert r2['status']=='OPEN_BRIDGE'
+          assert r2['dnlimit_eq_zero_proved'] is False
+          assert r2['rh_proved'] is False
+          assert m['chain']['R0_CERT']=='GREEN'
+          assert m['chain']['R1']=='GREEN_EXTERNAL_INTERFACE'
+          assert m['chain']['R2']=='OPEN_BRIDGE'
+          assert m['chain']['material_gate_count']==1
+          assert m['chain']['material_gate']=='ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL'
+          assert m['current_claims']=={'dnlimit_eq_zero_proved':False,'rh_proved':False,'rh_false_proved':False}
+          assert tri['beginning']['closed'] is True
+          assert tri['middle']['closed'] is False
+          assert tri['final']['closed'] is False
+          assert tri['authoritative_frontier']['true_lane']=='ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL'
+          bcf=[x for x in m['matches'] if x['layer']=='BCF_LEMMA_3_AND_THEOREM_1'][0]
+          assert bcf['HYPOTHESIS_MATCH'].startswith('FAIL_AS_UNCONDITIONAL_CLOSING_EVIDENCE')
+          print('BACKWARD_DENSE_MATCHES=GREEN')
+          print('MATERIAL_GATE_COUNT=1')
+          print('RH_PROVED=false')
+
+      - name: T2 source placeholder and project-axiom firewall
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -RInE '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|cheat|bypass)([^[:alnum:]_]|$)' \
+            lean/MCore/RH/R0/RhoConcrete.lean lean/MCore/RH/NB/Limit.lean lean/MCore/RH/NB/ZeroLimitFrontier.lean
+          ! grep -RInE '^[[:space:]]*(axiom|constant|constants)[[:space:]]' \
+            lean/MCore/RH/R0/RhoConcrete.lean lean/MCore/RH/NB/Limit.lean lean/MCore/RH/NB/ZeroLimitFrontier.lean
+
+      - name: T3 install pinned Lean and resolve dependencies
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+          rm -f lake-manifest.json
+          lake update
+          lake exe cache get
+
+      - name: T4 authoritative Lake build
+        run: lake build
+
+      - name: T5 runtime axiom audit
+        run: |
+          cat > DenseAxiomAudit.lean <<'EOF'
+          import MCore.RH.R0.RhoConcrete
+          import MCore.RH.NB.ZeroLimitFrontier
+          #print axioms MCore.RH.R0.rho_memLp_two
+          #print axioms MCore.RH.NB.NBHilbertData.tendsto_DN_DNLimit
+          #print axioms MCore.RH.NB.NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+          EOF
+          lake env lean DenseAxiomAudit.lean | tee dense-axioms-runtime.txt
+          ! grep -E 'sorryAx' dense-axioms-runtime.txt
+
+      - name: T6 compile final-dense paper
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-recommended
+          cd papers/final-dense
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          test -s main.pdf
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: final-dense-riemann
+          path: |
+            papers/final-dense/main.pdf
+            dense-axioms-runtime.txt
+          if-no-files-found: error
+
+      - name: Dense audit status
+        run: |
+          echo "FINAL_DENSE_AUDIT=GREEN"
+          echo "BEGIN=CLOSED_CERTIFIED"
+          echo "MIDDLE=OPEN_FRONTIER"
+          echo "FINAL=BLOCKED_BY_MIDDLE"
+          echo "MATERIAL_GATE=ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+          echo "RH_PROVED=false"

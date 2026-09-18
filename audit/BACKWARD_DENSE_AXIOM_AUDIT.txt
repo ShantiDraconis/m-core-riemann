@@ -1,0 +1,20 @@
+BACKWARD-DENSE AXIOM AUDIT
+Repository: ShantiDraconis/m-core-riemann
+Branch: research/r2-dnlimit-zero
+BASE: 53d97bc0a3e64de419f4214625ae75a9e1ecb178
+GENERATION_HEAD: cc5d99748130b3ab6a1e04e63020bbbef4443e3e
+STATUS: AWAITING_FINAL_DENSE_CI
+
+Runtime targets:
+- MCore.RH.R0.rho_memLp_two
+- MCore.RH.NB.NBHilbertData.tendsto_DN_DNLimit
+- MCore.RH.NB.NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+
+Policy:
+- project scientific axiom: forbidden
+- sorry / admit / sorryAx: forbidden
+- foundational Lean/Mathlib axioms may be reported explicitly
+- external mathematics remains explicit and is never encoded as a project axiom
+
+Post-run action:
+Seal exact #print axioms output plus authoritative dense CI run/job IDs.

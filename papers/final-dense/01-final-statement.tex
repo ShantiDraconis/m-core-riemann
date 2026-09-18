@@ -1,0 +1,17 @@
+\section{Final statement}
+The final endpoint is fixed as a definition/interface, not emitted as a new theorem:
+\[
+\boxed{\mathrm{FINAL\_STATEMENT}:=\mathrm{RiemannHypothesis}.}
+\]
+The repository does not assert that this proposition is proved. The backward-dense
+compression uses the already-audited external B\'aez--Duarte criterion to identify
+the positive-integer Nyman--Beurling closure condition with the Riemann Hypothesis.
+In the concrete repository semantics the corresponding finite-defect endpoint is
+\[
+\boxed{
+\mathrm{R2\_ENDPOINT}:=
+\texttt{concreteNBData.DNLimit concreteGeneratorFamily}=0.
+}
+\]
+No new \texttt{.lean} declaration is introduced while the middle frontier is open.
+This preserves the current policy \texttt{no\_new\_lean\_until\_middle\_closed}.

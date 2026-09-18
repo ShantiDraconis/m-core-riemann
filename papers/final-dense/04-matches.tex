@@ -1,0 +1,26 @@
+\section{Match audit}
+The machine-readable source is \texttt{audit/BACKWARD\_DENSE\_MATCHES.json}.
+The decisive classifications are:
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Dimension & Result\\
+\hline
+HYPOTHESIS\_MATCH & PASS for R0/R1 and unconditional BCF Lemma 2\\
+\hline
+CONCLUSION\_MATCH & PASS to $DNLimit=0$ only after the open residue bound\\
+\hline
+QUANTIFIER\_MATCH & PASS: external $a\in\mathbb N_{>0}$ matches internal $a=n+1$\\
+\hline
+SCALING\_MATCH & PASS: $L^2(0,\infty,dx)$, $\rho_a(x)=\{1/(ax)\}$\\
+\hline
+CONSTANT\_MATCH & Burnol constant is a guardrail, not a closing assumption\\
+\hline
+AXIOM\_AUDIT & frozen Lean theorems rechecked by dense CI\\
+\hline
+\end{tabular}
+\end{center}
+
+BCF Theorem 1 has the desired asymptotic conclusion but assumes RH, so it fails as unconditional closing evidence and is excluded rather than promoted.
+
+Finite Arb calculations through $N=256$ have a different mismatch: their conclusion is finite-$N$, while the endpoint quantifier is $N\to\infty$. They remain model evidence.

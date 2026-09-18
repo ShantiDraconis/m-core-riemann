@@ -1,0 +1,35 @@
+\section{Backward collapse}
+Working from the endpoint backward removes every layer that is already classical, frozen, or merely computational.
+
+\subsection*{B\'aez--Duarte criterion}
+L. B\'aez--Duarte, ``A strengthening of the Nyman--Beurling criterion for the Riemann hypothesis,'' \emph{Rendiconti Lincei Matematica e Applicazioni} 14 (2003), 5--11, arXiv:math/0202141, proves that the integer dilations $\rho_a(x)=\{1/(ax)\}$, $a\in\mathbb N_{>0}$, suffice in $L^2(0,\infty)$. This is \texttt{PROVED\_EXTERNAL}: endpoint wiring, not the open proof step.
+
+\subsection*{Hilbert-space closure wiring}
+For the increasing finite-dimensional spaces $V_N$, distance to $V_N$ decreases to distance to the closure of their union. Combined with the frozen Lean theorem $DNToZero\iff DNLimit=0$, this converts the external closure criterion into the concrete R2 endpoint. The closure-to-finite-distance step remains explicitly \texttt{EXTERNAL\_UNFORMALIZED}, not a project axiom.
+
+\subsection*{Gram/Vasyunin wiring}
+The concrete Gram entries are
+\[
+G_{a,b}=\int_0^\infty \left\{\frac{t}{a}\right\}\left\{\frac{t}{b}\right\}\frac{dt}{t^2}.
+\]
+The cotangent/Vasyunin representation is an external analytic input with explicit normalization and independent quadrature checks. Primary project reference: L. B\'aez--Duarte, ``Harmonic series summation lemma and Vasyunin's formulas,'' \emph{Zap. Nauchn. Sem. POMI} 282 (2001), 20--25; English translation \emph{J. Math. Sci.} 120 (2004), 1653--1656. This computes finite Gram data; it does not prove $DNLimit=0$.
+
+\subsection*{Mellin--Plancherel wiring}
+With $\mathcal M\chi(s)=1/s$ and $\mathcal M\rho_n(s)=-\zeta(s)/(s n^s)$, the finite residual is represented on $\Re s=1/2$ by
+\[
+\frac1{2\pi}\int_{\mathbb R}\frac{|1+\zeta(\tfrac12+it)P_N(\tfrac12+it)|^2}{\tfrac14+t^2}\,dt.
+\]
+This is an identity layer, not an asymptotic estimate.
+
+\subsection*{Bettin--Conrey--Farmer wiring}
+S. Bettin, J. B. Conrey, and D. W. Farmer, ``An optimal choice of Dirichlet polynomials for the Nyman--Beurling criterion,'' \emph{Proc. Steklov Inst. Math.} 280 Suppl. 2 (2013), S30--S36, arXiv:1211.5191, state explicitly that Lemma 2 is unconditional. It decomposes the linear Riesz--M\"obius polynomial into a logarithmic derivative term, a sum of zero residues, and an entire remainder. This is \texttt{PROVED\_EXTERNAL\_UNCONDITIONAL\_IDENTITY}.
+
+BCF Lemma 3 and Theorem 1 are not closing evidence: they assume RH and an additional discrete moment bound for $1/|\zeta'(\rho)|^2$. Their asymptotic is therefore \texttt{CIRCULAR\_CONDITIONAL\_ASYMPTOTIC} for this audit.
+
+\subsection*{Rate lower bound}
+J.-F. Burnol, ``A lower bound in an approximation problem involving the zeros of the Riemann zeta function,'' \emph{Advances in Mathematics} 170 (2002), 56--70, supplies an asymptotic lower-bound guardrail. A lower bound does not provide the missing vanishing upper bound.
+
+After collapse:
+\[
+\mathrm{BCF\ Lemma\ 2}\longrightarrow\boxed{\mathrm{ZERO\_RESIDUE\_SUM\_UNCONDITIONAL\_CONTROL}}\longrightarrow DNLimit=0\longrightarrow RH.
+\]

@@ -1,0 +1,30 @@
+\section{First residue}
+Let
+\[
+V_N(s)=\sum_{n\le N}\left(1-\frac{\log n}{\log N}\right)\frac{\mu(n)}{n^s}.
+\]
+BCF Lemma 2 gives, unconditionally for $0<\Re s<1$, an identity of the form
+\[
+1-\zeta(s)V_N(s)=\frac1{\log N}\left[\frac{\zeta'}{\zeta}(s)-\zeta(s)\sum_\rho R_N(\rho,s)-\zeta(s)F_s(1/N)\right],
+\]
+where $R_N(\rho,s)$ is the residue contribution associated with a nontrivial zero $\rho$, and $F_s$ is entire.
+
+The exact closing proposition for this explicit route is
+\[
+\boxed{
+\mathcal E_N:=\frac1{2\pi}\int_{\mathbb R}\frac{|1-\zeta(\tfrac12+it)V_N(\tfrac12+it)|^2}{\tfrac14+t^2}\,dt\longrightarrow0.
+}
+\]
+By best approximation, proving this for an admissible explicit family forces the optimal finite defects to zero and hence $DNLimit=0$.
+
+The first unresolved mathematical residue is therefore not the Gram matrix, Mellin transform, finite solver, or existence of the limit. It is sufficient unconditional weighted $L^2$ control of the complete BCF residual, with the zero-residue contribution as the structurally critical term:
+\[
+\boxed{\texttt{ZERO\_RESIDUE\_SUM\_UNCONDITIONAL\_CONTROL}.}
+\]
+For a simple zero $\rho=\sigma+i\gamma$, the residue contains the raw scale
+\[
+R_N(\rho,s)\sim\frac{N^{\rho-s}}{\zeta'(\rho)(\rho-s)^2}.
+\]
+On $\Re s=1/2$, an off-critical $\sigma>1/2$ therefore produces the factor $N^{\sigma-1/2}$. This is not itself a lower bound because residues can interfere, but it shows why the missing estimate is the genuine RH-equivalent obstruction rather than a routine remainder bound.
+
+Closing evidence must not assume RH, an equivalent zero-location statement, BCF Lemma 3/Theorem 1, or extrapolation from finitely many $N$.

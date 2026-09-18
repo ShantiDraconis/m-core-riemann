@@ -1,0 +1,131 @@
+{
+  "schema": "m-core-backward-dense-matches-v1",
+  "repository": "ShantiDraconis/m-core-riemann",
+  "branch": "research/r2-dnlimit-zero",
+  "base_sha": "53d97bc0a3e64de419f4214625ae75a9e1ecb178",
+  "generation_head_sha": "cc5d99748130b3ab6a1e04e63020bbbef4443e3e",
+  "final_statement": {
+    "definition": "RiemannHypothesis",
+    "theorem_emitted": false,
+    "status": "BLOCKED_BY_MIDDLE",
+    "compressed_endpoint": "MCore.RH.R0.concreteNBData.DNLimit MCore.RH.R0.concreteGeneratorFamily = 0"
+  },
+  "chain": {
+    "R0_CERT": "GREEN",
+    "R1": "GREEN_EXTERNAL_INTERFACE",
+    "R2": "OPEN_BRIDGE",
+    "material_gate_count": 1,
+    "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL"
+  },
+  "matches": [
+    {
+      "layer": "R0_CONCRETE_MODEL",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "PASS_FOR_CONCRETE_MODEL_ONLY",
+      "QUANTIFIER_MATCH": "PASS",
+      "SCALING_MATCH": "PASS",
+      "CONSTANT_MATCH": "NOT_APPLICABLE",
+      "AXIOM_AUDIT": "PROVED_LEAN_FROZEN__RUNTIME_RECHECK_REQUIRED"
+    },
+    {
+      "layer": "R1_BAEZ_DUARTE_INTEGER_DILATION_CRITERION",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "PASS",
+      "QUANTIFIER_MATCH": "PASS__POSITIVE_INTEGER_a_MATCHES_INTERNAL_n_PLUS_1",
+      "SCALING_MATCH": "PASS__rho_a(x)=fract(1/(a*x))",
+      "CONSTANT_MATCH": "NOT_APPLICABLE",
+      "AXIOM_AUDIT": "EXTERNAL_CLASSICAL_AUDITED",
+      "source": "Luis Baez-Duarte, Rend. Lincei Mat. Appl. 14 (2003), 5-11; arXiv:math/0202141."
+    },
+    {
+      "layer": "FINITE_SPAN_CLOSURE_TO_DNTOZERO",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "PASS",
+      "QUANTIFIER_MATCH": "PASS__INCREASING_FINITE_SPANS",
+      "SCALING_MATCH": "PASS",
+      "CONSTANT_MATCH": "NOT_APPLICABLE",
+      "AXIOM_AUDIT": "STANDARD_HILBERT_ANALYSIS__EXTERNAL_UNFORMALIZED"
+    },
+    {
+      "layer": "NB15_DNTOZERO_IFF_DNLIMIT_ZERO",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "PASS",
+      "QUANTIFIER_MATCH": "PASS",
+      "SCALING_MATCH": "PASS",
+      "CONSTANT_MATCH": "NOT_APPLICABLE",
+      "AXIOM_AUDIT": "PROVED_LEAN_FROZEN__RUNTIME_RECHECK_REQUIRED",
+      "source_sha": "e7e36d636a56ea23fbf7b534acb4eecba76bc6b6"
+    },
+    {
+      "layer": "VASYUNIN_GRAM_WIRING",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "PASS_FOR_GRAM_ENTRIES_ONLY",
+      "QUANTIFIER_MATCH": "PASS__POSITIVE_INTEGERS",
+      "SCALING_MATCH": "PASS__EXPLICIT_CHANGE_OF_VARIABLES_TO_dt_over_t2",
+      "CONSTANT_MATCH": "PASS_FOR_IMPLEMENTED_FORMULA",
+      "AXIOM_AUDIT": "EXTERNAL_CLASSICAL_WITH_INDEPENDENT_NUMERICAL_CHECK"
+    },
+    {
+      "layer": "MELLIN_PLANCHEREL_WIRING",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "PASS_FOR_WEIGHTED_RESIDUAL_IDENTITY",
+      "QUANTIFIER_MATCH": "PASS",
+      "SCALING_MATCH": "PASS__critical_line_Re_s=1/2_for_L2_dx",
+      "CONSTANT_MATCH": "PASS__weight_1_over_(1/4+t^2)",
+      "AXIOM_AUDIT": "EXTERNAL_CLASSICAL"
+    },
+    {
+      "layer": "BCF_LEMMA_2",
+      "HYPOTHESIS_MATCH": "PASS__UNCONDITIONAL_FOR_0_LT_Re_s_LT_1",
+      "CONCLUSION_MATCH": "PASS_FOR_RESIDUE_DECOMPOSITION_ONLY",
+      "QUANTIFIER_MATCH": "PASS",
+      "SCALING_MATCH": "PASS__LINEAR_RIESZ_MOBIUS_POLYNOMIAL",
+      "CONSTANT_MATCH": "NOT_APPLICABLE_TO_CLOSURE",
+      "AXIOM_AUDIT": "PROVED_EXTERNAL_UNCONDITIONAL_IDENTITY",
+      "source": "Bettin-Conrey-Farmer, Proc. Steklov Inst. Math. 280 Suppl. 2 (2013), S30-S36; arXiv:1211.5191, Lemma 2."
+    },
+    {
+      "layer": "BCF_LEMMA_3_AND_THEOREM_1",
+      "HYPOTHESIS_MATCH": "FAIL_AS_UNCONDITIONAL_CLOSING_EVIDENCE__ASSUMES_RH_AND_ZERO_DERIVATIVE_MOMENT_BOUND",
+      "CONCLUSION_MATCH": "CONDITIONAL_ASYMPTOTIC_ONLY",
+      "QUANTIFIER_MATCH": "PASS_UNDER_STATED_CONDITIONS",
+      "SCALING_MATCH": "PASS",
+      "CONSTANT_MATCH": "CONDITIONAL_BURNOL_CONSTANT",
+      "AXIOM_AUDIT": "CIRCULAR_CONDITIONAL_ROUTE"
+    },
+    {
+      "layer": "BURNOL_LOWER_BOUND",
+      "HYPOTHESIS_MATCH": "PASS",
+      "CONCLUSION_MATCH": "MISMATCH_FOR_CLOSURE__LOWER_BOUND_NOT_VANISHING_UPPER_BOUND",
+      "QUANTIFIER_MATCH": "ASYMPTOTIC_LIMINF",
+      "SCALING_MATCH": "PASS",
+      "CONSTANT_MATCH": "RATE_GUARDRAIL_ONLY",
+      "AXIOM_AUDIT": "PROVED_EXTERNAL"
+    },
+    {
+      "layer": "FINITE_ARB_NUMERICS",
+      "HYPOTHESIS_MATCH": "PASS_FOR_FINITE_N",
+      "CONCLUSION_MATCH": "FAIL_FOR_INFINITE_LIMIT",
+      "QUANTIFIER_MATCH": "FAIL_FOR_ALL_N_ASYMPTOTIC",
+      "SCALING_MATCH": "PASS",
+      "CONSTANT_MATCH": "MODEL_EVIDENCE_ONLY",
+      "AXIOM_AUDIT": "NOT_APPLICABLE"
+    }
+  ],
+  "first_residue": {
+    "id": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "status": "OPEN_MATH",
+    "exact_closing_obligation": "Prove unconditionally that the weighted Mellin residual energy of an explicit admissible finite-span approximant tends to zero; on the current BCF route this requires sufficient unconditional control of the complete zero-residue contribution and companion terms in Lemma 2.",
+    "forbidden_inputs": [
+      "RiemannHypothesis",
+      "RH-equivalent zero-location assumption",
+      "BCF Lemma 3 or Theorem 1 as unconditional input",
+      "finite-N numerical extrapolation"
+    ]
+  },
+  "current_claims": {
+    "dnlimit_eq_zero_proved": false,
+    "rh_proved": false,
+    "rh_false_proved": false
+  }
+}
