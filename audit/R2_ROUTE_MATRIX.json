@@ -110,7 +110,9 @@
     "objective": "Use the unconditional BCF Lemma 2 decomposition to obtain enough unconditional weighted L2 control of the zero-residue contribution (and companion terms) to force the linear Riesz-Mobius residual to vanish.",
     "external_identity_available": true,
     "forbidden_shortcut": "BCF Lemma 3 and Theorem 1 require RH plus a zeta-prime zero-moment hypothesis and cannot close R2.",
-    "note": "Any unconditional vanishing bound here is already at the RH-equivalent frontier exposed by R1."
+    "note": "Any unconditional vanishing bound here is already at the RH-equivalent frontier exposed by R1.",
+    "minimal_gate_count": 1,
+    "no_gate_splitting_without_new_unconditional_estimate": true
   },
   "finite_mobius_diagnostics": {
     "source_sha": "77be7ec1a7d4e8c834a1afc8dc30cbcf62d61ec1",
@@ -189,5 +191,27 @@
       "200_500": "0.000848510159043059787812072172792"
     },
     "inference_limit": "quadrature/model evidence only; unresolved remainder combines |t|>500 energy and numerical error; no tail bound"
+  },
+  "frontier_minimization": {
+    "policy": "ONE_MATERIAL_OPEN_GATE",
+    "material_gate": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "reason": "R1 already makes vanishing equivalent to RH; splitting control of off-critical residue contributions into nominal subgates would not reduce the mathematical obligation.",
+    "external_input": "BCF Lemma 2 unconditional residue decomposition",
+    "no_new_lean_until_closed": true
+  },
+  "off_critical_residue_obstruction": {
+    "classification": "STRUCTURAL_BOUNDARY_WITH_CONDITIONAL_STRESS_TEST",
+    "simple_zero_scale": "R_N(rho,s)=N^(rho-s)/(zeta'(rho)*(rho-s)^2); for Re(s)=1/2 and Re(rho)=sigma>1/2 the raw magnitude scale is N^(sigma-1/2)",
+    "stress_test": {
+      "source": "Maier-Rassias, Canadian Mathematical Bulletin 61 (2018), DOI 10.4153/CMB-2017-070-3",
+      "classification": "CONDITIONAL_OFF_CRITICAL_OBSTRUCTION_MODEL",
+      "hypotheses": [
+        "exactly one off-critical zero quadruplet sigma0 +/- i gamma0, 1-sigma0 +/- i gamma0",
+        "discrete zeta-prime moment growth hypothesis"
+      ],
+      "main_scale": "N^(2*sigma0-1)/(log N)^2 times A cos(2 gamma0 log N)+B sin(2 gamma0 log N)+C",
+      "use": "boundary sanity check only; not a theorem about the actual zero set"
+    },
+    "inference": "A vanishing unconditional BCF residual estimate must genuinely overcome/exclude off-critical-zero residue contributions; this is not a routine remainder estimate."
   }
 }
