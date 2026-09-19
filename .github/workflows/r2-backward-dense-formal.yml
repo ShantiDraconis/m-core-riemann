@@ -28,11 +28,17 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
           $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
 
-      - name: Resolve pinned dependencies
+      - name: Verify pinned dependency manifest
+        shell: python
         run: |
-          rm -f lake-manifest.json
-          lake update
-          lake exe cache get
+          import json
+          m=json.load(open("lake-manifest.json", encoding="utf-8"))
+          pkgs={p["name"]:p for p in m["packages"]}
+          assert pkgs["mathlib"]["rev"] == "c44e0c8ee63ca166450922a373c7409c5d26b00b"
+          assert pkgs["mathlib"]["inputRev"] == "c44e0c8ee63ca166450922a373c7409c5d26b00b"
+
+      - name: Fetch pinned Mathlib cache
+        run: lake exe cache get
 
       - name: Compile backward-dense endpoint
         run: |
@@ -50,6 +56,9 @@ jobs:
           grep -q 'def R1ExternalBridge : Prop' "$F"
           grep -q 'theorem openBridge_iff_compressedEndpoint' "$F"
           grep -q 'theorem openBridge_iff_finalStatement_of_r1' "$F"
+          grep -q 'def VanishingUpperCertificate : Prop' "$F"
+          grep -q 'def CLogUpperCertificate (C : ℝ) : Prop' "$F"
+          grep -q 'theorem openBridge_of_CLogUpperCertificate' "$F"
 
       - name: Axiom audit
         run: |
@@ -80,6 +89,8 @@ jobs:
           echo "OPEN_BRIDGE=DNToZero"
           echo "OPEN_BRIDGE_IFF_COMPRESSED_ENDPOINT=PROVED_LEAN_WIRING"
           echo "COMPRESSED_ENDPOINT_IFF_FINAL=R1_EXTERNAL_INTERFACE_NOT_ASSERTED_IN_LEAN"
+          echo "VANISHING_UPPER_CERTIFICATE_IFF_OPEN_BRIDGE=PROVED_LEAN_WIRING"
+          echo "C_LOG_UPPER_CERTIFICATE_IMPLIES_OPEN_BRIDGE=PROVED_LEAN_WIRING"
           echo "MATERIAL_FRONTIER=BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL"
           echo "MATERIAL_GATE_COUNT=1"
           echo "DNLimit_EQ_ZERO=false"
