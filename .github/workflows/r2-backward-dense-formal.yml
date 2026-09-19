@@ -30,6 +30,8 @@ jobs:
 
       - name: Resolve pinned dependencies
         run: |
+          rm -f lake-manifest.json
+          lake update
           lake exe cache get
 
       - name: Compile backward-dense endpoint
