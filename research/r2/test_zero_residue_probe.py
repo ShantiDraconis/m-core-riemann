@@ -1,11 +1,13 @@
 import json
+from pathlib import Path
 import subprocess
 import sys
 
 
 def main() -> None:
+    probe = Path(__file__).with_name("zero_residue_probe.py")
     out = subprocess.check_output([
-        sys.executable, "zero_residue_probe.py", "--schedule", "32,64",
+        sys.executable, str(probe), "--schedule", "32,64",
         "--t-grid", "0,10,20", "--zeros", "4", "--dps", "35"
     ], text=True)
     rows = [json.loads(line) for line in out.splitlines()]
