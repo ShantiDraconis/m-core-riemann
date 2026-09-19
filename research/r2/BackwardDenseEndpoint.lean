@@ -1,6 +1,7 @@
 import MCore.RH.R0.RhoConcrete
 import MCore.RH.NB.ZeroLimitFrontier
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 namespace MCore.RH.R2
 
@@ -138,6 +139,54 @@ theorem vanishingUpperCertificate_iff_finalStatement_of_r1
       (openBridge_iff_finalStatement_of_r1 hR1)
 
 /--
+Concrete logarithmic-rate certificate suggested by the finite R2 diagnostics.
+
+The +2 shift keeps the logarithm strictly positive from N=0 onward and is
+asymptotically irrelevant. DN is the frozen squared residual, not dN.
+-/
+def CLogUpperCertificate (C : ℝ) : Prop :=
+  ∀ N : ℕ,
+    MCore.RH.R0.concreteNBData.DN
+      MCore.RH.R0.concreteGeneratorFamily N ≤
+      C / Real.log ((N : ℝ) + 2)
+
+/--
+For every real constant C, the candidate majorant C/log(N+2) tends to zero.
+-/
+theorem C_div_log_nat_add_two_tendsto_zero (C : ℝ) :
+    Filter.Tendsto
+      (fun N : ℕ => C / Real.log ((N : ℝ) + 2))
+      Filter.atTop
+      (nhds 0) := by
+  refine tendsto_const_nhds.div_atTop ?_
+  exact
+    Real.tendsto_log_atTop.comp
+      (tendsto_atTop_add_const_right
+        Filter.atTop
+        (2 : ℝ)
+        tendsto_natCast_atTop_atTop)
+
+/--
+A global C/log(N+2) upper bound is sufficient to close the internal R2 bridge.
+-/
+theorem vanishingUpperCertificate_of_CLogUpperCertificate
+    (C : ℝ)
+    (hC : CLogUpperCertificate C) :
+    VanishingUpperCertificate := by
+  exact
+    ⟨fun N => C / Real.log ((N : ℝ) + 2),
+      hC,
+      C_div_log_nat_add_two_tendsto_zero C⟩
+
+theorem openBridge_of_CLogUpperCertificate
+    (C : ℝ)
+    (hC : CLogUpperCertificate C) :
+    OpenBridge := by
+  exact
+    vanishingUpperCertificate_iff_openBridge.mp
+      (vanishingUpperCertificate_of_CLogUpperCertificate C hC)
+
+/--
 The internal falsity endpoint: the certified nonnegative DN limit is strictly
 positive. This is a definition only; no claim that it holds is made.
 -/
@@ -213,6 +262,23 @@ theorem falseEndpoint_witnesses_majorant_failure
       (openBridge_of_upper_tendsto_zero eps hupper heps)
 
 /--
+On the false lane, every fixed C/log(N+2) proposal has a finite counterexample
+index.
+-/
+theorem falseEndpoint_witnesses_CLog_failure
+    (hfalse : FalseEndpoint)
+    (C : ℝ) :
+    ∃ N : ℕ,
+      C / Real.log ((N : ℝ) + 2) <
+        MCore.RH.R0.concreteNBData.DN
+          MCore.RH.R0.concreteGeneratorFamily N := by
+  exact
+    falseEndpoint_witnesses_majorant_failure
+      hfalse
+      (fun N => C / Real.log ((N : ℝ) + 2))
+      (C_div_log_nat_add_two_tendsto_zero C)
+
+/--
 Conditional false-lane composition through the explicit R1 external
 interface. Again, R1 is a theorem hypothesis, not a project axiom.
 -/
@@ -237,10 +303,14 @@ theorem materialFrontier_iff_openBridge :
 #print axioms MCore.RH.R2.openBridge_of_upper_tendsto_zero
 #print axioms MCore.RH.R2.vanishingUpperCertificate_iff_openBridge
 #print axioms MCore.RH.R2.vanishingUpperCertificate_iff_finalStatement_of_r1
+#print axioms MCore.RH.R2.C_div_log_nat_add_two_tendsto_zero
+#print axioms MCore.RH.R2.vanishingUpperCertificate_of_CLogUpperCertificate
+#print axioms MCore.RH.R2.openBridge_of_CLogUpperCertificate
 #print axioms MCore.RH.R2.not_compressedEndpoint_iff_falseEndpoint
 #print axioms MCore.RH.R2.falseEndpoint_iff_not_openBridge
 #print axioms MCore.RH.R2.falseEndpoint_iff_noVanishingUpperCertificate
 #print axioms MCore.RH.R2.falseEndpoint_witnesses_majorant_failure
+#print axioms MCore.RH.R2.falseEndpoint_witnesses_CLog_failure
 #print axioms MCore.RH.R2.falseEndpoint_iff_not_finalStatement_of_r1
 #print axioms MCore.RH.R2.materialFrontier_iff_openBridge
 
