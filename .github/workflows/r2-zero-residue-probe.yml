@@ -1,0 +1,60 @@
+name: r2-zero-residue-probe
+
+on:
+  push:
+    branches:
+      - research/r2-zero-residue-probe
+    paths:
+      - 'research/r2/zero_residue_probe.py'
+      - 'research/r2/test_zero_residue_probe.py'
+      - 'audit/R2_ZERO_RESIDUE_PROBE.md'
+      - '.github/workflows/r2-zero-residue-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned diagnostic runtime
+        run: python -m pip install mpmath==1.3.0
+      - name: Fast semantic test
+        run: python research/r2/test_zero_residue_probe.py
+      - name: Run zero-residue diagnostic
+        run: |
+          python research/r2/zero_residue_probe.py \
+            --schedule 32,64,128,256 \
+            --t-grid 0,5,10,12,16,20,25,30,40,50 \
+            --zeros 20 --dps 50 \
+            --jsonl research/r2/zero_residue_probe.jsonl
+      - name: No-promotion firewall
+        shell: python
+        run: |
+          import json
+          rows=[json.loads(x) for x in open('research/r2/zero_residue_probe.jsonl')]
+          meta=rows[0]['metadata']
+          assert meta['classification']=='MODEL_EVIDENCE_ONLY_CRITICAL_ZERO_TRUNCATION'
+          assert meta['residue_tail_certified'] is False
+          assert meta['dnlimit_eq_zero_proved'] is False
+          assert meta['rh_proved'] is False
+          assert 'off-critical' in meta['critical_limitation']
+          data=rows[1:]
+          assert data and all('pairing_ratio' in x for x in data if not x['skipped'])
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r2-zero-residue-${{ github.sha }}
+          path: research/r2/zero_residue_probe.jsonl
+          if-no-files-found: error
+      - name: Research status
+        run: |
+          echo "ZERO_RESIDUE_PROBE=MODEL_EVIDENCE_ONLY"
+          echo "RESIDUE_TAIL_CERTIFIED=false"
+          echo "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL=OPEN_MATH"
+          echo "DNLIMIT_EQ_ZERO=false"
+          echo "RH_PROVED=false"
