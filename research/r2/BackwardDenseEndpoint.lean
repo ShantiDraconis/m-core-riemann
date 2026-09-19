@@ -109,7 +109,7 @@ theorem not_compressedEndpoint_iff_falseEndpoint :
         MCore.RH.R0.concreteGeneratorFamily)
       (Ne.symm hne)
   · intro hpos hzero
-    exact (ne_of_gt hpos) hzero.symm
+    exact (ne_of_gt hpos) hzero
 
 /--
 The true and false internal endpoints are exact complements.
