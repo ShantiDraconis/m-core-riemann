@@ -49,6 +49,7 @@ EXPECTED = [
     "audit/BACKWARD_DENSE_AXIOM_AUDIT.txt",
     "certificates/PROOF_CLOSURE_TRIPLE_CERT.json",
     "research/r2/DNLimitZeroAttack.md",
+    "research/r2/BackwardDenseEndpoint.lean",
     "research/r2/GramAnalytic.md",
     "research/r2/gram_engine.py",
     "research/r2/mellin_band_probe.py",
@@ -164,6 +165,9 @@ def lean_code_only(text: str) -> str:
 
 def audit_all_riemann_lean() -> None:
     lean_files = sorted((ROOT / "lean/MCore/RH").rglob("*.lean"))
+    endpoint = ROOT / "research/r2/BackwardDenseEndpoint.lean"
+    if endpoint.is_file():
+        lean_files.append(endpoint)
     if not lean_files:
         fail("no Riemann Lean sources found")
     bad_tokens = []
