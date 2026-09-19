@@ -37,6 +37,18 @@ jobs:
           assert pkgs["mathlib"]["rev"] == "c44e0c8ee63ca166450922a373c7409c5d26b00b"
           assert pkgs["mathlib"]["inputRev"] == "c44e0c8ee63ca166450922a373c7409c5d26b00b"
 
+      - name: Hydrate only pinned Mathlib dependency graph
+        run: |
+          lake update mathlib
+          python - <<'PY'
+          import json
+          m=json.load(open("lake-manifest.json", encoding="utf-8"))
+          pkgs={p["name"]:p for p in m["packages"]}
+          assert pkgs["mathlib"]["rev"] == "c44e0c8ee63ca166450922a373c7409c5d26b00b"
+          assert "plausible" in pkgs
+          print("TARGETED_MANIFEST_HYDRATION=GREEN")
+          PY
+
       - name: Fetch pinned Mathlib cache
         run: lake exe cache get
 
