@@ -46,7 +46,10 @@ jobs:
           ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$F"
           grep -q 'def FinalStatement : Prop' "$F"
           grep -q 'def OpenBridge : Prop' "$F"
-          grep -q 'theorem openBridge_iff_finalStatement' "$F"
+          grep -q 'def CompressedEndpoint : Prop' "$F"
+          grep -q 'def R1ExternalBridge : Prop' "$F"
+          grep -q 'theorem openBridge_iff_compressedEndpoint' "$F"
+          grep -q 'theorem openBridge_iff_finalStatement_of_r1' "$F"
 
       - name: Axiom audit
         run: |
@@ -72,9 +75,11 @@ jobs:
 
       - name: Backward-dense status
         run: |
-          echo "FINAL_STATEMENT=DEFINED_NOT_PROVED"
+          echo "FINAL_STATEMENT=RiemannHypothesis_DEFINED_NOT_PROVED"
+          echo "COMPRESSED_ENDPOINT=DNLimit_EQ_ZERO_DEFINED_NOT_PROVED"
           echo "OPEN_BRIDGE=DNToZero"
-          echo "OPEN_BRIDGE_IFF_FINAL=PROVED_LEAN_WIRING"
+          echo "OPEN_BRIDGE_IFF_COMPRESSED_ENDPOINT=PROVED_LEAN_WIRING"
+          echo "COMPRESSED_ENDPOINT_IFF_FINAL=R1_EXTERNAL_INTERFACE_NOT_ASSERTED_IN_LEAN"
           echo "MATERIAL_FRONTIER=BN_COMBINED_BLOCK_UNCONDITIONAL_CONTROL"
           echo "MATERIAL_GATE_COUNT=1"
           echo "DNLimit_EQ_ZERO=false"
