@@ -62,6 +62,31 @@ theorem openBridge_iff_finalStatement_of_r1
   exact openBridge_iff_compressedEndpoint.trans hR1
 
 /--
+Generic backward-dense closing lemma.
+
+Any explicit real majorant eps_N which dominates the concrete finite defect
+DN_N at every stage and tends to zero forces the internal open bridge.
+
+This theorem is pure order/topology wiring. It does not construct such a
+majorant; supplying one unconditionally is exactly the remaining mathematics.
+-/
+theorem openBridge_of_upper_tendsto_zero
+    (eps : ℕ → ℝ)
+    (hupper :
+      ∀ N : ℕ,
+        MCore.RH.R0.concreteNBData.DN
+          MCore.RH.R0.concreteGeneratorFamily N ≤ eps N)
+    (heps : Filter.Tendsto eps Filter.atTop (nhds 0)) :
+    OpenBridge := by
+  unfold OpenBridge MCore.RH.NB.NBHilbertData.DNToZero
+  exact squeeze_zero
+    (fun N =>
+      MCore.RH.R0.concreteNBData.DN_nonneg
+        MCore.RH.R0.concreteGeneratorFamily N)
+    hupper
+    heps
+
+/--
 Research status proposition: the unresolved internal mathematical content is
 OpenBridge. The BCF combined-block estimate is a proposed analytic route to
 this proposition, not an assumption inserted here.
@@ -74,6 +99,7 @@ theorem materialFrontier_iff_openBridge :
 
 #print axioms MCore.RH.R2.openBridge_iff_compressedEndpoint
 #print axioms MCore.RH.R2.openBridge_iff_finalStatement_of_r1
+#print axioms MCore.RH.R2.openBridge_of_upper_tendsto_zero
 #print axioms MCore.RH.R2.materialFrontier_iff_openBridge
 
 end
