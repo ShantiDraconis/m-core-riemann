@@ -7,7 +7,10 @@ on:
     paths:
       - 'research/r2/zero_residue_probe.py'
       - 'research/r2/test_zero_residue_probe.py'
+      - 'research/r2/zero_residue_dyadic.py'
+      - 'research/r2/test_zero_residue_dyadic.py'
       - 'audit/R2_ZERO_RESIDUE_PROBE.md'
+      - 'audit/R2_ZERO_RESIDUE_DYADIC.md'
       - '.github/workflows/r2-zero-residue-probe.yml'
   workflow_dispatch:
 
@@ -25,7 +28,9 @@ jobs:
       - name: Install pinned diagnostic runtime
         run: python -m pip install mpmath==1.3.0
       - name: Fast semantic test
-        run: python research/r2/test_zero_residue_probe.py
+        run: |
+          python research/r2/test_zero_residue_probe.py
+          python research/r2/test_zero_residue_dyadic.py
       - name: Run zero-residue diagnostic
         run: |
           python research/r2/zero_residue_probe.py \
@@ -33,6 +38,13 @@ jobs:
             --t-grid 0,5,10,12,16,20,25,30,40,50 \
             --zeros 20 --dps 50 \
             --jsonl research/r2/zero_residue_probe.jsonl
+      - name: Run dyadic zero-residue diagnostic
+        run: |
+          python research/r2/zero_residue_dyadic.py \
+            --schedule 64,128,256 \
+            --t-grid 0,10,20,30,50 \
+            --zeros 32 --dps 50 \
+            --jsonl research/r2/zero_residue_dyadic.jsonl
       - name: No-promotion firewall
         shell: python
         run: |
@@ -46,15 +58,27 @@ jobs:
           assert 'off-critical' in meta['critical_limitation']
           data=rows[1:]
           assert data and all('pairing_ratio' in x for x in data if not x['skipped'])
+          dy=[json.loads(x) for x in open('research/r2/zero_residue_dyadic.jsonl')]
+          dm=dy[0]['metadata']
+          assert dm['classification']=='MODEL_EVIDENCE_ONLY_DYADIC_CRITICAL_ZERO_TRUNCATION'
+          assert dm['off_critical_zeros_excluded'] is False
+          assert dm['uniform_zero_tail_bound_proved'] is False
+          assert dm['dnlimit_eq_zero_proved'] is False
+          assert dm['rh_proved'] is False
+          assert dy[1:]
+          assert all('cross_block_cancellation_ratio' in x for x in dy[1:] if not x['skipped'])
       - uses: actions/upload-artifact@v4
         with:
           name: r2-zero-residue-${{ github.sha }}
-          path: research/r2/zero_residue_probe.jsonl
+          path: |
+            research/r2/zero_residue_probe.jsonl
+            research/r2/zero_residue_dyadic.jsonl
           if-no-files-found: error
       - name: Research status
         run: |
           echo "ZERO_RESIDUE_PROBE=MODEL_EVIDENCE_ONLY"
           echo "RESIDUE_TAIL_CERTIFIED=false"
+          echo "NAIVE_DYADIC_BLOCK_CANCELLATION=NOT_SUPPORTED_BY_FINITE_MODEL_EVIDENCE"
           echo "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL=OPEN_MATH"
           echo "DNLIMIT_EQ_ZERO=false"
           echo "RH_PROVED=false"
