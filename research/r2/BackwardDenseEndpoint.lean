@@ -139,6 +139,44 @@ theorem vanishingUpperCertificate_iff_finalStatement_of_r1
       (openBridge_iff_finalStatement_of_r1 hR1)
 
 /--
+An asymptotically exact closing certificate: eventual domination is enough.
+Finite prefixes do not affect a Tendsto-atTop statement.
+-/
+def EventuallyVanishingUpperCertificate : Prop :=
+  ∃ eps : ℕ → ℝ,
+    (∀ᶠ N : ℕ in Filter.atTop,
+      MCore.RH.R0.concreteNBData.DN
+        MCore.RH.R0.concreteGeneratorFamily N ≤ eps N) ∧
+    Filter.Tendsto eps Filter.atTop (nhds 0)
+
+theorem eventuallyVanishingUpperCertificate_iff_openBridge :
+    EventuallyVanishingUpperCertificate ↔ OpenBridge := by
+  constructor
+  · rintro ⟨eps, hupper, heps⟩
+    unfold OpenBridge MCore.RH.NB.NBHilbertData.DNToZero
+    exact squeeze_zero'
+      (Filter.Eventually.of_forall fun N =>
+        MCore.RH.R0.concreteNBData.DN_nonneg
+          MCore.RH.R0.concreteGeneratorFamily N)
+      hupper
+      heps
+  · intro hopen
+    refine ⟨
+      fun N =>
+        MCore.RH.R0.concreteNBData.DN
+          MCore.RH.R0.concreteGeneratorFamily N,
+      Filter.Eventually.of_forall fun _ => le_rfl,
+      ?_⟩
+    simpa [OpenBridge, MCore.RH.NB.NBHilbertData.DNToZero] using hopen
+
+theorem eventuallyVanishingUpperCertificate_iff_finalStatement_of_r1
+    (hR1 : R1ExternalBridge) :
+    EventuallyVanishingUpperCertificate ↔ FinalStatement := by
+  exact
+    eventuallyVanishingUpperCertificate_iff_openBridge.trans
+      (openBridge_iff_finalStatement_of_r1 hR1)
+
+/--
 Concrete logarithmic-rate certificate suggested by the finite R2 diagnostics.
 
 The +2 shift keeps the logarithm strictly positive from N=0 onward and is
@@ -165,6 +203,25 @@ theorem C_div_log_nat_add_two_tendsto_zero (C : ℝ) :
         Filter.atTop
         (2 : ℝ)
         tendsto_natCast_atTop_atTop)
+
+/--
+The asymptotic C/log(N+2) certificate: the bound only needs to hold eventually.
+-/
+def EventuallyCLogUpperCertificate (C : ℝ) : Prop :=
+  ∀ᶠ N : ℕ in Filter.atTop,
+    MCore.RH.R0.concreteNBData.DN
+      MCore.RH.R0.concreteGeneratorFamily N ≤
+      C / Real.log ((N : ℝ) + 2)
+
+theorem openBridge_of_eventuallyCLogUpperCertificate
+    (C : ℝ)
+    (hC : EventuallyCLogUpperCertificate C) :
+    OpenBridge := by
+  apply eventuallyVanishingUpperCertificate_iff_openBridge.mp
+  exact
+    ⟨fun N => C / Real.log ((N : ℝ) + 2),
+      hC,
+      C_div_log_nat_add_two_tendsto_zero C⟩
 
 /--
 A global C/log(N+2) upper bound is sufficient to close the internal R2 bridge.
@@ -303,9 +360,12 @@ theorem materialFrontier_iff_openBridge :
 #print axioms MCore.RH.R2.openBridge_of_upper_tendsto_zero
 #print axioms MCore.RH.R2.vanishingUpperCertificate_iff_openBridge
 #print axioms MCore.RH.R2.vanishingUpperCertificate_iff_finalStatement_of_r1
+#print axioms MCore.RH.R2.eventuallyVanishingUpperCertificate_iff_openBridge
+#print axioms MCore.RH.R2.eventuallyVanishingUpperCertificate_iff_finalStatement_of_r1
 #print axioms MCore.RH.R2.C_div_log_nat_add_two_tendsto_zero
 #print axioms MCore.RH.R2.vanishingUpperCertificate_of_CLogUpperCertificate
 #print axioms MCore.RH.R2.openBridge_of_CLogUpperCertificate
+#print axioms MCore.RH.R2.openBridge_of_eventuallyCLogUpperCertificate
 #print axioms MCore.RH.R2.not_compressedEndpoint_iff_falseEndpoint
 #print axioms MCore.RH.R2.falseEndpoint_iff_not_openBridge
 #print axioms MCore.RH.R2.falseEndpoint_iff_noVanishingUpperCertificate
