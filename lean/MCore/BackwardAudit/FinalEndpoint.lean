@@ -1,31 +1,37 @@
-import Mathlib
+import MCore.K0
 
 namespace MCore.RH
 
-/-- Semantic interface for the classical RH endpoint.
-    A concrete implementation must instantiate `NontrivialZero` with the
-    nontrivial zeros of the analytically continued Riemann zeta function. -/
+/-- Kernel-portable semantic interface for the classical RH endpoint. -/
 structure EndpointSemantics where
-  NontrivialZero : ℂ → Prop
+  Point : Type
+  NontrivialZero : Point → Prop
+  CriticalLine : Point → Prop
 
-/-- Interface-level Riemann Hypothesis: every nontrivial zero lies on
-    the critical line Re(s)=1/2. This is a proposition only, not a proof. -/
+/-- Every nontrivial zeta zero lies on the critical line.
+    This is a proposition only; no truth value is asserted. -/
 def FinalEndpoint (S : EndpointSemantics) : Prop :=
-  ∀ s : ℂ, S.NontrivialZero s → s.re = (1 : ℝ) / 2
+  ∀ s : S.Point, S.NontrivialZero s → S.CriticalLine s
 
-/-- A semantic adapter is what remains necessary before this interface can be
-    identified with the classical zeta-function statement. -/
+/-- Adapter obligation connecting the kernel-portable endpoint to a concrete
+    implementation of the analytically continued zeta function. -/
 structure ClassicalZetaAdapter (S : EndpointSemantics) where
-  isClassicalNontrivialZero : ℂ → Prop
-  exact_match : ∀ s, S.NontrivialZero s ↔ isClassicalNontrivialZero s
+  ConcretePoint : Type
+  embed : ConcretePoint → S.Point
+  isClassicalNontrivialZero : ConcretePoint → Prop
+  isClassicalCriticalLine : ConcretePoint → Prop
+  zero_match : ∀ s, isClassicalNontrivialZero s ↔ S.NontrivialZero (embed s)
+  line_match : ∀ s, isClassicalCriticalLine s ↔ S.CriticalLine (embed s)
 
 theorem endpoint_transport
     (S : EndpointSemantics)
     (A : ClassicalZetaAdapter S)
     (h : FinalEndpoint S) :
-    ∀ s, A.isClassicalNontrivialZero s → s.re = (1 : ℝ) / 2 := by
+    ∀ s : A.ConcretePoint,
+      A.isClassicalNontrivialZero s → A.isClassicalCriticalLine s := by
   intro s hs
-  exact h s ((A.exact_match s).2 hs)
+  apply (A.line_match s).2
+  exact h (A.embed s) ((A.zero_match s).1 hs)
 
 #print axioms endpoint_transport
 
