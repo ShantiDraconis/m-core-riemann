@@ -87,6 +87,57 @@ theorem openBridge_of_upper_tendsto_zero
     heps
 
 /--
+A complete analytic closing certificate for the internal R2 frontier.
+
+The certificate deliberately says only what is mathematically necessary:
+there exists an explicit real majorant for the concrete finite defects, valid
+for every N, and that majorant tends to zero.  No particular rate such as
+C/log N is baked into the definition.
+-/
+def VanishingUpperCertificate : Prop :=
+  ∃ eps : ℕ → ℝ,
+    (∀ N : ℕ,
+      MCore.RH.R0.concreteNBData.DN
+        MCore.RH.R0.concreteGeneratorFamily N ≤ eps N) ∧
+    Filter.Tendsto eps Filter.atTop (nhds 0)
+
+/--
+Backward-dense compression of the remaining internal mathematics:
+producing any vanishing upper certificate is equivalent to the open bridge
+itself.
+
+The reverse direction uses DN as its own certificate, so this theorem does not
+smuggle in an estimate; it identifies exactly the shape a successful analytic
+attack must supply.
+-/
+theorem vanishingUpperCertificate_iff_openBridge :
+    VanishingUpperCertificate ↔ OpenBridge := by
+  constructor
+  · rintro ⟨eps, hupper, heps⟩
+    exact openBridge_of_upper_tendsto_zero eps hupper heps
+  · intro hopen
+    refine ⟨
+      fun N =>
+        MCore.RH.R0.concreteNBData.DN
+          MCore.RH.R0.concreteGeneratorFamily N,
+      ?_,
+      ?_⟩
+    · intro N
+      exact le_rfl
+    · simpa [OpenBridge, MCore.RH.NB.NBHilbertData.DNToZero] using hopen
+
+/--
+Conditional composition to the actual repository endpoint.  The only external
+ingredient remains the explicit R1 equivalence hypothesis.
+-/
+theorem vanishingUpperCertificate_iff_finalStatement_of_r1
+    (hR1 : R1ExternalBridge) :
+    VanishingUpperCertificate ↔ FinalStatement := by
+  exact
+    vanishingUpperCertificate_iff_openBridge.trans
+      (openBridge_iff_finalStatement_of_r1 hR1)
+
+/--
 The internal falsity endpoint: the certified nonnegative DN limit is strictly
 positive. This is a definition only; no claim that it holds is made.
 -/
@@ -126,6 +177,42 @@ theorem falseEndpoint_iff_not_openBridge :
     exact hnot (openBridge_iff_compressedEndpoint.mpr hcompressed)
 
 /--
+The false endpoint is exactly the nonexistence of any vanishing upper
+certificate.  This is the formal falsification contract for every proposed
+analytic bound.
+-/
+theorem falseEndpoint_iff_noVanishingUpperCertificate :
+    FalseEndpoint ↔ ¬ VanishingUpperCertificate := by
+  exact
+    falseEndpoint_iff_not_openBridge.trans
+      (not_congr vanishingUpperCertificate_iff_openBridge).symm
+
+/--
+If the false endpoint held, every proposed majorant tending to zero would fail
+at some finite index.  This gives a concrete counterexample obligation for any
+candidate BCF/Vasyunin upper bound.
+-/
+theorem falseEndpoint_witnesses_majorant_failure
+    (hfalse : FalseEndpoint)
+    (eps : ℕ → ℝ)
+    (heps : Filter.Tendsto eps Filter.atTop (nhds 0)) :
+    ∃ N : ℕ,
+      eps N <
+        MCore.RH.R0.concreteNBData.DN
+          MCore.RH.R0.concreteGeneratorFamily N := by
+  by_contra hno
+  have hupper :
+      ∀ N : ℕ,
+        MCore.RH.R0.concreteNBData.DN
+          MCore.RH.R0.concreteGeneratorFamily N ≤ eps N := by
+    intro N
+    by_contra hle
+    exact hno ⟨N, lt_of_not_ge hle⟩
+  exact
+    (falseEndpoint_iff_not_openBridge.mp hfalse)
+      (openBridge_of_upper_tendsto_zero eps hupper heps)
+
+/--
 Conditional false-lane composition through the explicit R1 external
 interface. Again, R1 is a theorem hypothesis, not a project axiom.
 -/
@@ -148,8 +235,12 @@ theorem materialFrontier_iff_openBridge :
 #print axioms MCore.RH.R2.openBridge_iff_compressedEndpoint
 #print axioms MCore.RH.R2.openBridge_iff_finalStatement_of_r1
 #print axioms MCore.RH.R2.openBridge_of_upper_tendsto_zero
+#print axioms MCore.RH.R2.vanishingUpperCertificate_iff_openBridge
+#print axioms MCore.RH.R2.vanishingUpperCertificate_iff_finalStatement_of_r1
 #print axioms MCore.RH.R2.not_compressedEndpoint_iff_falseEndpoint
 #print axioms MCore.RH.R2.falseEndpoint_iff_not_openBridge
+#print axioms MCore.RH.R2.falseEndpoint_iff_noVanishingUpperCertificate
+#print axioms MCore.RH.R2.falseEndpoint_witnesses_majorant_failure
 #print axioms MCore.RH.R2.falseEndpoint_iff_not_finalStatement_of_r1
 #print axioms MCore.RH.R2.materialFrontier_iff_openBridge
 
