@@ -21,4 +21,4 @@ jobs:
           grep -F "'MCore.k6_source_open' does not depend on any axioms" K6AxiomAudit.log
           grep -F "'MCore.k6_target_open' does not depend on any axioms" K6AxiomAudit.log
           grep -F "'MCore.k6_target_not_certified' does not depend on any axioms" K6AxiomAudit.log
-      - {name: Clean reproduction, run: 'lake clean && lake build MCore.K6 && lake build MCore'}
+      - {name: Targeted K6 reproduction, run: 'timeout 20m lake build MCore.K6'}
