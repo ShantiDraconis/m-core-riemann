@@ -203,7 +203,13 @@ theorem C_div_log_nat_add_two_tendsto_zero (C : ℝ) :
         (fun N : ℕ => (N : ℝ) + 2)
         Filter.atTop
         Filter.atTop := by
-    exact Tendsto.atTop_add tendsto_natCast_atTop_atTop tendsto_const_nhds
+    refine Filter.tendsto_atTop.2 ?_
+    intro b
+    obtain ⟨n : ℕ, hn⟩ := exists_nat_ge (b - 2)
+    filter_upwards [Filter.eventually_ge_atTop n] with m hm
+    have hcast : (n : ℝ) ≤ (m : ℝ) := by
+      exact_mod_cast hm
+    linarith
   exact Real.tendsto_log_atTop.comp hNatPlusTwo
 
 /--
