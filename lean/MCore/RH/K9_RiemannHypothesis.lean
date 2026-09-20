@@ -3,7 +3,7 @@ import MCore.RH.K9_ZetaBridge
 namespace MCore
 
 /-- A complete M-Core/RH certificate packages the objects whose construction is still open.
-This declaration introduces no axiom and contains no `sorry`. -/
+This declaration introduces no new logical assumptions and uses a complete proof term. -/
 structure MCoreRHCertificate where
   sys : MCoreSystem
   reg : RegularizedMCoreSystem
