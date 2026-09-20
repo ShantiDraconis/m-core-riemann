@@ -2,6 +2,7 @@ import MCore.RH.R0.RhoConcrete
 import MCore.RH.NB.ZeroLimitFrontier
 import Mathlib.NumberTheory.LSeries.RiemannZeta
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecificLimits.Basic
 
 namespace MCore.RH.R2
 
