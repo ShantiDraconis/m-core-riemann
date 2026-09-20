@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "certificate": "R2-BASE-5cb45b9",
+  "classification": "GREEN_FROZEN_FRONTIER_CLASSIFIER__OPEN_BRIDGE",
+  "source_repository": "ShantiDraconis/m-core-riemann",
+  "source_sha": "5cb45b9af64f78c6fd3cd3cf1128a54c466900ec",
+  "frozen_ref": "frozen/r2-base-5cb45b9",
+  "certificate_ref": "certificates/r2-base-5cb45b9",
+  "materialized_at": "2026-09-20",
+  "evidence_basis": "Existing immutable frozen GREEN checkpoint. This documentary certificate does not invent a historical workflow run id that is not materialized in the source tree.",
+  "certified_scope": [
+    "R2 dense zero-residue frontier classifier is present in the frozen source",
+    "BCF Lemma 2 is classified as an external unconditional identity",
+    "tested standard unconditional routes are classified without converting insufficiency into impossibility",
+    "the material frontier is kept as ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+    "the source firewall records DNLimit_EQ_ZERO=false and RH_PROVED=false"
+  ],
+  "open_bridge": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL",
+  "dnlimit_eq_zero_proved": false,
+  "rh_proved": false,
+  "promotion": "FORBIDDEN_WITHOUT_NEW_UNCONDITIONAL_MATHEMATICS"
+}
