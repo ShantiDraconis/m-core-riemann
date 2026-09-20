@@ -198,12 +198,13 @@ theorem C_div_log_nat_add_two_tendsto_zero (C : ℝ) :
       Filter.atTop
       (nhds 0) := by
   refine tendsto_const_nhds.div_atTop ?_
-  exact
-    Real.tendsto_log_atTop.comp
-      (tendsto_atTop_add_const_right
+  have hNatPlusTwo :
+      Filter.Tendsto
+        (fun N : ℕ => (N : ℝ) + 2)
         Filter.atTop
-        (2 : ℝ)
-        tendsto_natCast_atTop_atTop)
+        Filter.atTop := by
+    exact Tendsto.atTop_add tendsto_natCast_atTop_atTop tendsto_const_nhds
+  exact Real.tendsto_log_atTop.comp hNatPlusTwo
 
 /--
 The asymptotic C/log(N+2) certificate: the bound only needs to hold eventually.
