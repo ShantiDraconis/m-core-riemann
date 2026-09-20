@@ -36,6 +36,11 @@ jobs:
           if grep -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' research/r2/BackwardDenseEndpoint.lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
           if grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' research/r2/BackwardDenseEndpoint.lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
 
+      - name: Build exact R2 imports
+        run: |
+          set -euo pipefail
+          lake build MCore.RH.R0.RhoConcrete MCore.RH.NB.ZeroLimitFrontier
+
       - name: Targeted R2 endpoint kernel check
         run: |
           set -euo pipefail
