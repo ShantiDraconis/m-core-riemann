@@ -1,5 +1,9 @@
 name: certificate
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - research/r2-dnlimit-zero
+  pull_request:
 jobs:
   k8:
     runs-on: ubuntu-latest
