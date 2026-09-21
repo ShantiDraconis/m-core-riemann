@@ -1,0 +1,25 @@
+{
+  "schema": "ATK_SEMANTIC_GATE_V1",
+  "date": "2026-09-21",
+  "gate": "R01",
+  "audited_head": "ad3011f14bdab32161205e053fa925bc8c851ad4",
+  "kernel_gate": "CERTIFICATE_GREEN",
+  "semantic_status": "OPEN_MATH",
+  "promotion_allowed": false,
+  "promotion_scope": "R01_ONLY",
+  "endpoint": "Riemann Hypothesis",
+  "established_prefix": [
+    "Finite Nyman-Beurling projection machinery",
+    "DN convergence to a canonical limit",
+    "DNToZero iff DNLimit = 0",
+    "Finite interval-certified DN_N computations"
+  ],
+  "first_open_bridge": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL sufficient to force DNLimit = 0",
+  "provenance": {
+    "bettin_conrey_farmer": "Their asymptotic is conditional on RH plus a zeta-prime moment bound; cannot be used as an unconditional close",
+    "burnol": "Lower-bound information does not furnish the required upper bound"
+  },
+  "nontriviality": "PASS: finite-N evidence is explicitly firewalled from the infinite limit",
+  "semantic_equivalence": "The active DNLimit=0 target is treated as the Nyman-Beurling/Baez-Duarte RH frontier; exact adapter provenance must remain explicit",
+  "freeze_rule": "No R01 freeze from finite computations or RH-conditional residue estimates"
+}
