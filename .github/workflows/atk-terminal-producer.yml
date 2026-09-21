@@ -19,18 +19,20 @@ jobs:
           lake update
           lake exe cache get
       - name: Compile quantitative upper-bound reduction
-        run: lake build MCore.RH.NB.QuantitativeUpperBound
+        run: lake build MCore.RH.NB.QuantitativeUpperBound MCore.RH.NB.BCFZeroResidueControl
       - name: Axiom audit
         run: |
           cat > /tmp/RHTerminalAudit.lean <<'EOF'
           import MCore.RH.NB.QuantitativeUpperBound
           #print axioms MCore.RH.NB.NBHilbertData.DNToZero_of_vanishingUpperBound
           #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_vanishingUpperBound
+          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_BCFZeroResidueControl
           EOF
           lake env lean /tmp/RHTerminalAudit.lean 2>&1 | tee /tmp/rh-terminal.log
           if grep -E 'sorryAx' /tmp/rh-terminal.log; then exit 1; fi
       - name: Keep endpoint open
         run: |
           grep -q 'OPEN_MATH: construct VanishingUpperBound' lean/MCore/RH/NB/QuantitativeUpperBound.lean
+          grep -q 'OPEN_MATH: ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL' lean/MCore/RH/NB/BCFZeroResidueControl.lean
           echo "RH_QUANTITATIVE_REDUCTION=GREEN"
           echo "RH_PROOF=OPEN"
