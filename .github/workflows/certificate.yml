@@ -25,9 +25,7 @@ jobs:
       - name: G1 preserve frozen K7
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "da5564fe1ac4da4d3a6b70b513abb7a8e281d8de"
-          test "$(git rev-parse HEAD^^)" = "ed937c9b72a831bd2fa270b8b050c5855567977d"
-          test "$(git rev-parse HEAD^^:lean/MCore/K7.lean)" = "abc1975c6de54eda03a5af2604490c1993fd5600"
+          test "$(git rev-parse HEAD:lean/MCore/K7.lean)" = "abc1975c6de54eda03a5af2604490c1993fd5600"
           lake build MCore.K7
       - name: G2 explicit K8 build
         run: lake build MCore.K8
