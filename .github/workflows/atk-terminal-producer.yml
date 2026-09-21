@@ -19,7 +19,7 @@ jobs:
           lake update
           lake exe cache get
       - name: Compile quantitative upper-bound reduction
-        run: lake env lean lean/MCore/RH/NB/QuantitativeUpperBound.lean
+        run: lake build MCore.RH.NB.QuantitativeUpperBound
       - name: Axiom audit
         run: |
           cat > /tmp/RHTerminalAudit.lean <<'EOF'
