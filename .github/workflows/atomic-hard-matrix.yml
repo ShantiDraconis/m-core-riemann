@@ -1,0 +1,47 @@
+name: ATK atomic HARD matrix
+on:
+  push:
+    branches: ['attack/semantic-gate-v1-20260921']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hard:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - gate: R01
+            target: hard_RH_DNLimit_zero
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with: {build: false, test: false, lint: false}
+      - name: T00 build
+        run: lake build MCore
+      - name: T10 theorem kernel
+        env: {TARGET: ${{ matrix.target }}}
+        run: |
+          set -euo pipefail
+          printf 'import MCore\n#check %s\n#print axioms %s\n' "$TARGET" "$TARGET" > /tmp/ATK.lean
+          lake env lean /tmp/ATK.lean 2>&1 | tee /tmp/ATK.log
+          if grep -F 'sorryAx' /tmp/ATK.log; then exit 1; fi
+      - name: T12 clean rebuild
+        env: {TARGET: ${{ matrix.target }}}
+        run: |
+          lake clean
+          lake build MCore
+          printf 'import MCore\n#check %s\n#print axioms %s\n' "$TARGET" "$TARGET" > /tmp/ATK.clean.lean
+          lake env lean /tmp/ATK.clean.lean > /tmp/ATK.clean.log 2>&1
+      - name: Emit certificate
+        if: success()
+        run: |
+          mkdir -p certificate
+          git rev-parse HEAD > certificate/SOURCE_SHA
+          cp /tmp/ATK.log certificate/AXIOM_FOOTPRINT
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: frozen-hard-candidate-R01
+          path: certificate/
