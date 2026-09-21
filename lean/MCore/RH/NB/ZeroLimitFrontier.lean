@@ -30,6 +30,40 @@ def FiniteSpanApproximatesChi (rho : D.GeneratorFamily) : Prop :=
     ∃ N : ℕ, ∃ v : D.V rho N,
       ‖D.chi - (v : D.H)‖ < ε
 
+/-- Union of all finite generator spans, viewed as an ambient subset. -/
+def FiniteSpanUnion (rho : D.GeneratorFamily) : Set D.H :=
+  {x : D.H | ∃ N : ℕ, x ∈ D.V rho N}
+
+/-- The epsilon-approximation formulation is exactly closure membership of the
+    distinguished target in the union of finite spans. -/
+theorem finiteSpanApproximatesChi_iff_mem_closure
+    (rho : D.GeneratorFamily) :
+    D.FiniteSpanApproximatesChi rho ↔
+      D.chi ∈ closure (D.FiniteSpanUnion rho) := by
+  constructor
+  · intro happrox
+    rw [Metric.mem_closure_iff]
+    intro ε hε
+    rcases happrox ε hε with ⟨N, v, hv⟩
+    refine ⟨(v : D.H), ?_, ?_⟩
+    · exact ⟨N, v.property⟩
+    · simpa [dist_eq_norm] using hv
+  · intro hclosure ε hε
+    rw [Metric.mem_closure_iff] at hclosure
+    rcases hclosure ε hε with ⟨v, hv, hdist⟩
+    rcases hv with ⟨N, hvN⟩
+    refine ⟨N, ⟨v, hvN⟩, ?_⟩
+    simpa [dist_eq_norm] using hdist
+
+/-- Full density of the finite-span union is stronger than needed, but
+    immediately supplies the target-specific approximation property. -/
+theorem finiteSpanApproximatesChi_of_dense
+    (rho : D.GeneratorFamily)
+    (hdense : Dense (D.FiniteSpanUnion rho)) :
+    D.FiniteSpanApproximatesChi rho := by
+  apply (D.finiteSpanApproximatesChi_iff_mem_closure rho).2
+  exact hdense D.chi
+
 /-- Arbitrary finite-span approximation forces the canonical defect infimum to
 be zero.  The proof uses only projection minimality, nonnegativity, and the
 definition of the infimum. -/
