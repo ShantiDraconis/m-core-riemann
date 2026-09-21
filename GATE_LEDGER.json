@@ -1,0 +1,17 @@
+{
+  "schema": "ATK_GATE_LEDGER_V1",
+  "repo": "m-core-riemann",
+  "queue": "RH",
+  "hard_composite_remaining": 1,
+  "hard_atomic_remaining": 1,
+  "current_gate": "R01",
+  "current_head": "ad3011f14bdab32161205e053fa925bc8c851ad4",
+  "state_ci": "IN_PROGRESS",
+  "state_math": "OPEN_MATH",
+  "active_runs": [
+    35565114760
+  ],
+  "next": "ZERO_RESIDUE_SUM_UNCONDITIONAL_CONTROL / DNLimit=0",
+  "progress_metric": "FROZEN_HARD/TOTAL_HARD",
+  "tests_are_progress_metric": false
+}
