@@ -20,7 +20,6 @@ theorem DNToZero_iff_DNLimit_eq_zero (rho : D.GeneratorFamily) :
     unfold DNToZero
     simpa [hlim] using D.tendsto_DN_DNLimit rho
 
-
 /-- Exact geometric content behind zero defect: the distinguished target can be
 approximated arbitrarily well by one of the finite generator spans.  This is
 the material density statement; no density assumption is built into
@@ -80,6 +79,45 @@ theorem DNLimit_eq_zero_of_finiteSpanApproximatesChi
     unfold DNLimit
     exact ciInf_le (D.DN_bddBelow rho) N
   linarith
+
+/-- The converse density direction: zero defect convergence yields an explicit
+finite-span approximant by taking the orthogonal projection at a sufficiently
+large stage. -/
+theorem finiteSpanApproximatesChi_of_DNToZero
+    (rho : D.GeneratorFamily)
+    (hzero : D.DNToZero rho) :
+    D.FiniteSpanApproximatesChi rho := by
+  intro ε hε
+  have hεsq : 0 < ε ^ 2 := sq_pos_of_pos hε
+  have hevent : ∀ᶠ N in Filter.atTop, D.DN rho N < ε ^ 2 :=
+    (tendsto_order.1 hzero).2 (ε ^ 2) hεsq
+  rcases (Filter.eventually_atTop.1 hevent) with ⟨N0, hN0⟩
+  refine ⟨N0, D.P rho N0 D.chi, ?_⟩
+  have hDN : D.DN rho N0 < ε ^ 2 :=
+    hN0 N0 (le_rfl)
+  have hdN : D.dN rho N0 < ε := by
+    have hnonneg : 0 ≤ D.dN rho N0 := D.dN_nonneg rho N0
+    unfold DN at hDN
+    nlinarith
+  simpa [dN] using hdN
+
+/-- Therefore the geometric finite-span density statement is exactly equivalent
+to vanishing of the canonical defect limit. -/
+theorem finiteSpanApproximatesChi_iff_DNLimit_eq_zero
+    (rho : D.GeneratorFamily) :
+    D.FiniteSpanApproximatesChi rho ↔ D.DNLimit rho = 0 := by
+  constructor
+  · exact D.DNLimit_eq_zero_of_finiteSpanApproximatesChi rho
+  · intro hlim
+    exact D.finiteSpanApproximatesChi_of_DNToZero rho
+      ((D.DNToZero_iff_DNLimit_eq_zero rho).2 hlim)
+
+/-- Equivalent terminal formulation in convergence language. -/
+theorem finiteSpanApproximatesChi_iff_DNToZero
+    (rho : D.GeneratorFamily) :
+    D.FiniteSpanApproximatesChi rho ↔ D.DNToZero rho := by
+  rw [D.DNToZero_iff_DNLimit_eq_zero rho]
+  exact D.finiteSpanApproximatesChi_iff_DNLimit_eq_zero rho
 
 /-- The same geometric approximation closes the zero-limit frontier. -/
 theorem DNToZero_of_finiteSpanApproximatesChi
