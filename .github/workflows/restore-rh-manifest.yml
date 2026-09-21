@@ -1,0 +1,53 @@
+name: Restore RH Lake manifest
+on:
+  push:
+    branches:
+      - 'repair/rh-manifest-081a3829-20260921'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 'repair/rh-manifest-081a3829-20260921'
+          fetch-depth: 0
+      - name: Install pinned Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/lean" --version
+      - name: Restore manifest
+        run: |
+          set -euo pipefail
+          test "$(cat lean-toolchain)" = "leanprover/lean4:v4.19.0"
+          grep -F 'rev = "v4.19.0"' lakefile.toml
+          rm -f lake-manifest.json
+          "$HOME/.elan/bin/lake" update
+          python3 - <<'PY'
+          import json
+          m=json.load(open("lake-manifest.json"))
+          assert m["packagesDir"] == ".lake/packages"
+          pkgs=m.get("packages",[])
+          assert len(pkgs) > 0
+          mathlib=[p for p in pkgs if p.get("name")=="mathlib"]
+          assert len(mathlib)==1
+          print("packages", len(pkgs))
+          print("mathlib_rev", mathlib[0].get("rev"))
+          PY
+      - name: Build pinned checkout
+        run: "$HOME/.elan/bin/lake build MCore"
+      - name: Commit restored manifest
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lake-manifest.json
+          if git diff --cached --quiet; then
+            echo "MANIFEST_UNCHANGED"
+          else
+            git commit -m "restore: regenerate lake-manifest at 081a3829 provenance"
+            git push origin HEAD:'repair/rh-manifest-081a3829-20260921'
+          fi
