@@ -2,7 +2,9 @@ name: nb-zero-limit-frontier
 
 on:
   push:
-    branches: [research/nb-zero-limit-frontier]
+    branches:
+      - research/nb-zero-limit-frontier
+      - attack/nb-zero-limit-density-equivalence-20260921
   workflow_dispatch:
 
 permissions:
@@ -41,6 +43,9 @@ jobs:
           open MCore.RH.NB
           #check NBHilbertData.DNToZero
           #check NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+          #check NBHilbertData.finiteSpanApproximatesChi_of_DNToZero
+          #check NBHilbertData.finiteSpanApproximatesChi_iff_DNLimit_eq_zero
+          #check NBHilbertData.finiteSpanApproximatesChi_iff_DNToZero
           #check NBHilbertData.DNToZero_of_le_zero
           EOF
           lake env lean NBZeroAudit.lean
@@ -50,6 +55,9 @@ jobs:
           import MCore.RH.NB.ZeroLimitFrontier
           open MCore.RH.NB
           #print axioms NBHilbertData.DNToZero_iff_DNLimit_eq_zero
+          #print axioms NBHilbertData.finiteSpanApproximatesChi_of_DNToZero
+          #print axioms NBHilbertData.finiteSpanApproximatesChi_iff_DNLimit_eq_zero
+          #print axioms NBHilbertData.finiteSpanApproximatesChi_iff_DNToZero
           #print axioms NBHilbertData.DNToZero_of_le_zero
           EOF
           lake env lean NBZeroAxioms.lean | tee nb15-axioms.txt
@@ -65,5 +73,5 @@ jobs:
               bad |= {x.strip() for x in body.split(',') if x.strip()} - allowed
           if bad:
               print('Unexpected axioms:',', '.join(sorted(bad)),file=sys.stderr); sys.exit(1)
-          print('NB15 axiom audit GREEN')
+          print('NB15 density equivalence axiom audit GREEN')
           PY
