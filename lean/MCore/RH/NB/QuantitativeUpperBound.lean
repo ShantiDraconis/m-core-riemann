@@ -26,8 +26,8 @@ theorem DNToZero_of_vanishingUpperBound
   have hzero : Filter.Tendsto (fun _ : ℕ => (0 : ℝ)) Filter.atTop (nhds 0) :=
     tendsto_const_nhds
   exact squeeze_zero'
-    (fun N => D.DN_nonneg rho N)
-    h.dn_le
+    (Filter.Eventually.of_forall (fun N => D.DN_nonneg rho N))
+    (Filter.Eventually.of_forall h.dn_le)
     h.eps_tendsto_zero
 
 /--
