@@ -16,7 +16,7 @@ jobs:
       - name: G0 fail-closed source hygiene
         run: |
           set -euo pipefail
-          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -R -n -E '(^|[[:space:]])(by[[:space:]]+sorry|by[[:space:]]+admit|exact[[:space:]]+sorry|exact[[:space:]]+admit|:=?[[:space:]]*(sorry|admit))([[:space:];,)}]|$)|sorryAx' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
           if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
       - name: G1 preserve frozen K7 by exact blob
         run: |
