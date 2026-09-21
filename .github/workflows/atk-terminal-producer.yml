@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
-        with:
-          build: false
-          test: false
-          lint: false
+      - name: Install Lean for manifest repair
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Repair manifest and fetch cache
+        run: |
+          lake update
+          lake exe cache get
       - name: Compile quantitative upper-bound reduction
         run: lake env lean lean/MCore/RH/NB/QuantitativeUpperBound.lean
       - name: Axiom audit
