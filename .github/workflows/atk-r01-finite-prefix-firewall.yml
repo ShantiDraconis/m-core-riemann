@@ -1,0 +1,38 @@
+name: atk-r01-finite-prefix-firewall
+
+on:
+  push:
+    branches:
+      - 'attack/r01-finite-limit-firewall-20260921'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  firewall:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: |
+          lake update
+          lake exe cache get || true
+      - name: Source firewall
+        run: |
+          FILE=lean/MCore/RH/NB/FinitePrefixFirewall.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constants)[[:space:]]' "$FILE"
+      - name: Build firewall
+        run: lake build MCore.RH.NB.FinitePrefixFirewall
+      - name: Axiom report
+        run: |
+          cat > ATKAxioms.lean <<'EOF'
+          import MCore.RH.NB.FinitePrefixFirewall
+          #print axioms MCore.RHFinitePrefixFirewall.finite_prefix_has_distinct_antitone_nonnegative_extensions
+          EOF
+          lake env lean ATKAxioms.lean
