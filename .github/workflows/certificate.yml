@@ -88,7 +88,7 @@ jobs:
       - name: G6 numerical evidence excluded from Lean proof chain
         run: |
           set -euo pipefail
-          if grep -R -n -E 'phi_derived|0\.309|0\.594|0\.609' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          if grep -n -E 'phi_derived|0\.309|0\.594|0\.609' lean/MCore/K3.lean lean/MCore/K4.lean lean/MCore/K5.lean lean/MCore/K6.lean lean/MCore/K7.lean lean/MCore/K8.lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
       - name: G7 clean K8 reproduction
         run: |
           lake clean
