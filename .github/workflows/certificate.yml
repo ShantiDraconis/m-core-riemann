@@ -5,18 +5,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+      - name: Install pinned Lean and hydrate manifest
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          elan toolchain install "$(cat lean-toolchain)"
+          lake update
+          lake exe cache get
       - name: G0 fail-closed source hygiene
         run: |
           set -euo pipefail
           if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
           if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-      - name: G1 preserve frozen K7
+      - name: G1 preserve frozen K7 by exact blob
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "da5564fe1ac4da4d3a6b70b513abb7a8e281d8de"
-          test "$(git rev-parse HEAD^^)" = "ed937c9b72a831bd2fa270b8b050c5855567977d"
-          test "$(git rev-parse HEAD^^:lean/MCore/K7.lean)" = "abc1975c6de54eda03a5af2604490c1993fd5600"
+          test "$(git rev-parse HEAD:lean/MCore/K7.lean)" = "abc1975c6de54eda03a5af2604490c1993fd5600"
           lake build MCore.K7
       - name: G2 explicit K8 build
         run: lake build MCore.K8
