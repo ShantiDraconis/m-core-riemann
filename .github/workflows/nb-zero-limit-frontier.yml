@@ -42,6 +42,9 @@ jobs:
           #check NBHilbertData.DNToZero
           #check NBHilbertData.DNToZero_iff_DNLimit_eq_zero
           #check NBHilbertData.DNToZero_of_le_zero
+          #check NBHilbertData.FiniteSpanApproximatesChi
+          #check NBHilbertData.DNLimit_eq_zero_of_finiteSpanApproximatesChi
+          #check NBHilbertData.DNToZero_of_finiteSpanApproximatesChi
           EOF
           lake env lean NBZeroAudit.lean
       - name: NB15 axiom report
@@ -51,6 +54,8 @@ jobs:
           open MCore.RH.NB
           #print axioms NBHilbertData.DNToZero_iff_DNLimit_eq_zero
           #print axioms NBHilbertData.DNToZero_of_le_zero
+          #print axioms NBHilbertData.DNLimit_eq_zero_of_finiteSpanApproximatesChi
+          #print axioms NBHilbertData.DNToZero_of_finiteSpanApproximatesChi
           EOF
           lake env lean NBZeroAxioms.lean | tee nb15-axioms.txt
           python3 - <<'PY'
