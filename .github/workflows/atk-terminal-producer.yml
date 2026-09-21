@@ -1,0 +1,33 @@
+name: atk-terminal-producer
+
+on:
+  push:
+    branches: [attack/terminal-producer-20260921]
+  workflow_dispatch:
+
+jobs:
+  rh-terminal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Compile quantitative upper-bound reduction
+        run: lake env lean lean/MCore/RH/NB/QuantitativeUpperBound.lean
+      - name: Axiom audit
+        run: |
+          cat > /tmp/RHTerminalAudit.lean <<'EOF'
+          import MCore.RH.NB.QuantitativeUpperBound
+          #print axioms MCore.RH.NB.NBHilbertData.DNToZero_of_vanishingUpperBound
+          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_vanishingUpperBound
+          EOF
+          lake env lean /tmp/RHTerminalAudit.lean 2>&1 | tee /tmp/rh-terminal.log
+          if grep -E 'sorryAx' /tmp/rh-terminal.log; then exit 1; fi
+      - name: Keep endpoint open
+        run: |
+          grep -q 'OPEN_MATH: construct VanishingUpperBound' lean/MCore/RH/NB/QuantitativeUpperBound.lean
+          echo "RH_QUANTITATIVE_REDUCTION=GREEN"
+          echo "RH_PROOF=OPEN"
