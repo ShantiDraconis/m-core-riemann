@@ -40,11 +40,42 @@ jobs:
           lake env lean K8EndpointAudit.lean
       - name: G4 K8 semantic axiom closure
         run: |
+          set -euo pipefail
           printf 'import MCore.K8\n#print axioms MCore.rh_endpoint_of_adapter\n#print axioms MCore.k8_preserves_k7_firewall\n#print axioms MCore.k8_k7_target_open\n' > K8AxiomAudit.lean
           lake env lean K8AxiomAudit.lean 2>&1 | tee K8AxiomAudit.log
-          grep -F "'MCore.rh_endpoint_of_adapter' does not depend on any axioms" K8AxiomAudit.log
-          grep -F "'MCore.k8_preserves_k7_firewall' does not depend on any axioms" K8AxiomAudit.log
-          grep -F "'MCore.k8_k7_target_open' does not depend on any axioms" K8AxiomAudit.log
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          text = Path("K8AxiomAudit.log").read_text()
+          if "sorryAx" in text:
+              raise SystemExit("sorryAx present in K8 axiom footprint")
+
+          expected = {
+              "MCore.rh_endpoint_of_adapter": {"propext", "Classical.choice", "Quot.sound"},
+              "MCore.k8_preserves_k7_firewall": set(),
+              "MCore.k8_k7_target_open": set(),
+          }
+
+          for theorem, allowed in expected.items():
+              noax = f"'{theorem}' does not depend on any axioms"
+              if noax in text:
+                  got = set()
+              else:
+                  m = re.search(
+                      rf"'{re.escape(theorem)}' depends on axioms:\s*\[([^\]]*)\]",
+                      text,
+                  )
+                  if not m:
+                      raise SystemExit(f"missing #print axioms result for {theorem}")
+                  got = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              if got != allowed:
+                  raise SystemExit(
+                      f"unexpected axiom footprint for {theorem}: "
+                      f"got={sorted(got)} expected={sorted(allowed)}"
+                  )
+          print("K8_AXIOM_FOOTPRINT=GREEN")
+          PY
       - name: G5 structural K7 firewall remains valid
         run: |
           cat > K8FirewallAudit.lean <<'EOF'
