@@ -21,14 +21,16 @@ jobs:
       - name: T00 build
         run: lake build MCore
       - name: T10 theorem kernel
-        env: {TARGET: ${{ matrix.target }}}
+        env:
+          TARGET: \${{ matrix.target }}
         run: |
           set -euo pipefail
           printf 'import MCore\n#check %s\n#print axioms %s\n' "$TARGET" "$TARGET" > /tmp/ATK.lean
           lake env lean /tmp/ATK.lean 2>&1 | tee /tmp/ATK.log
           if grep -F 'sorryAx' /tmp/ATK.log; then exit 1; fi
       - name: T12 clean rebuild
-        env: {TARGET: ${{ matrix.target }}}
+        env:
+          TARGET: \${{ matrix.target }}
         run: |
           lake clean
           lake build MCore
