@@ -1,0 +1,37 @@
+{
+  "certificate_scope": "NB_ZERO_LIMIT_DENSITY_EQUIVALENCE",
+  "certifies": [
+    "Kernel-checked equivalence between finite-span approximation of chi and DNLimit = 0.",
+    "Kernel-checked equivalence between finite-span approximation of chi and DNToZero.",
+    "NB source firewall, semantic firewall, theorem API and axiom audit passed in the dedicated certifying workflow."
+  ],
+  "certifying_runs": [
+    {
+      "conclusion": "success",
+      "id": 35641657140,
+      "workflow": "nb-zero-limit-frontier"
+    }
+  ],
+  "does_not_certify": [
+    "Finite-span density for the concrete Nyman-Beurling family.",
+    "The Riemann Hypothesis."
+  ],
+  "fail_closed_rules": {
+    "admit_allowed": false,
+    "hidden_axiom_promotion_allowed": false,
+    "proxy_to_endpoint_promotion_allowed": false,
+    "sorry_allowed": false,
+    "vacuous_witness_promotion_allowed": false
+  },
+  "final_proof_global": "0/7",
+  "generated_date": "2026-09-21",
+  "mathematical_endpoint_status": "OPEN",
+  "next_open_delta": "Prove the concrete Nyman-Beurling finite-span density statement.",
+  "note": "General certificate workflow runs at this same frozen SHA failed for infrastructure/manifest reasons; the dedicated NB certifying workflow succeeded.",
+  "problem": "Riemann Hypothesis / Nyman-Beurling lane",
+  "repository": "ShantiDraconis/m-core-riemann",
+  "schema": "atk.terminal.frozen-certificate.v1",
+  "source_frozen_branch": "frozen/nb-zero-limit-density-equivalence-green-d6a291b4",
+  "source_frozen_commit": "d6a291b4563f9021f74ab63cc983d44f079472da",
+  "source_status": "GREEN_FROZEN"
+}
