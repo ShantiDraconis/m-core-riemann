@@ -1,0 +1,27 @@
+{
+  "schema": "atk.final-fail-external.v1",
+  "problem": "RIEMANN",
+  "repository": "ShantiDraconis/m-core-riemann",
+  "process_state": "FINAL_FAIL_EXTERNAL_CANDIDATE",
+  "process_closed": true,
+  "proof_claimed": false,
+  "mathematical_endpoint_proved": false,
+  "active_validated_head": {
+    "sha": "47b0b7da65a00d9096ed108989d5676037f6be93",
+    "run": 35658259258,
+    "status": "SUCCESS"
+  },
+  "certified_terminal_anchor": {
+    "source_sha": "d6a291b4563f9021f74ab63cc983d44f079472da",
+    "certificate_package_sha": "8a179aee88ba3c7e794169e4e4e4100f5b5e8b32",
+    "certifying_runs": [
+      35641657140
+    ],
+    "state": "GREEN_FROZEN_TERMINAL_FRONTIER"
+  },
+  "terminal_endpoint": {
+    "name": "R01_ZERO_RESIDUE_DNLIMIT / FiniteSpanApproximatesChi",
+    "disposition": "OPEN_RECORDED_IN_FINAL_FAIL"
+  },
+  "policy": "Close and externalize the audit/process lane using certified evidence. Do not manufacture a theorem endpoint, hidden axiom, oracle, sorry, or admit."
+}
