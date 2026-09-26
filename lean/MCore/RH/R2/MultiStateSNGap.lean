@@ -20,7 +20,7 @@ structure SNRoseState (N : ℕ) where
   d : Fin N
   u : Fin N
   v : Fin N
-deriving DecidableEq
+deriving DecidableEq, Fintype
 
 namespace SNRoseState
 
@@ -94,32 +94,22 @@ def roseContribution
     else 0
 
 /--
-The same scalar S_N viewed globally over all simultaneous states (d,u,v).
+The scalar S_N as the bouquet of all d-roses.
+Each rose internally sums its simultaneous (u,v) petals.
 -/
 def SN
     (D : WeightedModularBilinearData)
     (N : ℕ) : ℝ :=
-  ∑ x : SNRoseState N,
-    if admissiblePetal D x
-    then petalContribution D x
-    else 0
+  ∑ d : Fin N, roseContribution D N d
 
 /--
-Exact bouquet-of-roses decomposition:
-S_N is the sum over d of the d-th rose.
+Exact bouquet-of-roses decomposition.
 -/
 theorem SN_eq_sum_roses
     (D : WeightedModularBilinearData)
     (N : ℕ) :
     SN D N = ∑ d : Fin N, roseContribution D N d := by
-  classical
-  unfold SN roseContribution
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro x hx
-  by_cases hadm : admissiblePetal D x
-  · simp [hadm]
-  · simp [hadm]
+  rfl
 
 /--
 The unique terminal analytic producer:
@@ -142,15 +132,11 @@ theorem SN_tendsto_zero_of_weighted_modular_bilinear_decay
     (h : WeightedModularBilinearDecay D) :
     Filter.Tendsto (SN D) Filter.atTop (nhds 0) := by
   rcases h with ⟨eps, hupper, heps⟩
-  have hneg :
-      ∀ᶠ N : ℕ in Filter.atTop, -eps N ≤ SN D N := by
-    filter_upwards [hupper] with N hN
-    exact (abs_le.mp hN).1
-  have hpos :
-      ∀ᶠ N : ℕ in Filter.atTop, SN D N ≤ eps N := by
-    filter_upwards [hupper] with N hN
-    exact (abs_le.mp hN).2
-  exact squeeze_zero' hneg hpos heps
+  rw [tendsto_zero_iff_abs_tendsto_zero]
+  exact squeeze_zero'
+    (Filter.Eventually.of_forall fun N => abs_nonneg (SN D N))
+    hupper
+    heps
 
 /--
 Equivalent terminal form: a direct proof S_N -> 0 supplies the
