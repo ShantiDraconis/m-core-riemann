@@ -146,11 +146,46 @@ def arithmeticTransformData_of_multiStateGap
   kfar_vanishes :=
     (weightedModularMultiStateGap_iff_kfarVanishes M).mp h
 
+/--
+Exact theorem-level identification of the remaining material producer.
+
+For an exact multistate realization of S_N, proving the global bouquet
+contraction bound is equivalent to producing the ArithmeticTransformData
+consumed by the frozen downstream chain. Therefore this proposition is not
+an auxiliary estimate: it is the material OPEN_MATH certificate itself.
+-/
+theorem weightedModularMultiStateGap_iff_arithmeticTransformData
+    {D : WeightedModularBilinearDecayData}
+    (M : WeightedModularMultiStateData D) :
+    WeightedModularMultiStateGap M ↔
+      Nonempty (ArithmeticTransformData D) := by
+  constructor
+  · intro h
+    exact ⟨arithmeticTransformData_of_multiStateGap M h⟩
+  · rintro ⟨A⟩
+    exact (weightedModularMultiStateGap_iff_kfarVanishes M).2
+      A.kfar_vanishes
+
+/--
+Named terminal theorem for the 0 -> 1 -> 2 reduction.
+
+Stage 0 and stage 1 determine the exact scalar contraction S_N. Stage 2 is
+closed exactly when its multistate weighted-modular decay certificate exists.
+-/
+theorem weighted_modular_bilinear_decay_is_exact_gap
+    {D : WeightedModularBilinearDecayData}
+    (M : WeightedModularMultiStateData D) :
+    WeightedModularMultiStateGap M ↔
+      KFarVanishes D :=
+  weightedModularMultiStateGap_iff_kfarVanishes M
+
 def multiStateGapStatus : String :=
   "OPEN_MATH_CORE: prove global bouquet contraction |S_N| <= eps_N -> 0"
 
 #print axioms WeightedModularMultiStateData.contract_eq_S
 #print axioms weightedModularMultiStateGap_iff_kfarVanishes
 #print axioms arithmeticTransformData_of_multiStateGap
+#print axioms weightedModularMultiStateGap_iff_arithmeticTransformData
+#print axioms weighted_modular_bilinear_decay_is_exact_gap
 
 end MCore.RH.NB
