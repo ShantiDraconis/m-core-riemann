@@ -36,13 +36,17 @@ inductive GapShape where
   | F14_telescoping
   deriving DecidableEq, Repr
 
+/-- Kernel-only coprimality predicate, avoiding a Mathlib dependency in the
+core multistate frontier. -/
+def CoprimeNat (u v : Nat) : Prop :=
+  ∀ k : Nat, k ∣ u → k ∣ v → k = 1
+
 /-- One petal of the d-th rose: a coprime arithmetic pair (u,v). -/
 structure RosePetal where
   d : Nat
   u : Nat
   v : Nat
-  coprime : Nat.Coprime u v
-  deriving Repr
+  coprime : CoprimeNat u v
 
 /-- Coordinates of a dyadic-cylinder / modular-torus presentation. -/
 structure DyadicTorusState where
