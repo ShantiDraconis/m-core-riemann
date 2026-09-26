@@ -29,6 +29,8 @@ jobs:
           #print axioms MCore.RH.NB.kfar_vanishes_of_data
           #print axioms MCore.RH.NB.weightedModularMultiStateGap_iff_kfarVanishes
           #print axioms MCore.RH.NB.arithmeticTransformData_of_multiStateGap
+          #print axioms MCore.RH.NB.weightedModularMultiStateGap_iff_arithmeticTransformData
+          #print axioms MCore.RH.NB.weighted_modular_bilinear_decay_is_exact_gap
           EOF
           lake env lean /tmp/KFarAudit.lean 2>&1 | tee /tmp/kfar-audit.log
           if grep -E 'sorryAx' /tmp/kfar-audit.log; then exit 1; fi
