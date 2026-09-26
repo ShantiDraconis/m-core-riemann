@@ -189,8 +189,98 @@ def weighted_modular_bilinear_decay_frontier : CriticalSignature (Nat → Nat) B
     target := fun b => b = true
     status := .openBridge }
 
+/-- Exact material-gap proposition for the multistate sequence.  This is the
+single theorem-shaped obligation carried by the terminal state: produce a
+weighted modular bilinear decay certificate whose sequence is definitionally
+the same S_N used by the closed 0 and 1 stages. -/
+def WeightedModularBilinearDecayGap
+    (Scalar : Type)
+    (SN : Nat → Scalar) : Prop :=
+  ∃ d : WeightedModularBilinearDecay Scalar, d.sequence = SN
+
+/-- State-2 certificate: the terminal decay exists for the canonical S_N. -/
+structure WeightedDecayEndCertificate (Scalar : Type) where
+  SN : Nat → Scalar
+  decay : WeightedModularBilinearDecay Scalar
+  same : decay.sequence = SN
+
+/-- The 0 -> 1 -> 2 chain with both tensioned transitions made explicit.
+Stages 0 and 1 are closed data.  Stage 2 is exactly the open decay obligation. -/
+structure ZeroOneTwoTensionedChain (Scalar : Type) where
+  SN : Nat → Scalar
+  start : GramStartCertificate Scalar
+  middle : VasyuninMiddleCertificate Scalar
+  start_same : start.SN = SN
+  middle_same : middle.SN = SN
+
+/-- First tension: the closed Gram/D_N stage and the closed dyadic/Vasyunin
+stage are two certified presentations of one and the same S_N. -/
+theorem zero_to_one_same_number
+    {Scalar : Type}
+    (chain : ZeroOneTwoTensionedChain Scalar) :
+    chain.start.SN = chain.middle.SN := by
+  calc
+    chain.start.SN = chain.SN := chain.start_same
+    _ = chain.middle.SN := chain.middle_same.symm
+
+/-- Second tension: closing state 2 is *definitionally equivalent* to filling
+the unique material decay gap for the canonical S_N. -/
+theorem one_to_two_iff_weighted_decay_gap
+    {Scalar : Type}
+    (chain : ZeroOneTwoTensionedChain Scalar) :
+    WeightedModularBilinearDecayGap Scalar chain.SN ↔
+      Nonempty (WeightedDecayEndCertificate Scalar) ∧
+      ∃ endCert : WeightedDecayEndCertificate Scalar,
+        endCert.SN = chain.SN := by
+  constructor
+  · rintro ⟨d, hd⟩
+    let e : WeightedDecayEndCertificate Scalar :=
+      { SN := chain.SN, decay := d, same := hd }
+    exact ⟨⟨e⟩, ⟨e, rfl⟩⟩
+  · rintro ⟨_, ⟨e, he⟩⟩
+    exact ⟨e.decay, by simpa [he] using e.same⟩
+
+/-- Exact theorem form of the remaining RH frontier in this module.  Once the
+same S_N has passed through the closed 0 and 1 stages, the only additional
+input consumed here is the weighted modular bilinear decay certificate for
+that exact sequence. -/
+theorem multistate_SN_gap_closes_RH
+    {Scalar : Type}
+    (chain : ZeroOneTwoTensionedChain Scalar)
+    (hGap : WeightedModularBilinearDecayGap Scalar chain.SN)
+    (transport : RHTransport Scalar) :
+    transport.RH := by
+  rcases hGap with ⟨d, hd⟩
+  let gap : TerminalGap Scalar :=
+    { SN := chain.SN, decay := d, identifies := hd }
+  let base : ZeroOneTwoChain Scalar :=
+    { SN := chain.SN
+      start := chain.start
+      middle := chain.middle
+      start_same := chain.start_same
+      middle_same := chain.middle_same }
+  exact close_0_1_2_from_weighted_decay base gap rfl transport
+
+/-- Machine-checkable statement that the open material producer is one
+proposition attached to one canonical sequence, regardless of how many
+presentations/coordinates (d,U,V) that sequence carries. -/
+theorem multistate_presentations_do_not_multiply_gaps
+    {Scalar : Type}
+    (x : MultistateSN Scalar)
+    (p q : Presentation Scalar)
+    (hp : p ∈ x.presentations)
+    (hq : q ∈ x.presentations) :
+    p.value = q.value := by
+  calc
+    p.value = x.S := presentation_invariant x p hp
+    _ = q.value := (presentation_invariant x q hq).symm
+
 #print axioms presentation_invariant
 #print axioms close_0_1_2_from_weighted_decay
 #print axioms routes_share_one_number
+#print axioms zero_to_one_same_number
+#print axioms one_to_two_iff_weighted_decay_gap
+#print axioms multistate_SN_gap_closes_RH
+#print axioms multistate_presentations_do_not_multiply_gaps
 
 end MCore.RiemannMultistate
