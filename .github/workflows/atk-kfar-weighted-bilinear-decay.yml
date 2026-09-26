@@ -1,0 +1,37 @@
+name: atk-kfar-weighted-bilinear-decay
+
+on:
+  push:
+    branches: [attack/kfar-weighted-bilinear-decay-20260926]
+  workflow_dispatch:
+
+jobs:
+  kfar-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Prepare
+        run: |
+          lake update
+          lake exe cache get
+      - name: Compile FAR interface
+        run: lake build MCore.RH.NB.WeightedModularBilinearDecay
+      - name: Axiom and sorry audit
+        run: |
+          cat > /tmp/KFarAudit.lean <<'EOF'
+          import MCore.RH.NB.WeightedModularBilinearDecay
+          #print axioms MCore.RH.NB.kfar_vanishes_of_data
+          EOF
+          lake env lean /tmp/KFarAudit.lean 2>&1 | tee /tmp/kfar-audit.log
+          if grep -E 'sorryAx' /tmp/kfar-audit.log; then exit 1; fi
+      - name: Fail-closed material status
+        run: |
+          grep -q 'OPEN_MATH_CORE: WEIGHTED_MODULAR_BILINEAR_DECAY' lean/MCore/RH/NB/WeightedModularBilinearDecay.lean
+          grep -q 'NO_INHABITANT: prove kfar_vanishes' lean/MCore/RH/NB/WeightedModularBilinearDecay.lean
+          echo "FAR_BOUND=OPEN_MATH_CORE"
+          echo "MATERIAL_PRODUCER_GAPS=1"
+          echo "RH_CLAIMS=0"
