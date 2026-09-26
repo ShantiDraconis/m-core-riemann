@@ -19,7 +19,8 @@ jobs:
           lake update
           lake exe cache get
       - name: Compile FAR interface
-        run: lake build MCore.RH.NB.WeightedModularBilinearDecay
+        run: |
+          lake build MCore.RH.NB.WeightedModularBilinearDecay
           lake build MCore.RH.NB.WeightedModularMultiStateGap
       - name: Axiom and sorry audit
         run: |
