@@ -20,11 +20,15 @@ jobs:
           lake exe cache get
       - name: Compile FAR interface
         run: lake build MCore.RH.NB.WeightedModularBilinearDecay
+          lake build MCore.RH.NB.WeightedModularMultiStateGap
       - name: Axiom and sorry audit
         run: |
           cat > /tmp/KFarAudit.lean <<'EOF'
           import MCore.RH.NB.WeightedModularBilinearDecay
+          import MCore.RH.NB.WeightedModularMultiStateGap
           #print axioms MCore.RH.NB.kfar_vanishes_of_data
+          #print axioms MCore.RH.NB.weightedModularMultiStateGap_iff_kfarVanishes
+          #print axioms MCore.RH.NB.arithmeticTransformData_of_multiStateGap
           EOF
           lake env lean /tmp/KFarAudit.lean 2>&1 | tee /tmp/kfar-audit.log
           if grep -E 'sorryAx' /tmp/kfar-audit.log; then exit 1; fi
