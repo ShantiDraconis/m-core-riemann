@@ -130,3 +130,84 @@ HM3 = BUILD_PENDING
 HM4 = BLOCKED
 DNLimit_EQ_ZERO = false
 RH_PROVED = false
+
+
+## Exact simplification of the Sobolev combination
+
+Using E_{N,1}=1-zeta V_{N,1},
+
+  E_{N,1}'
+    = -zeta' V_{N,1} - zeta V_{N,1}'.
+
+Also
+
+  (zeta'/zeta)(1-E_{N,1})
+    = (zeta'/zeta)(zeta V_{N,1})
+    = zeta' V_{N,1}.
+
+Therefore exactly
+
+  E_{N,1}' + (zeta'/zeta)(1-E_{N,1})
+    = - zeta V_{N,1}'.
+
+No zero-set analysis remains in this identity.
+
+Since
+
+  V_{N,1}'(s)
+    = - sum_{n<=N} mu(n) w_N(n) log n * n^{-s},
+
+the normalized critical-line quantity
+
+  zeta(s)V_{N,1}'(s)/s
+
+is the Mellin transform of the fixed finite NB vector
+
+  q_N
+    := sum_{n<=N} mu(n) w_N(n) log n * rho_n
+
+up to the frozen sign convention.
+
+Hence the weighted-L2 norm is a finite Gram quadratic form:
+
+  || zeta V_{N,1}' ||_w^2
+    = ||q_N||_2^2
+    = sum_{a,b<=N}
+      d_{N,a} d_{N,b} G_{a,b},
+
+where
+
+  d_{N,n} := mu(n) w_N(n) log n.
+
+Therefore HM2-D2-j2 is equivalent to the explicit finite-energy asymptotic
+
+  ||q_N||_2 = o(log N)
+
+or, squared,
+
+  ||q_N||_2^2 = o((log N)^2).
+
+This is now a Gram-energy problem, not a zeta-zero singularity problem.
+
+## Refined canonical min-cut
+
+HM2-D2-j2 :=
+LOG_WEIGHTED_MOBIUS_GRAM_ENERGY
+
+Target:
+
+  sum_{a,b<=N}
+    mu(a)mu(b) w_N(a)w_N(b)
+    log a log b
+    G_{a,b}
+      = o((log N)^2).
+
+Equivalent target:
+
+  ||q_N||_2^2 = o((log N)^2).
+
+Status:
+SOBOLEV_COMBINATION_SIMPLIFIED = GREEN_MATH
+ZERO_SINGULARITY_DEPENDENCE = ELIMINATED_FOR_J2_IDENTITY
+FINITE_NB_REALIZATION = GREEN_MATH
+J2_GRAM_ENERGY_ASYMPTOTIC = OPEN_MATH
