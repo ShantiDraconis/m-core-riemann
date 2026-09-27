@@ -188,3 +188,75 @@ HM1 = IN_PROCESS
 HM2 = BLOCKED_BY_HM1_CERTIFICATION
 DNLimit_EQ_ZERO = false
 RH_PROVED = false
+
+
+## 9. Analytic certification against BCF Lemma 2
+
+BCF Lemma 2 proves the m=1 contour shift unconditionally by moving the
+w-line to Re(w)=-Re(s)-2M-1, collecting non-trivial-zero residues and
+trivial-zero residues, and letting M->infinity.  The displaced integral is
+O(N^(-2M-1)).
+
+For every fixed integer m>=1 the same shift applies to
+
+  N^w / ( zeta(s+w) w^(m+1) ).
+
+The additional factor w^{-(m-1)} relative to m=1 improves, rather than worsens,
+vertical decay.  Thus the fixed-m contour-shift mechanism is certified by the
+same analytic argument.
+
+The complete zero sum is interpreted by the contour-limit prescription used
+in the shift; no claim of unconditional absolute convergence of the termwise
+simple-zero formula is made.
+
+### Explicit trivial-zero remainder
+
+Define
+
+  F_{N,m}(s)
+    := sum_{n>=1}
+       N^(-2n-s) /
+       ( zeta'(-2n) (-2n-s)^(m+1) ).
+
+Then the trivial-zero sector of the contour shift is exactly
+
+  m!/(log N)^m * F_{N,m}(s).
+
+For m=1 this specializes term-by-term to the trivial-zero residue in BCF
+Lemma 2:
+
+  N^(-2n-s) /
+  ( zeta'(-2n) (2n+s)^2 log N ).
+
+Keeping the formula in terms of zeta'(-2n) avoids any normalization ambiguity
+from rewriting it through the functional equation.
+
+### Certified fixed-m identity
+
+For fixed m>=1 and 0<Re(s)<1,
+
+  V_{N,m}(s)
+    =
+    CENTRAL_{N,m}(s)
+    + m!/(log N)^m
+      [ SUM_RHO^contour R_{N,m}(rho,s) + F_{N,m}(s) ],
+
+where SUM_RHO^contour denotes the residue sum induced by the contour-limit
+prescription.
+
+No RH, simplicity hypothesis, or negative zeta'-moment hypothesis is used in
+this identity.
+
+## 10. HM1 promotion
+
+HIGHER_ORDER_PERRON = GREEN_MATH
+HIGHER_ORDER_CENTRAL_RESIDUE = GREEN_MATH
+HIGHER_ORDER_ZERO_RESIDUE_FORM = GREEN_MATH
+HIGHER_ORDER_TRIVIAL_REMAINDER = GREEN_MATH
+HIGHER_ORDER_CONTOUR_SHIFT = GREEN_MATH_FIXED_M
+M1_SPECIALIZATION = PASS
+HM1_MATH = GREEN
+HM1_LEAN = BUILD_PENDING
+HM2 = READY
+DNLimit_EQ_ZERO = false
+RH_PROVED = false
