@@ -1,0 +1,42 @@
+name: material-producer-gate
+on:
+  push:
+    branches: ['atk/riemann-material-producer-gate-20260928']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - name: Resolve complete manifest and cache
+        run: |
+          set -euo pipefail
+          lake update
+          lake exe cache get
+      - name: Compile audit gate
+        run: |
+          set -euo pipefail
+          lake env lean lean/MCore/RH/NB/MaterialProducerGate.lean 2>&1 | tee gate.log
+          ! grep -E 'sorryAx|(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' gate.log
+      - name: Confirm expected material failure
+        run: |
+          set -euo pipefail
+          if lake env lean probe/RiemannMaterialExpectedFailure.lean > probe.log 2>&1; then
+            cat probe.log
+            echo "MATERIAL_PROBE=UNEXPECTED_PASS"
+            exit 2
+          fi
+          cat probe.log
+          grep -F "unsolved goals" probe.log
+          ! grep -F "sorryAx" probe.log
+          echo "MATERIAL_PROBE=EXPECTED_FAIL_CONFIRMED"
