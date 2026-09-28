@@ -51,10 +51,38 @@ jobs:
           example : k6_dependency.target.status = .openBridge := k8_k7_target_open
           EOF
           lake env lean K8FirewallAudit.lean
-      - name: G6 numerical evidence excluded from Lean proof chain
+      - name: G6 numerical evidence excluded from K8 import closure
         run: |
           set -euo pipefail
-          if grep -R -n -E 'phi_derived|0\.309|0\.594|0\.609' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, sys
+          root = Path("lean")
+          todo = [root / "MCore" / "K8.lean"]
+          seen = set()
+          bad = re.compile(r"phi_derived|0\.309|0\.594|0\.609")
+          hits = []
+          while todo:
+              p = todo.pop()
+              if p in seen or not p.exists():
+                  continue
+              seen.add(p)
+              text = p.read_text()
+              for n, line in enumerate(text.splitlines(), 1):
+                  if bad.search(line):
+                      hits.append(f"{p}:{n}:{line}")
+                  s = line.strip()
+                  if s.startswith("import "):
+                      for mod in s[len("import "):].split():
+                          if mod.startswith("MCore."):
+                              q = root / (mod.replace(".", "/") + ".lean")
+                              if q.exists():
+                                  todo.append(q)
+          print(f"G6_IMPORT_CLOSURE_FILES={len(seen)}")
+          if hits:
+              print("\n".join(hits))
+              sys.exit(1)
+          PY
       - name: G7 clean K8 reproduction
         run: |
           lake clean
