@@ -41,7 +41,7 @@ structure RosePetal where
   d : Nat
   u : Nat
   v : Nat
-  coprime : Nat.Coprime u v
+  coprime : Nat.gcd u v = 1
   deriving Repr
 
 /-- Coordinates of a dyadic-cylinder / modular-torus presentation. -/
