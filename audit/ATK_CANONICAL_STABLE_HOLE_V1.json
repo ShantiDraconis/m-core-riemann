@@ -1,0 +1,15 @@
+{
+  "schema": "ATK_CANONICAL_STABLE_HOLE_V1",
+  "problem": "RIEMANN",
+  "type": "same-sequence weighted modular bilinear decay for the canonical S_N",
+  "standard_binding": "canonical NB/R0/R1/R2 defect and SAME S_N sequence",
+  "forbidden_shortcuts": [
+    "DNToZero hypothesis",
+    "DNLimit=0 hypothesis",
+    "FiniteSpanApproximatesChi hypothesis",
+    "WeightedDecay proof field",
+    "alternate S_N substitution"
+  ],
+  "exact_producer": "derive a concrete |S_N| ≤ ε_N estimate for the same canonical S_N and prove ε_N → 0; reuse existing transports to DNToZero, DNLimit=0, and RH",
+  "material_status": "OPEN_MATH"
+}
