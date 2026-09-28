@@ -18,6 +18,7 @@ jobs:
           use-mathlib-cache: false
       - run: lake update
       - run: lake exe cache get || true
+      - run: lake build MCore.RH.NB.ZeroLimitFrontier
       - run: lake env lean lean/MCore/MinimalInhabitant.lean
       - run: lake env lean lean/MCore/RH/NB/MaterialProducerGate.lean
       - name: Expected material failure
