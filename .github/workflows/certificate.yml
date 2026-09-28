@@ -12,6 +12,8 @@ jobs:
       - name: Repair Lake manifest
         run: "$HOME/.elan/bin/lake update"
       - uses: leanprover/lean-action@v1
+        with:
+          build-args: MCore.K8
       - name: G0 fail-closed source hygiene
         run: |
           set -euo pipefail
