@@ -1,0 +1,22 @@
+{
+  "schema": "ATK_MATERIAL_RECLASSIFICATION_V1",
+  "problem": "RIEMANN",
+  "green_but_not_material": [
+    "DNToZero_iff_DNLimit_eq_zero",
+    "finiteSpanApproximatesChi_iff_DNLimit_eq_zero",
+    "finiteSpanApproximatesChi_iff_DNToZero",
+    "DNToZero_of_finiteSpanApproximatesChi",
+    "DNToZero_of_le_zero"
+  ],
+  "classification": "GREEN_EQUIVALENCE_AND_TRANSPORT",
+  "stable_hole": "unconditional concrete vanishing/upper-bound estimate for the canonical defect sequence yielding DNToZero",
+  "fences": [
+    "no DNToZero hypothesis counts as producer",
+    "no DNLimit = 0 hypothesis counts as producer",
+    "no FiniteSpanApproximatesChi hypothesis counts as producer",
+    "no supplied VanishingUpperBound counts as producer"
+  ],
+  "audit_status": "GREEN",
+  "material_status": "OPEN_MATH",
+  "material_green": false
+}
