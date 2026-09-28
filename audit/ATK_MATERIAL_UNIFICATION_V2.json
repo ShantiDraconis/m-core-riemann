@@ -1,0 +1,18 @@
+{
+  "schema": "ATK_MATERIAL_UNIFICATION_V2",
+  "problem": "RIEMANN",
+  "canonical_type": "DNToZero rho",
+  "canonical_type_status": "TYPED",
+  "standard_object_binding": "REPO_CANONICAL_NB_HILBERT_DATA",
+  "direct_probe": "probe/RiemannMaterialExpectedFailure.lean",
+  "direct_probe_expected": "FAIL_UNTIL_INHABITED",
+  "adversarial_fences": [
+    "DNTOZERO_HYPOTHESIS",
+    "DNLIMIT_ZERO_HYPOTHESIS",
+    "FINITE_SPAN_APPROX_HYPOTHESIS",
+    "SUPPLIED_VANISHING_UPPER_BOUND"
+  ],
+  "dependency_closure": "REQUIRED",
+  "provenance": "REQUIRED",
+  "material_status": "OPEN_MATH"
+}
