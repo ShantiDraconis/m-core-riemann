@@ -1,7 +1,9 @@
 import MCore.Signature
-import Mathlib.Data.Nat.GCD.Basic
 
 namespace MCore.RiemannMultistate
+
+/-- Kernel-level coprimality predicate, avoiding any Mathlib dependency. -/
+def CoprimeNat (u v : Nat) : Prop := Nat.gcd u v = 1
 
 /-- Closed structural stages of the 0 -> 1 -> 2 architecture. -/
 inductive Stage where
@@ -42,7 +44,7 @@ structure RosePetal where
   d : Nat
   u : Nat
   v : Nat
-  coprime : Nat.Coprime u v
+  coprime : CoprimeNat u v
   deriving Repr
 
 /-- Coordinates of a dyadic-cylinder / modular-torus presentation. -/
