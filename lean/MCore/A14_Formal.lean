@@ -36,10 +36,8 @@ harness and are not substituted for this universal quantifier. -/
 def A4_scaleInvariant (sys : MCoreSystem) : Prop :=
   ∀ s : ℝ, 0 < s → sys.scale s = sys.baseVal
 
-/-- The observed Phi≈0.6 values are evidence only and are intentionally not part of A4. -/
-def PhiNumericalEvidence (sys : MCoreSystem) : Prop :=
-  sys.phiObserved 0.309 ∧ sys.phiObserved 0.594 ∧ sys.phiObserved 0.609
-
+/-- Numerical Phi samples are intentionally kept outside the Lean proof chain.
+The abstract observation carrier remains available for external audit tooling. -/
 /-- Combined non-vacuous audit signature. -/
 def A14Signature (sys : MCoreSystem) : Prop :=
   A1_prop sys ∧ A2_cycleDetected sys ∧ A3_pathDependent sys ∧ A4_scaleInvariant sys
