@@ -10,9 +10,18 @@
     "DNTOZERO_HYPOTHESIS",
     "DNLIMIT_ZERO_HYPOTHESIS",
     "FINITE_SPAN_APPROX_HYPOTHESIS",
-    "SUPPLIED_VANISHING_UPPER_BOUND"
+    "SUPPLIED_VANISHING_UPPER_BOUND",
+    "WEIGHTED_DECAY_CERTIFICATE_PROOF_FIELD",
+    "ALTERNATE_SN_SUBSTITUTION",
+    "ABSTRACT_VANISHES_PROP_AS_PRODUCER"
   ],
   "dependency_closure": "REQUIRED",
   "provenance": "REQUIRED",
-  "material_status": "OPEN_MATH"
+  "material_status": "OPEN_MATH",
+  "next_material_producer": [
+    "for the SAME canonical S_N construct a concrete weighted modular bilinear estimate |S_N| <= eps_N",
+    "prove eps_N -> 0 without receiving a vanishing/decay certificate",
+    "identify this SAME sequence with the canonical DN/NB defect route",
+    "reuse existing DNToZero/DNLimit/RH transports"
+  ]
 }
