@@ -1,4 +1,5 @@
 import MCore.Signature
+import Mathlib.Data.Nat.GCD.Basic
 
 namespace MCore.RiemannMultistate
 
