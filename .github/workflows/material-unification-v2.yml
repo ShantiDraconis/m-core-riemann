@@ -1,0 +1,30 @@
+name: material-unification-v2
+on:
+  push:
+    branches: ['atk/material-unification-v2-20260928']
+  workflow_dispatch:
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          use-mathlib-cache: false
+      - run: lake update
+      - run: lake exe cache get
+      - run: lake env lean lean/MCore/MinimalInhabitant.lean
+      - run: lake env lean lean/MCore/RH/NB/MaterialProducerGate.lean
+      - name: Expected material failure
+        run: |
+          if lake env lean probe/RiemannMaterialExpectedFailure.lean > probe.log 2>&1; then
+            cat probe.log; echo MATERIAL_PROBE=UNEXPECTED_PASS; exit 2
+          fi
+          grep -F "unsolved goals" probe.log
+          ! grep -F sorryAx probe.log
+          echo MATERIAL_PROBE=EXPECTED_FAIL_CONFIRMED
