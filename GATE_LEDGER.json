@@ -14,8 +14,21 @@
   },
   "state_ci": "GREEN_PREFIX_REUSED",
   "state_math": "OPEN_MATH",
-  "next": "construct unconditional BCF/zero-residue control yielding VanishingUpperBound for the concrete generator family",
+  "next": "construct FiniteSpanApproximatesChi for the concrete generator family; BCF/zero-residue/VanishingUpperBound routes remain admissible sufficient strategies, not additional terminal obligations",
   "progress_metric": "FROZEN_HARD/TOTAL_HARD",
   "tests_are_progress_metric": false,
-  "frozen_prefix_decrements_hard": false
+  "frozen_prefix_decrements_hard": false,
+  "direct_producer": {
+    "state": "GREEN_FROZEN_TYPED_OPEN_MATH",
+    "branch": "frozen/nb-zero-limit-density-equivalence-green-d6a291b4",
+    "sha": "d6a291b4563f9021f74ab63cc983d44f079472da",
+    "theorem": "finiteSpanApproximatesChi_iff_DNLimit_eq_zero",
+    "target": "FiniteSpanApproximatesChi concreteGeneratorFamily",
+    "equivalent_chain": [
+      "FiniteSpanApproximatesChi",
+      "DNLimit = 0",
+      "DNToZero"
+    ],
+    "inhabitant_state": "OPEN_MATH"
+  }
 }
