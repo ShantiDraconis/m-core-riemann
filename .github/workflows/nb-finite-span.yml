@@ -2,7 +2,7 @@ name: nb-finite-span
 
 on:
   push:
-    branches: ["research/nb-finite-span"]
+    branches: ["atk/next-rh-finite-span-approximates-chi-20260929"]
   workflow_dispatch:
 
 jobs:
@@ -28,16 +28,19 @@ jobs:
           if grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder|TODO|FIXME)([^[:alnum:]_]|$)' "$F"; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
           if grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$F"; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
       - name: NB8 build finite span
-        run: lake build MCore.RH.NB.FiniteSpan
+        run: lake build MCore.RH.NB.FiniteSpan MCore.RH.NB.ZeroLimitFrontier
       - name: NB8 theorem API
         run: |
           cat > NBFiniteSpanAudit.lean <<'EOF'
-          import MCore.RH.NB.FiniteSpan
+          import MCore.RH.NB.ZeroLimitFrontier
           open MCore.RH.NB
           example (D : NBHilbertData) (rho : D.GeneratorFamily) (N : ℕ) :
               Module.Finite ℝ (D.V rho N) := D.finiteDimensional_V rho N
           example (D : NBHilbertData) (rho : D.GeneratorFamily) (N : ℕ) :
               IsClosed (D.V rho N : Set D.H) := D.isClosed_V rho N
+          example (D : NBHilbertData) (rho : D.GeneratorFamily) :
+              D.FiniteSpanApproximatesChi rho ↔ D.DNLimit rho = 0 :=
+            D.finiteSpanApproximatesChi_iff_DNLimit_eq_zero rho
           EOF
           lake env lean NBFiniteSpanAudit.lean
       - name: NB8 axiom report
