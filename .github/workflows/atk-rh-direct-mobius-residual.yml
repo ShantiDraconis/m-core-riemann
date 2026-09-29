@@ -1,0 +1,43 @@
+name: atk-rh-direct-mobius-residual
+
+on:
+  push:
+    branches:
+      - atk/rh-direct-mobius-residual-20260929
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mobius-kernel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve pinned dependencies
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/R2/MobiusDivisorKernel.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+      - name: Build Möbius divisor kernel
+        run: lake build MCore.RH.R2.MobiusDivisorKernel
+      - name: Axiom audit
+        run: |
+          cat > MobiusKernelAudit.lean <<'EOF'
+          import MCore.RH.R2.MobiusDivisorKernel
+          #print axioms MCore.RH.R2.sum_moebius_divisors_eq_indicator
+          EOF
+          lake env lean MobiusKernelAudit.lean | tee mobius-kernel-axioms.txt
+          ! grep -E 'sorryAx' mobius-kernel-axioms.txt
