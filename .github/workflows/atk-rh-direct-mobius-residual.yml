@@ -28,8 +28,8 @@ jobs:
       - name: Source firewall
         run: |
           set -euo pipefail
-          for FILE in             lean/MCore/RH/R2/MobiusDivisorKernel.lean             lean/MCore/RH/NB/CoefficientRealization.lean
-          do
+          FILES="lean/MCore/RH/R2/MobiusDivisorKernel.lean lean/MCore/RH/NB/CoefficientRealization.lean lean/MCore/RH/NB/CoefficientEndpoint.lean"
+          for FILE in $FILES; do
             ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
             ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
           done
@@ -37,29 +37,33 @@ jobs:
         run: |
           lake build MCore.RH.R2.MobiusDivisorKernel
           lake build MCore.RH.NB.CoefficientRealization
+          lake build MCore.RH.NB.CoefficientEndpoint
       - name: Theorem API
         run: |
           cat > RHDirectKernelAudit.lean <<'EOF'
           import MCore.RH.R2.MobiusDivisorKernel
-          import MCore.RH.NB.CoefficientRealization
+          import MCore.RH.NB.CoefficientEndpoint
           #check MCore.RH.R2.sum_moebius_divisors_eq_indicator
           #check MCore.RH.NB.NBHilbertData.exists_coefficients_of_mem_V
           #check MCore.RH.NB.NBHilbertData.dN_le_coefficient_error
           #check MCore.RH.NB.NBHilbertData.exists_optimal_coefficients_DN
           #check MCore.RH.NB.NBHilbertData.DN_le_coefficient_error_sq
+          #check MCore.RH.NB.NBHilbertData.finiteSpanApproximatesChi_iff_exists_coefficients
+          #check MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_iff_exists_coefficients
           EOF
           lake env lean RHDirectKernelAudit.lean
       - name: Axiom audit
         run: |
           cat > RHDirectKernelAxioms.lean <<'EOF'
           import MCore.RH.R2.MobiusDivisorKernel
-          import MCore.RH.NB.CoefficientRealization
+          import MCore.RH.NB.CoefficientEndpoint
           #print axioms MCore.RH.R2.sum_moebius_divisors_eq_indicator
           #print axioms MCore.RH.NB.NBHilbertData.exists_coefficients_of_mem_V
-          #print axioms MCore.RH.NB.NBHilbertData.dN_le_coefficient_error
           #print axioms MCore.RH.NB.NBHilbertData.exists_optimal_coefficients
           #print axioms MCore.RH.NB.NBHilbertData.exists_optimal_coefficients_DN
           #print axioms MCore.RH.NB.NBHilbertData.DN_le_coefficient_error_sq
+          #print axioms MCore.RH.NB.NBHilbertData.finiteSpanApproximatesChi_iff_exists_coefficients
+          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_iff_exists_coefficients
           EOF
           lake env lean RHDirectKernelAxioms.lean | tee rh-direct-kernel-axioms.txt
           ! grep -E 'sorryAx' rh-direct-kernel-axioms.txt
