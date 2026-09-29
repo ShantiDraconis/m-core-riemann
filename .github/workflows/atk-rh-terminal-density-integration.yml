@@ -1,0 +1,51 @@
+name: atk-rh-terminal-density-integration
+
+on:
+  push:
+    branches:
+      - atk/rh-terminal-density-integration-20260929
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terminal-density:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/NB/ExplicitCoefficientProducer.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\\[[^]]*\\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+      - name: Build concrete R0 and density producer
+        run: |
+          lake build MCore.RH.R0.RhoConcrete
+          lake build MCore.RH.NB.ZeroLimitFrontier
+          lake build MCore.RH.NB.ExplicitCoefficientProducer
+      - name: Terminal producer API
+        run: |
+          cat > RHTerminalDensityAudit.lean <<'EOF'
+          import MCore.RH.NB.ExplicitCoefficientProducer
+          open MCore.RH.NB
+          #check NBHilbertData.finiteCoefficientApproximant_mem_V
+          #check NBHilbertData.finiteSpanApproximatesChi_of_coefficient_error_tendsto_zero
+          #check NBHilbertData.DNLimit_eq_zero_of_coefficient_error_tendsto_zero
+          #check MCore.RH.R0.concreteDNLimit_eq_zero_of_coefficient_error_tendsto_zero
+          EOF
+          lake env lean RHTerminalDensityAudit.lean
+      - name: Axiom audit
+        run: |
+          cat > RHTerminalDensityAxioms.lean <<'EOF'
+          import MCore.RH.NB.ExplicitCoefficientProducer
+          #print axioms MCore.RH.NB.NBHilbertData.finiteCoefficientApproximant_mem_V
+          #print axioms MCore.RH.NB.NBHilbertData.finiteSpanApproximatesChi_of_coefficient_error_tendsto_zero
+          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_coefficient_error_tendsto_zero
+          #print axioms MCore.RH.R0.concreteDNLimit_eq_zero_of_coefficient_error_tendsto_zero
+          EOF
+          lake env lean RHTerminalDensityAxioms.lean | tee rh-terminal-density-axioms.txt
+          ! grep -E 'sorryAx|Classical.choice.*MCore|propext.*MCore' rh-terminal-density-axioms.txt
