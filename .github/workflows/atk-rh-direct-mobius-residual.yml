@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  mobius-kernel:
+  direct-rh-kernel:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -28,16 +28,38 @@ jobs:
       - name: Source firewall
         run: |
           set -euo pipefail
-          FILE=lean/MCore/RH/R2/MobiusDivisorKernel.lean
-          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
-          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
-      - name: Build Möbius divisor kernel
-        run: lake build MCore.RH.R2.MobiusDivisorKernel
+          for FILE in             lean/MCore/RH/R2/MobiusDivisorKernel.lean             lean/MCore/RH/NB/CoefficientRealization.lean
+          do
+            ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+            ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+          done
+      - name: Build direct kernels
+        run: |
+          lake build MCore.RH.R2.MobiusDivisorKernel
+          lake build MCore.RH.NB.CoefficientRealization
+      - name: Theorem API
+        run: |
+          cat > RHDirectKernelAudit.lean <<'EOF'
+          import MCore.RH.R2.MobiusDivisorKernel
+          import MCore.RH.NB.CoefficientRealization
+          #check MCore.RH.R2.sum_moebius_divisors_eq_indicator
+          #check MCore.RH.NB.NBHilbertData.exists_coefficients_of_mem_V
+          #check MCore.RH.NB.NBHilbertData.dN_le_coefficient_error
+          #check MCore.RH.NB.NBHilbertData.exists_optimal_coefficients_DN
+          #check MCore.RH.NB.NBHilbertData.DN_le_coefficient_error_sq
+          EOF
+          lake env lean RHDirectKernelAudit.lean
       - name: Axiom audit
         run: |
-          cat > MobiusKernelAudit.lean <<'EOF'
+          cat > RHDirectKernelAxioms.lean <<'EOF'
           import MCore.RH.R2.MobiusDivisorKernel
+          import MCore.RH.NB.CoefficientRealization
           #print axioms MCore.RH.R2.sum_moebius_divisors_eq_indicator
+          #print axioms MCore.RH.NB.NBHilbertData.exists_coefficients_of_mem_V
+          #print axioms MCore.RH.NB.NBHilbertData.dN_le_coefficient_error
+          #print axioms MCore.RH.NB.NBHilbertData.exists_optimal_coefficients
+          #print axioms MCore.RH.NB.NBHilbertData.exists_optimal_coefficients_DN
+          #print axioms MCore.RH.NB.NBHilbertData.DN_le_coefficient_error_sq
           EOF
-          lake env lean MobiusKernelAudit.lean | tee mobius-kernel-axioms.txt
-          ! grep -E 'sorryAx' mobius-kernel-axioms.txt
+          lake env lean RHDirectKernelAxioms.lean | tee rh-direct-kernel-axioms.txt
+          ! grep -E 'sorryAx' rh-direct-kernel-axioms.txt
