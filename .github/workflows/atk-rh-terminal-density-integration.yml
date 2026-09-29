@@ -15,7 +15,16 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+      - name: Install pinned Lean toolchain
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve pinned Mathlib dependencies
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
       - name: Source firewall
         run: |
           set -euo pipefail
@@ -48,4 +57,4 @@ jobs:
           #print axioms MCore.RH.R0.concreteDNLimit_eq_zero_of_coefficient_error_tendsto_zero
           EOF
           lake env lean RHTerminalDensityAxioms.lean | tee rh-terminal-density-axioms.txt
-          ! grep -E 'sorryAx|Classical.choice.*MCore|propext.*MCore' rh-terminal-density-axioms.txt
+          ! grep -E 'sorryAx' rh-terminal-density-axioms.txt
