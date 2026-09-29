@@ -32,7 +32,7 @@ theorem exists_coefficients_of_mem_V
       (v : D.H) ∈
         Submodule.span ℝ (Set.range (fun i : Fin N => rho i)) := by
     simpa [V, finiteGenerators] using v.property
-  rcases (Submodule.mem_span_range_iff_exists_fun).1 hv with ⟨c, hc⟩
+  rcases (Submodule.mem_span_range_iff_exists_fun (R := ℝ)\n    (v := fun i : Fin N => rho i) (x := (v : D.H))).1 hv with ⟨c, hc⟩
   exact ⟨c, by simpa [coefficientApproximantAt] using hc⟩
 
 /-- The finite-stage projection error is no larger than the error of any coefficient vector. -/
