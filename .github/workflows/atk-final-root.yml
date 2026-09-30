@@ -5,7 +5,6 @@ on:
     paths:
       - '.github/workflows/atk-final-root.yml'
       - 'lean/**'
-      - 'research/**'
   workflow_dispatch:
 jobs:
   final-root:
@@ -19,4 +18,4 @@ jobs:
       - name: Resolve dependencies
         run: lake update
       - name: Build FINAL_ROOT
-        run: lake env lean research/r2/FinalExternal.lean
+        run: lake build MCore.RH.R2.FinalExternal
