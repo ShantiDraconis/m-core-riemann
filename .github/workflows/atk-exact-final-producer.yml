@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
 jobs:
-  exact:
+  exact-final:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,5 +19,5 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Resolve dependencies
         run: lake update
-      - name: Build exact producer
+      - name: Build exact final producer
         run: lake build MCore.RH.NB.ExactFinalProducer
