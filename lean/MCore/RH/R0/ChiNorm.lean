@@ -8,13 +8,14 @@ open MeasureTheory Set
 /-- The support of chi has measure one in the selected L2(0,infinity) measure. -/
 theorem zeroInfinityMeasure_chiSupport :
     zeroInfinityMeasure chiSupport = 1 := by
-  unfold zeroInfinityMeasure
+  change (volume.restrict (Ioi (0 : ℝ))) (Ioo (0 : ℝ) 1) = 1
   rw [Measure.restrict_apply measurableSet_Ioo]
-  have hset : chiSupport ∩ zeroInfinityDomain = chiSupport := by
+  have hset :
+      Ioo (0 : ℝ) 1 ∩ Ioi 0 = Ioo (0 : ℝ) 1 := by
     ext x
-    simp [chiSupport, zeroInfinityDomain]
-  rw [hset]
-  simp [ambientMeasure, chiSupport]
+    simp
+  rw [hset, Real.volume_Ioo]
+  norm_num
 
 /-- The distinguished concrete Nyman--Beurling target has L2 norm exactly one. -/
 theorem chiLpConcrete_norm :
@@ -22,8 +23,17 @@ theorem chiLpConcrete_norm :
   unfold chiLpConcrete chiLp
   rw [Lp.norm_toLp]
   rw [chiRepresentative_eq_indicator]
-  rw [eLpNorm_indicator_const measurableSet_Ioo]
-  simp [twoExponent, zeroInfinityMeasure_chiSupport]
+  change
+    (eLpNorm
+      ((Ioo (0 : ℝ) 1).indicator (fun _ : ℝ => (1 : ℝ)))
+      twoExponent zeroInfinityMeasure).toReal = 1
+  rw [eLpNorm_indicator_const measurableSet_Ioo
+    (by simp [twoExponent]) (by simp [twoExponent])]
+  have hmeasure :
+      zeroInfinityMeasure (Ioo (0 : ℝ) 1) = 1 := by
+    simpa [chiSupport] using zeroInfinityMeasure_chiSupport
+  rw [hmeasure]
+  simp [twoExponent]
 
 /-- Squared normalization used by the finite Gram energy. -/
 theorem chiLpConcrete_norm_sq :
