@@ -41,7 +41,7 @@ theorem coefficient_error_sq_eq_energy
     rw [real_inner_comm]
   have hgram :
       (∑ i : Fin N, ∑ j : Fin N,
-        c i * c j * @inner ℝ D.H _ (rho j) (rho i)) =
+        c i * (c j * @inner ℝ D.H _ (rho j) (rho i))) =
       ∑ i : Fin N, ∑ j : Fin N,
         c i * c j * @inner ℝ D.H _ (rho i) (rho j) := by
     apply Finset.sum_congr rfl
@@ -49,6 +49,7 @@ theorem coefficient_error_sq_eq_energy
     apply Finset.sum_congr rfl
     intro j hj
     rw [real_inner_comm]
+    ring
   rw [hcross, hgram]
   ring
 
