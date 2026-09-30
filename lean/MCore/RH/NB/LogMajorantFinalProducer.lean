@@ -1,9 +1,10 @@
 import MCore.RH.NB.ExactFinalProducer
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 namespace MCore.RH.NB
 namespace Final
 
-def logMajorant (K : ℝ) (N : ℕ) : ℝ :=
+noncomputable def logMajorant (K : ℝ) (N : ℕ) : ℝ :=
   K / Real.log ((N : ℝ) + 2)
 
 theorem logMajorant_nonneg
@@ -11,11 +12,10 @@ theorem logMajorant_nonneg
     ∀ N : ℕ, 0 ≤ logMajorant K N := by
   intro N
   unfold logMajorant
-  have harg : 1 < (N : ℝ) + 2 := by
-    exact_mod_cast (Nat.succ_lt_succ (Nat.zero_le N))
-  have hlog : 0 < Real.log ((N : ℝ) + 2) :=
-    Real.log_pos harg
-  positivity
+  have harg : (1 : ℝ) < (N : ℝ) + 2 := by
+    have hN : 0 ≤ (N : ℝ) := Nat.cast_nonneg N
+    linarith
+  exact div_nonneg hK (Real.log_pos harg).le
 
 theorem logMajorant_tendsto_zero
     (K : ℝ) :
@@ -24,8 +24,8 @@ theorem logMajorant_tendsto_zero
   have harg :
       Filter.Tendsto (fun N : ℕ => (N : ℝ) + 2)
         Filter.atTop Filter.atTop :=
-    tendsto_atTop_add_const_right _ _
-      tendsto_natCast_atTop_atTop
+    tendsto_atTop_add_const_right
+      Filter.atTop (2 : ℝ) tendsto_natCast_atTop_atTop
   exact tendsto_const_nhds.div_atTop
     (Real.tendsto_log_atTop.comp harg)
 
@@ -37,7 +37,7 @@ structure LogMajorantCertificate
   dn_le :
     ∀ N : ℕ, D.DN rho N ≤ logMajorant K N
 
-def vanishingUpperBound_of_logMajorant
+noncomputable def vanishingUpperBound_of_logMajorant
     (D : NBHilbertData)
     (rho : D.GeneratorFamily)
     (h : LogMajorantCertificate D rho) :
