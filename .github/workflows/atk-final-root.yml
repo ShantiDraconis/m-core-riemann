@@ -1,0 +1,16 @@
+name: ATK FINAL ROOT
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+    paths:
+      - 'research/r2/FinalExternal.lean'
+      - '.github/workflows/atk-final-root.yml'
+  workflow_dispatch:
+jobs:
+  final-root:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with: {build: false, test: false, lint: false, use-mathlib-cache: true}
+      - run: lake env lean research/r2/FinalExternal.lean
