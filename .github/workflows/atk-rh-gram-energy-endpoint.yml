@@ -34,13 +34,15 @@ jobs:
       - name: Build Gram energy endpoint
         run: |
           lake build MCore.RH.NB.GramEnergy
+          lake build MCore.RH.NB.GramEndpoint
       - name: Theorem API
         run: |
           cat > RHGramEnergyAudit.lean <<'EOF'
-          import MCore.RH.NB.GramEnergy
+          import MCore.RH.NB.GramEndpoint
           #check MCore.RH.NB.NBHilbertData.coefficient_error_sq_eq_energy
           #check MCore.RH.NB.NBHilbertData.coefficientEnergy_of_normal_equations
           #check MCore.RH.NB.NBHilbertData.exists_optimal_coefficients_reduced_energy
+          #check MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_iff_normal_equation_energy
           EOF
           lake env lean RHGramEnergyAudit.lean
       - name: Axiom audit
@@ -50,6 +52,7 @@ jobs:
           #print axioms MCore.RH.NB.NBHilbertData.coefficient_error_sq_eq_energy
           #print axioms MCore.RH.NB.NBHilbertData.coefficientEnergy_of_normal_equations
           #print axioms MCore.RH.NB.NBHilbertData.exists_optimal_coefficients_reduced_energy
+          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_iff_normal_equation_energy
           EOF
           lake env lean RHGramEnergyAxioms.lean | tee rh-gram-energy-axioms.txt
           ! grep -E 'sorryAx' rh-gram-energy-axioms.txt
