@@ -10,12 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
       - name: Minimal proof escape guard
         run: |
           set -euo pipefail
           ! grep -nE '^[[:space:]]*(sorry|admit|axiom)[[:space:]]' lean/MCore/AutoCompose.lean
       - name: Build composition layer
-        run: lake build MCore.AutoCompose
+        run: lake env lean lean/MCore/AutoCompose.lean
       - name: Build current terminal frontier only
-        run: lake build MCore.RH.NB.ZeroLimitFrontier
+        run: lake env lean lean/MCore/RH/NB/ZeroLimitFrontier.lean
