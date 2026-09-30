@@ -23,9 +23,11 @@ theorem logMajorant_tendsto_zero
   unfold logMajorant
   have harg :
       Filter.Tendsto (fun N : ℕ => (N : ℝ) + 2)
-        Filter.atTop Filter.atTop :=
-    tendsto_atTop_add_const_right
-      Filter.atTop (2 : ℝ) tendsto_natCast_atTop_atTop
+        Filter.atTop Filter.atTop := by
+    simpa using
+      (Filter.Tendsto.atTop_add
+        (tendsto_natCast_atTop_atTop : Filter.Tendsto ((↑) : ℕ → ℝ) Filter.atTop Filter.atTop)
+        (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (2 : ℝ)) Filter.atTop (nhds 2)))
   exact tendsto_const_nhds.div_atTop
     (Real.tendsto_log_atTop.comp harg)
 
