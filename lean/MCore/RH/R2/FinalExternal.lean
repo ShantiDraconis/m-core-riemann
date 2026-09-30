@@ -45,7 +45,7 @@ theorem compressed_of_openBridge
       MCore.RH.R0.concreteNBData
       MCore.RH.R0.concreteGeneratorFamily).1 h
 
-structure FinalExternal where
+structure FinalExternal : Type where
   r1 : R1ExternalBridge
   vanishing : VanishingUpperCertificate
 
