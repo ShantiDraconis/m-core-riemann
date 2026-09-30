@@ -22,3 +22,4 @@ def RiemannHypothesis : Prop :=
 def FINAL_STATEMENT : Prop := RiemannHypothesis
 
 end MCore.Audit
+-- ATK DIRECT TERMINAL RUN 2026-09-30: no semantic change.
