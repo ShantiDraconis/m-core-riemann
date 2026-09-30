@@ -1,0 +1,23 @@
+name: ATK RH log majorant
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+    paths:
+      - 'lean/MCore/RH/NB/LogMajorantFinalProducer.lean'
+      - '.github/workflows/atk-rh-log-majorant.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: lake update
+      - name: Build log-majorant producer
+        run: lake build MCore.RH.NB.LogMajorantFinalProducer
