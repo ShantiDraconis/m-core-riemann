@@ -1,0 +1,21 @@
+name: ATK RH direct majorant
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+    paths:
+      - 'lean/MCore/RH/NB/DirectMajorantProducer.lean'
+      - '.github/workflows/atk-rh-direct-majorant.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+      - name: Compile direct producer
+        run: lake build MCore.RH.NB.DirectMajorantProducer
