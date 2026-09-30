@@ -1,0 +1,45 @@
+name: atk-rh-gram-quadratic-master
+
+on:
+  push:
+    branches:
+      - atk/master-rh-gram-repair-20260930
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gram-quadratic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve pinned dependencies
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILE=lean/MCore/RH/NB/GramQuadratic.lean
+          ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+          ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+      - name: Build Gram quadratic kernel
+        run: lake build MCore.RH.NB.GramQuadratic
+      - name: Axiom audit
+        run: |
+          cat > RHGramQuadraticAxioms.lean <<'EOF'
+          import MCore.RH.NB.GramQuadratic
+          #print axioms MCore.RH.NB.NBHilbertData.coefficient_error_sq_eq_symmetricGramEnergy
+          #print axioms MCore.RH.NB.NBHilbertData.exists_coefficients_realizing_DN_as_gram_energy
+          #print axioms MCore.RH.NB.NBHilbertData.DN_le_symmetricGramEnergy
+          EOF
+          lake env lean RHGramQuadraticAxioms.lean | tee rh-gram-quadratic-axioms.txt
+          ! grep -E 'sorryAx' rh-gram-quadratic-axioms.txt
