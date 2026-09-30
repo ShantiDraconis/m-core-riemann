@@ -26,7 +26,8 @@ theorem coefficient_error_sq_eq_gramQuadraticError
   simp [gramQuadraticError, coefficientApproximantAt,
     inner_sub_sub_self, sum_inner, inner_sum,
     real_inner_smul_left, real_inner_smul_right,
-    real_inner_self_eq_norm_sq, Finset.mul_sum, mul_assoc]
+    real_inner_self_eq_norm_sq, real_inner_comm,
+    Finset.mul_sum, mul_assoc, mul_comm, mul_left_comm]
 
 /-- Symmetric Gram form matching the numerical engine: ||chi||^2 - 2 b^T c + c^T G c. -/
 noncomputable def symmetricGramEnergy
