@@ -13,7 +13,12 @@ theorem zeroInfinityMeasure_chiSupport :
   have hset :
       Ioo (0 : ℝ) 1 ∩ Ioi 0 = Ioo (0 : ℝ) 1 := by
     ext x
-    simp
+    simp only [mem_inter_iff, mem_Ioo, mem_Ioi]
+    constructor
+    · rintro ⟨⟨hx0, hx1⟩, _⟩
+      exact ⟨hx0, hx1⟩
+    · rintro ⟨hx0, hx1⟩
+      exact ⟨⟨hx0, hx1⟩, hx0⟩
   rw [hset, Real.volume_Ioo]
   norm_num
 
