@@ -1,0 +1,60 @@
+name: atk-rh-concrete-gram-scalar
+
+on:
+  push:
+    branches:
+      - atk/rh-concrete-gram-scalar-20260930
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  concrete-gram:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          $HOME/.elan/bin/elan toolchain install "$(cat lean-toolchain)"
+      - name: Resolve pinned dependencies
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get
+      - name: Source firewall
+        run: |
+          set -euo pipefail
+          FILES="lean/MCore/RH/R0/ChiNorm.lean lean/MCore/RH/R0/ConcreteGramEndpoint.lean"
+          for FILE in $FILES; do
+            ! grep -n -E '(^|[^[:alnum:]_])(sorry|admit|sorryAx|native_decide|unsafe|cheat|bypass|placeholder)([^[:alnum:]_]|$)' "$FILE"
+            ! grep -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' "$FILE"
+          done
+      - name: Build concrete scalar endpoint
+        run: |
+          lake build MCore.RH.R0.ChiNorm
+          lake build MCore.RH.R0.ConcreteGramEndpoint
+      - name: Theorem API
+        run: |
+          cat > RHConcreteGramAudit.lean <<'EOF'
+          import MCore.RH.R0.ConcreteGramEndpoint
+          #check MCore.RH.R0.zeroInfinityMeasure_chiSupport
+          #check MCore.RH.R0.chiLpConcrete_norm
+          #check MCore.RH.R0.concreteNBData_chi_norm
+          #check MCore.RH.R0.concrete_DNLimit_eq_zero_iff_gram_scalar
+          EOF
+          lake env lean RHConcreteGramAudit.lean
+      - name: Axiom audit
+        run: |
+          cat > RHConcreteGramAxioms.lean <<'EOF'
+          import MCore.RH.R0.ConcreteGramEndpoint
+          #print axioms MCore.RH.R0.zeroInfinityMeasure_chiSupport
+          #print axioms MCore.RH.R0.chiLpConcrete_norm
+          #print axioms MCore.RH.R0.concreteNBData_chi_norm
+          #print axioms MCore.RH.R0.concrete_DNLimit_eq_zero_iff_gram_scalar
+          EOF
+          lake env lean RHConcreteGramAxioms.lean | tee rh-concrete-gram-axioms.txt
+          ! grep -E 'sorryAx' rh-concrete-gram-axioms.txt
