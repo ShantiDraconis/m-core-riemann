@@ -5,6 +5,8 @@ on:
     paths:
       - 'lean/**/FinalExternal.lean'
       - 'lean/**/ExactFinalProducer.lean'
+      - 'lean/MCore/RH/NB/Gram*.lean'
+      - 'lean/MCore/RH/NB/Coefficient*.lean'
       - '.github/workflows/atk-final-root.yml'
   workflow_dispatch:
 permissions:
