@@ -23,4 +23,4 @@ jobs:
       - name: Build composition layer
         run: lake env lean lean/MCore/AutoCompose.lean
       - name: Build current terminal frontier only
-        run: lake env lean lean/MCore/RH/NB/ZeroLimitFrontier.lean
+        run: lake build MCore.RH.NB.ZeroLimitFrontier
