@@ -39,7 +39,17 @@ theorem coefficient_error_sq_eq_energy
     apply Finset.sum_congr rfl
     intro i hi
     rw [real_inner_comm]
-  rw [hcross]
+  have hgram :
+      (∑ i : Fin N, ∑ j : Fin N,
+        c i * c j * @inner ℝ D.H _ (rho j) (rho i)) =
+      ∑ i : Fin N, ∑ j : Fin N,
+        c i * c j * @inner ℝ D.H _ (rho i) (rho j) := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    apply Finset.sum_congr rfl
+    intro j hj
+    rw [real_inner_comm]
+  rw [hcross, hgram]
   ring
 
 theorem coefficientEnergy_of_normal_equations
