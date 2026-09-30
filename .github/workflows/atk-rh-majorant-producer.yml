@@ -1,0 +1,23 @@
+name: ATK RH majorant producer
+on:
+  push:
+    branches: [atk/auto-compose-terminal-20260930]
+    paths:
+      - 'lean/MCore/RH/NB/ZeroLimitMajorantProducer.lean'
+      - '.github/workflows/atk-rh-majorant-producer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+      - name: Compile minimal RH producer
+        run: lake env lean lean/MCore/RH/NB/ZeroLimitMajorantProducer.lean
