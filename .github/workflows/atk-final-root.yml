@@ -7,6 +7,7 @@ on:
       - 'lean/**/ExactFinalProducer.lean'
       - 'lean/MCore/RH/NB/Gram*.lean'
       - 'lean/MCore/RH/NB/Coefficient*.lean'
+      - 'lean/MCore/RH/NB/ZeroLimitFrontier.lean'
       - '.github/workflows/atk-final-root.yml'
   workflow_dispatch:
 permissions:
