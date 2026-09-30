@@ -3,7 +3,7 @@ on:
   push:
     branches: [atk/auto-compose-terminal-20260930]
     paths:
-      - 'lean/MCore/RH/NB/**.lean'
+      - 'lean/**/ExactFinalProducer.lean'
       - '.github/workflows/atk-exact-final-producer.yml'
   workflow_dispatch:
 permissions:
