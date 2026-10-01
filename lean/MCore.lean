@@ -14,3 +14,5 @@ import MCore.Audit
 import MCore.Frontier.MultistateSN
 
 import MCore.RH.NB.CoefficientPythagoras
+
+import MCore.RH.NB.CoefficientGramEnergy
