@@ -6,6 +6,7 @@ echo "[RH] PREKERNEL"
 files=(
   lean/MCore/RH/R0/ConcreteVanishingProducer.lean
   lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
+  lean/MCore/RH/R0/HardFrontier.lean
   lean/MCore/RH/R0/ConcreteInhabitantKernelAudit.lean
   lean/MCore/RH/R0/RHKernelEntry.lean
   audit/RHKernelAxiomAudit.lean
@@ -25,6 +26,7 @@ echo "[RH] SOURCE_HYGIENE=PASS"
 
 lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
 lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
+lake env lean lean/MCore/RH/R0/HardFrontier.lean
 lake env lean lean/MCore/RH/R0/ConcreteInhabitantKernelAudit.lean
 lake env lean lean/MCore/RH/R0/RHKernelEntry.lean
 lake env lean audit/RHKernelAxiomAudit.lean
