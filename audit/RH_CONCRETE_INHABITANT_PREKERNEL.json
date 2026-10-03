@@ -1,0 +1,43 @@
+{
+  "schema": "RH_CONCRETE_INHABITANT_PREKERNEL_V1",
+  "branch": "atk/terminal-parameter-law-20261003",
+  "producer": "MCore.RH.R0.ConcreteVanishingUpperBound",
+  "producer_definition": "MCore.RH.NB.NBHilbertData.VanishingUpperBound concreteNBData concreteGeneratorFamily",
+  "terminal": "MCore.RH.R0.RiemannTerminalCertifies",
+  "reused_certificates": [
+    {
+      "ref": "frozen/vanishing-upper-bound-green-5c66f8dc",
+      "sha": "5c66f8dca03834f24a61a9b1219e7af9d4892dd6",
+      "scope": "VanishingUpperBound -> DNToZero -> DNLimit=0"
+    },
+    {
+      "ref": "frozen/nb-zero-limit-density-equivalence-green-d6a291b4",
+      "sha": "d6a291b4563f9021f74ab63cc983d44f079472da",
+      "scope": "FiniteSpanApproximatesChi <-> DNLimit=0 <-> DNToZero"
+    },
+    {
+      "ref": "frozen/nb-total-green-38aad03",
+      "scope": "NB0-NB16 downstream finite-span/projection/distance/limit chain"
+    },
+    {
+      "ref": "K1-K6 current branch",
+      "scope": "fail-closed OPEN_BRIDGE firewall; not a mathematical producer"
+    }
+  ],
+  "kernel_path": [
+    "ConcreteVanishingUpperBound",
+    "FINAL_ROOT",
+    "ConcreteGramResidual",
+    "FiniteSpanApproximatesChi",
+    "RiemannTerminalCertifies"
+  ],
+  "remaining_material_fields": [
+    "eps : Nat -> Real",
+    "eps_nonneg : forall N, 0 <= eps N",
+    "dn_le : forall N, concrete DN N <= eps N",
+    "eps_tendsto_zero : eps -> 0"
+  ],
+  "frontier_state": "OPEN_MATH",
+  "frontier_count": 1,
+  "promotion_rule": "Do not create GreenCertificate until Nonempty ConcreteVanishingUpperBound is kernel-checked without project axioms/sorry/admit."
+}
