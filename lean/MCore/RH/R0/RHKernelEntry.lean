@@ -1,5 +1,6 @@
 import MCore.RH.R0.ConcreteInhabitantKernelAudit
 import MCore.RH.R0.ConcreteLogMajorantProducer
+import MCore.RH.R0.HardFrontier
 
 namespace MCore.RH.R0
 
@@ -37,6 +38,12 @@ theorem rh_kernel_entry_LogMajorantTerminal
   concreteLogDNBound_to_RiemannTerminalCertifies h
 
 #print axioms MCore.RH.R0.rh_kernel_entry_Terminal
+theorem rh_kernel_entry_HardFrontier
+    (h : ConcreteUniformLogDNBound) :
+    RiemannTerminalCertifies :=
+  terminal_of_concreteUniformLogDNBound h
+
 #print axioms MCore.RH.R0.rh_kernel_entry_LogMajorantTerminal
+#print axioms MCore.RH.R0.rh_kernel_entry_HardFrontier
 
 end MCore.RH.R0
