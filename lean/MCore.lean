@@ -19,3 +19,4 @@ import MCore.RH.R0.ConcreteGramClosure
 import MCore.RH.R0.TerminalLaw
 import MCore.RH.R0.ConcreteVanishingProducer
 import MCore.RH.R0.ConcreteInhabitantKernelAudit
+import MCore.RH.R0.RHKernelEntry
