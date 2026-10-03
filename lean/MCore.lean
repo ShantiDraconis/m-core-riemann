@@ -21,3 +21,4 @@ import MCore.RH.R0.ConcreteVanishingProducer
 import MCore.RH.R0.ConcreteInhabitantKernelAudit
 import MCore.RH.R0.RHKernelEntry
 import MCore.RH.R0.ConcreteLogMajorantProducer
+import MCore.RH.R0.HardFrontier
