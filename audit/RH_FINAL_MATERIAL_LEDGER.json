@@ -1,0 +1,38 @@
+{
+  "lane": "RH",
+  "branch": "atk/terminal-parameter-law-20261003",
+  "state": "READY_CONDITIONAL",
+  "kernel_structure": "CLOSED_TO_SINGLE_MATERIAL_PRODUCER",
+  "material_producer": "MCore.RH.R0.RHMaterialProducer",
+  "definitional_target": "MCore.RH.R0.ConcreteUniformLogDNBound",
+  "exact_obligation": "exists K : Real, 0 <= K and forall N : Nat, concreteNBData.DN concreteGeneratorFamily N <= logMajorant K N",
+  "chain": [
+    "RHMaterialProducer",
+    "ConcreteUniformLogDNBound",
+    "Nonempty ConcreteLogDNBound",
+    "ConcreteVanishingUpperBound",
+    "FINAL_ROOT",
+    "ConcreteGramResidual",
+    "FiniteSpanApproximatesChi",
+    "RiemannTerminalCertifies"
+  ],
+  "structural_gaps": 0,
+  "material_gaps": 1,
+  "promotion_rule": "FORBID GREEN/FROZEN/CERTIFIED until an inhabitant of RHMaterialProducer is kernel-checked without project axiom/sorry/admit",
+  "known_unconditional_reuse": [
+    "NB zero-limit equivalence",
+    "VanishingUpperBound squeeze",
+    "logMajorant nonnegativity",
+    "logMajorant tends to zero",
+    "Gram/finite-span terminal transports",
+    "BCF unconditional decomposition (audit/research only; not a Lean inhabitant)"
+  ],
+  "does_not_close": [
+    "finite-N Arb ladder",
+    "BCF conditional residue estimates",
+    "RH-assuming asymptotics",
+    "renamed/equivalent hypotheses",
+    "fail-closed wrappers"
+  ],
+  "build_state": "PENDING_REAL_LEAN_EXECUTION"
+}
