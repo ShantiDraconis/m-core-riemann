@@ -1,0 +1,18 @@
+{
+  "name": "m-core-riemann Lean kernel",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "PATH": "/home/vscode/.elan/bin:${containerEnv:PATH}"
+  },
+  "postCreateCommand": "bash audit/bootstrap_lean_environment.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "leanprover.lean4"
+      ]
+    }
+  }
+}
