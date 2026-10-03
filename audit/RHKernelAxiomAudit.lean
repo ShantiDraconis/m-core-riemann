@@ -14,3 +14,6 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.concreteLogDNBound_to_RiemannTerminalCertifies
 #print axioms MCore.RH.R0.nonempty_concreteLogDNBound_iff
 #print axioms MCore.RH.R0.rh_kernel_entry_LogMajorantTerminal
+#print axioms MCore.RH.R0.concreteUniformLogDNBound_iff_nonempty
+#print axioms MCore.RH.R0.terminal_of_concreteUniformLogDNBound
+#print axioms MCore.RH.R0.rh_kernel_entry_HardFrontier
