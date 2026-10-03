@@ -39,5 +39,20 @@
   ],
   "frontier_state": "OPEN_MATH",
   "frontier_count": 1,
-  "promotion_rule": "Do not create GreenCertificate until Nonempty ConcreteVanishingUpperBound is kernel-checked without project axioms/sorry/admit."
+  "promotion_rule": "Do not create GreenCertificate until Nonempty ConcreteVanishingUpperBound is kernel-checked without project axioms/sorry/admit.",
+  "kernel_entrypoint": "MCore.RH.R0.RHKernelEntry",
+  "local_kernel_command": "bash audit/rh_terminal_kernel_check.sh",
+  "kernel_modules": [
+    "MCore.RH.NB.ZeroLimitFrontier",
+    "MCore.RH.NB.QuantitativeUpperBound",
+    "MCore.RH.NB.ExactFinalProducer",
+    "MCore.RH.R0.ConcreteFinalProducer",
+    "MCore.RH.R0.ConcreteGramClosure",
+    "MCore.RH.R0.TerminalLaw",
+    "MCore.RH.R0.ConcreteVanishingProducer",
+    "MCore.RH.R0.ConcreteInhabitantKernelAudit",
+    "MCore.RH.R0.RHKernelEntry"
+  ],
+  "prekernel_state": "SOURCE_READY_BUILD_PENDING",
+  "no_actions_required": true
 }
