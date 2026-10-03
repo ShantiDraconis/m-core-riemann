@@ -1,0 +1,7 @@
+{
+  "event": "RH_KERNEL_PR_SYNC",
+  "base_workflow_commit": "90a6de99199a6b42b5a300469683cc95930fcaaa",
+  "purpose": "trigger pull_request synchronize event for rh-terminal-kernel-pr",
+  "frontier": "Nonempty ConcreteVanishingUpperBound",
+  "promotion": "forbidden until kernel run passes"
+}
