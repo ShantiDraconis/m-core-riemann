@@ -2,35 +2,54 @@ name: atk-terminal-producer
 
 on:
   push:
-    branches: [attack/terminal-producer-20260921]
+    branches: [atk/terminal-parameter-law-20261003]
+    paths:
+      - 'lean/MCore/RH/NB/**'
+      - 'lean/MCore/RH/R0/**'
+      - 'audit/RHKernelAxiomAudit.lean'
+      - 'audit/rh_preflight_kernel.sh'
+      - 'audit/rh_terminal_kernel_check.sh'
+      - '.github/workflows/atk-terminal-producer.yml'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   rh-terminal:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lean for manifest repair
+      - name: Install Lean
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Repair manifest and fetch cache
+      - name: Resolve dependencies and cache
         run: |
           lake update
           lake exe cache get
-      - name: Compile quantitative upper-bound reduction
-        run: lake build MCore.RH.NB.QuantitativeUpperBound
-      - name: Axiom audit
+      - name: Producer-first preflight
         run: |
-          cat > /tmp/RHTerminalAudit.lean <<'EOF'
-          import MCore.RH.NB.QuantitativeUpperBound
-          #print axioms MCore.RH.NB.NBHilbertData.DNToZero_of_vanishingUpperBound
-          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_vanishingUpperBound
-          EOF
-          lake env lean /tmp/RHTerminalAudit.lean 2>&1 | tee /tmp/rh-terminal.log
-          if grep -E 'sorryAx' /tmp/rh-terminal.log; then exit 1; fi
-      - name: Keep endpoint open
+          set -euo pipefail
+          bash audit/rh_terminal_kernel_check.sh
+      - name: Exact terminal axiom audit
         run: |
-          grep -q 'OPEN_MATH: construct VanishingUpperBound' lean/MCore/RH/NB/QuantitativeUpperBound.lean
-          echo "RH_QUANTITATIVE_REDUCTION=GREEN"
+          set -euo pipefail
+          lake env lean audit/RHKernelAxiomAudit.lean 2>&1 | tee /tmp/rh-kernel-axioms.log
+          if grep -q 'sorryAx' /tmp/rh-kernel-axioms.log; then
+            echo "RH_KERNEL_AXIOMS=RED"
+            exit 1
+          fi
+          echo "RH_KERNEL_AXIOMS=GREEN"
+      - name: Explicit kernel entry build
+        run: |
+          lake build MCore.RH.R0.RHKernelEntry
+      - name: Aggregate MCore build
+        run: |
+          lake build MCore
+      - name: Frontier status
+        run: |
+          echo "RH_STRUCTURE=KERNEL_TESTED"
+          echo "RH_OPEN_MATH=Nonempty ConcreteVanishingUpperBound"
           echo "RH_PROOF=OPEN"
