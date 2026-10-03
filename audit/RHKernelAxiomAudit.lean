@@ -17,3 +17,6 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.concreteUniformLogDNBound_iff_nonempty
 #print axioms MCore.RH.R0.terminal_of_concreteUniformLogDNBound
 #print axioms MCore.RH.R0.rh_kernel_entry_HardFrontier
+#print axioms MCore.RH.R0.rh_material_producer_closes_terminal
+#print axioms MCore.RH.R0.rh_material_producer_nonempty_closes_terminal
+#print axioms MCore.RH.R0.rh_kernel_entry_MaterialProducer
