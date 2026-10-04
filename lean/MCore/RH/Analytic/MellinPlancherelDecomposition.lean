@@ -1,110 +1,88 @@
-import MCore.RH.Analytic.ResidualPlancherelReduction
-import MCore.RH.R0.GramIntegral
-import MCore.RH.R0.LpToAE
-import Mathlib.Analysis.MellinInversion
+import MCore.RH.Analytic.MellinPlancherelReduction
 import Mathlib.Analysis.Fourier.LpSpace
+import Mathlib.Analysis.MellinInversion
 
 namespace MCore.RH.R0
 
 open MeasureTheory Set Complex
 open MCore.RH.NB
-open scoped BigOperators FourierTransform
 
-/-- Real residual representative attached to a finite coefficient vector. -/
-noncomputable def residualRepresentativeR
-    {N : ℕ} (c : Fin N → ℝ) (x : ℝ) : ℝ :=
-  chiRepresentative x - ∑ i : Fin N, c i * rhoRepresentative i x
-
-/-- The Hilbert residual has the literal real residual as an a.e. representative. -/
-theorem residualCarrier_coeFn_ae
-    {N : ℕ} (c : Fin N → ℝ) :
-    ((concreteNBData.chi - concreteFiniteCombination c : concreteNBData.H) : ℝ → ℝ)
-      =ᵐ[zeroInfinityMeasure] residualRepresentativeR c := by
-  filter_upwards [
-    Lp.coeFn_sub concreteNBData.chi (concreteFiniteCombination c),
-    concreteChi_coeFn_ae,
-    concreteFiniteCombination_coeFn_ae c] with x hsub hchi hcomb
-  rw [hsub, hchi, hcomb]
-  rfl
-
-/-- Carrier L2 norm squared as the literal residual square integral. -/
-theorem residualCarrier_norm_sq_eq_integral
-    {N : ℕ} (c : Fin N → ℝ) :
-    ‖concreteNBData.chi - concreteFiniteCombination c‖ ^ 2 =
-      ∫ x : ℝ,
-        (residualRepresentativeR c x) ^ 2 ∂zeroInfinityMeasure := by
-  rw [← real_inner_self_eq_norm_sq]
-  rw [MeasureTheory.L2.inner_def]
-  apply integral_congr_ae
-  filter_upwards [residualCarrier_coeFn_ae c] with x hx
-  simp only [real_inner_eq_mul]
-  rw [hx]
-  ring
-
-/-- Complex residual is just the complexification of the real residual. -/
-theorem residualRepresentativeC_eq_ofReal
-    {N : ℕ} (c : Fin N → ℝ) (x : ℝ) :
-    residualRepresentativeC c x = (residualRepresentativeR c x : ℂ) := by
-  unfold residualRepresentativeC residualRepresentativeR rhoCombinationC
-  simp [chiRepresentativeC, rhoRepresentativeC]
-  push_cast
-  ring
-
-/-- Pointwise squared modulus is the real residual square. -/
-theorem normSq_residualRepresentativeC
-    {N : ℕ} (c : Fin N → ℝ) (x : ℝ) :
-    Complex.normSq (residualRepresentativeC c x) =
-      (residualRepresentativeR c x) ^ 2 := by
-  rw [residualRepresentativeC_eq_ofReal]
-  simp [Complex.normSq_apply]
-  ring
-
-/-- Log-coordinate residual used by Mellin/Fourier. -/
-noncomputable def logResidualC
+/-- Logarithmic pullback that converts critical-line Mellin into Fourier. -/
+noncomputable def criticalLogPullback
     {N : ℕ} (c : Fin N → ℝ) (u : ℝ) : ℂ :=
-  (Real.exp (-u / 2) : ℂ) *
+  Real.exp (-((1 / 2 : ℝ) * u)) •
     residualRepresentativeC c (Real.exp (-u))
 
-/--
-Exact change-of-variable target. Once realized, this says x = exp(-u)
-is an isometry between L2(dx) and the critical-line Mellin model.
--/
-def LogResidualIsometry : Prop :=
+/-- D3.0: real Hilbert residual norm equals the literal complex representative L2 integral. -/
+def D3_ResidualRepresentativeNormBridge : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
-    (∫ u : ℝ, Complex.normSq (logResidualC c u)) =
-      ∫ x : ℝ,
-        Complex.normSq (residualRepresentativeC c x) ∂zeroInfinityMeasure
+    ‖concreteNBData.chi -
+      concreteNBData.coefficientApproximantAt
+        concreteGeneratorFamily N c‖ ^ 2 =
+      ∫ x : ℝ in Ioi 0,
+        Complex.normSq (residualRepresentativeC c x)
 
-/--
-The only genuinely Fourier-specific compatibility still needed:
-for this L1∩L2 logarithmic residual, the L2 Fourier transform represented by
-the Mathlib L2 Fourier isometry agrees a.e. with the classical Fourier integral.
--/
-def FourierIntegralLpCompatibility : Prop :=
+/-- D3.1: x=e^{-u} converts dx to e^{-u}du, exactly absorbed by the half-weight. -/
+def D3_LogPullbackNormBridge : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
-    ∃ hL2 : MemLp (logResidualC c) 2 volume,
-      ((MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) (hL2.toLp (logResidualC c)) : ℝ → ℂ)
-        =ᵐ[volume]
-      fun y : ℝ => 𝓕 (logResidualC c) y
+    (∫ x : ℝ in Ioi 0,
+      Complex.normSq (residualRepresentativeC c x)) =
+    ∫ u : ℝ, Complex.normSq (criticalLogPullback c u)
 
-/--
-Fourier Plancherel in the exact classical-integral form needed downstream.
-This is implied by FourierIntegralLpCompatibility plus Mathlib's L2 isometry.
--/
-def ClassicalFourierPlancherel : Prop :=
+/-- D3.2: Plancherel for the logarithmic pullback. -/
+def D3_FourierPlancherelBridge : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
-    (∫ u : ℝ, Complex.normSq (logResidualC c u)) =
-      ∫ y : ℝ, Complex.normSq (𝓕 (logResidualC c) y)
+    (∫ u : ℝ, Complex.normSq (criticalLogPullback c u)) =
+    ∫ y : ℝ, Complex.normSq (𝓕 (criticalLogPullback c) y)
 
-/--
-After these two representation bridges, the Mellin-Plancherel bridge is purely
-a change of Fourier frequency y = t/(2π), with mellin_eq_fourierIntegral.
--/
-def MellinPlancherelFrequencyBridge : Prop :=
-  LogResidualIsometry ∧ ClassicalFourierPlancherel
+/-- D3.3: reparameterize Fourier frequency y=t/(2π). -/
+def D3_FrequencyRescaleBridge : Prop :=
+  ∀ (N : ℕ) (c : Fin N → ℝ),
+    (∫ y : ℝ, Complex.normSq (𝓕 (criticalLogPullback c) y)) =
+    (1 / (2 * Real.pi)) *
+      ∫ t : ℝ,
+        Complex.normSq (𝓕 (criticalLogPullback c) (t / (2 * Real.pi)))
 
-#print axioms MCore.RH.R0.residualCarrier_norm_sq_eq_integral
-#print axioms MCore.RH.R0.residualRepresentativeC_eq_ofReal
-#print axioms MCore.RH.R0.normSq_residualRepresentativeC
+/-- Mathlib already gives the pointwise Mellin/Fourier identification. -/
+theorem criticalLine_mellin_eq_fourier
+    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
+    mellin (residualRepresentativeC c) (criticalLine t) =
+      𝓕 (criticalLogPullback c) (t / (2 * Real.pi)) := by
+  simpa [criticalLine, criticalLogPullback, mul_comm, mul_left_comm, mul_assoc]
+    using (mellin_eq_fourierIntegral
+      (residualRepresentativeC c)
+      (s := criticalLine t))
+
+/-- The four local bridges imply the single D3 critical-line producer. -/
+theorem criticalLineMellinPlancherel_of_components
+    (h0 : D3_ResidualRepresentativeNormBridge)
+    (h1 : D3_LogPullbackNormBridge)
+    (h2 : D3_FourierPlancherelBridge)
+    (h3 : D3_FrequencyRescaleBridge) :
+    CriticalLineMellinPlancherel := by
+  intro N c
+  calc
+    ‖concreteNBData.chi -
+      concreteNBData.coefficientApproximantAt
+        concreteGeneratorFamily N c‖ ^ 2
+        = ∫ x : ℝ in Ioi 0,
+            Complex.normSq (residualRepresentativeC c x) := h0 N c
+    _ = ∫ u : ℝ, Complex.normSq (criticalLogPullback c u) := h1 N c
+    _ = ∫ y : ℝ, Complex.normSq (𝓕 (criticalLogPullback c) y) := h2 N c
+    _ = (1 / (2 * Real.pi)) *
+          ∫ t : ℝ,
+            Complex.normSq (𝓕 (criticalLogPullback c) (t / (2 * Real.pi))) :=
+          h3 N c
+    _ = (1 / (2 * Real.pi)) *
+          ∫ t : ℝ,
+            Complex.normSq
+              (mellin (residualRepresentativeC c) (criticalLine t)) := by
+          congr 1
+          apply integral_congr_ae
+          filter_upwards with t
+          rw [criticalLine_mellin_eq_fourier c t]
+
+#print axioms MCore.RH.R0.criticalLine_mellin_eq_fourier
+#print axioms MCore.RH.R0.criticalLineMellinPlancherel_of_components
 
 end MCore.RH.R0
