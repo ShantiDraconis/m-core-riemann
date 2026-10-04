@@ -47,6 +47,24 @@ def ResidualFrequencyScaling : Prop :=
       (1 / (2 * Real.pi)) *
         ∫ t : ℝ, normSq (𝓕 (residualLogPullback c) (t / (2 * Real.pi)))
 
+/-- Frequency scaling is purely Haar/Lebesgue change of variables. -/
+theorem residualFrequencyScaling_realized :
+    ResidualFrequencyScaling := by
+  intro N c
+  let g : ℝ → ℝ := fun ξ => normSq (𝓕 (residualLogPullback c) ξ)
+  have h2pi : 0 < 2 * Real.pi := by positivity
+  have hscale := MeasureTheory.Measure.integral_comp_mul_left
+    g (1 / (2 * Real.pi))
+  change (∫ ξ : ℝ, g ξ) =
+    (1 / (2 * Real.pi)) * ∫ t : ℝ, g (t / (2 * Real.pi))
+  rw [show (fun t : ℝ => g (t / (2 * Real.pi))) =
+      fun t : ℝ => g ((1 / (2 * Real.pi)) * t) by
+        funext t; congr 1; ring]
+  rw [hscale]
+  rw [abs_of_pos (inv_pos.mpr h2pi)]
+  field_simp
+  ring
+
 /-- The three pure L2/Fourier bridges imply the sole D3 Plancherel producer. -/
 theorem residualCriticalLinePlancherel_of_log_fourier
     (hlog : ResidualLogPullbackIsometry)
@@ -61,6 +79,7 @@ theorem residualCriticalLinePlancherel_of_log_fourier
   rw [← mellin_residual_critical_eq_fourier c t]
 
 #print axioms MCore.RH.R0.mellin_residual_critical_eq_fourier
+#print axioms MCore.RH.R0.residualFrequencyScaling_realized
 #print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_log_fourier
 
 end MCore.RH.R0
