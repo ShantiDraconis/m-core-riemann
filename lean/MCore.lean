@@ -51,3 +51,5 @@ import MCore.RH.Analytic.ResidualMellin
 import MCore.RH.Analytic.MellinPlancherelCoreReduction
 
 import MCore.RH.Analytic.D3FourierReduction
+
+import MCore.RH.Analytic.FourierCompatibilityRealization
