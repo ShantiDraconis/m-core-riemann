@@ -1,4 +1,5 @@
 import MCore.RH.Analytic.ResidualNormBridge
+import MCore.RH.Analytic.MellinPlancherelFourierReduction
 import Lean
 
 open Lean Elab Tactic
@@ -12,17 +13,29 @@ elab "d3_gap " name:str : tactic => do
   logInfo m!"[RH-D3-GAP:{name.getString}]\n{body}"
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
-/-- The sole remaining D3 producer: Mellin--Plancherel for the concrete residual. -/
-theorem DISCOVER_D3_MELLIN_PLANCHEREL : ResidualMellinPlancherel := by
-  unfold ResidualMellinPlancherel
-  d3_gap "MELLIN_PLANCHEREL_ISOMETRY"
+theorem DISCOVER_D3_LOG_PULLBACK_NORM : ResidualLogPullbackNorm := by
+  unfold ResidualLogPullbackNorm
+  d3_gap "LOG_PULLBACK_L2_NORM"
   exact ?_
 
-/-- Once the single Plancherel producer is supplied, the full zeta formula is automatic. -/
-theorem D3_EXPLICIT_OF_PLANCHEREL
-    (hMP : ResidualMellinPlancherel) :
+theorem DISCOVER_D3_FOURIER_PLANCHEREL_SCALED :
+    ResidualFourierPlancherelScaled := by
+  unfold ResidualFourierPlancherelScaled
+  d3_gap "FOURIER_L2_PLANCHEREL_SCALED"
+  exact ?_
+
+theorem DISCOVER_D3_MELLIN_PLANCHEREL
+    (hlog : ResidualLogPullbackNorm)
+    (hfourier : ResidualFourierPlancherelScaled) :
+    ResidualMellinPlancherel := by
+  exact residualMellinPlancherel_of_fourier_bridges hlog hfourier
+
+theorem D3_EXPLICIT_OF_FOURIER_BRIDGES
+    (hlog : ResidualLogPullbackNorm)
+    (hfourier : ResidualFourierPlancherelScaled) :
     ExplicitResidualMellinPlancherel := by
   exact explicitResidualMellinPlancherel_of_bridges
-    residualRepresentativeNormBridge_realized hMP
+    residualRepresentativeNormBridge_realized
+    (residualMellinPlancherel_of_fourier_bridges hlog hfourier)
 
 end MCore.RH.R0
