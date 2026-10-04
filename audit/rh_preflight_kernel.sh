@@ -23,6 +23,13 @@ files=(
   lean/MCore/RH/R0/LinearIndependentReduction.lean
   lean/MCore/RH/R0/ExponentialUniqueness.lean
   lean/MCore/RH/R0/GramInverse.lean
+  lean/MCore/RH/Analytic/MellinTarget.lean
+  lean/MCore/RH/R0/GramAutocorrelation.lean
+  lean/MCore/RH/R0/TargetClosedForm.lean
+  lean/MCore/RH/R0/FractionalTailEuler.lean
+  lean/MCore/RH/R0/FractionalTailBlocks.lean
+  lean/MCore/RH/R0/TargetClosedFormReduction.lean
+  lean/MCore/RH/R0/GramIntegral.lean
   lean/MCore/RH/R0/LinearIndependent.lean
   lean/MCore/RH/R0/BaseMellinPositive.lean
   lean/MCore/RH/R0/WeightedScaling.lean
