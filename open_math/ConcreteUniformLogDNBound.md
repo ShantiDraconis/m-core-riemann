@@ -142,3 +142,26 @@ MATERIAL_OPEN_GAPS=1
 STATUS=GREEN_PREFIX_OPEN_MATH
 TERMINAL_PROMOTION=FORBIDDEN_WITHOUT_MATERIAL_INHABITANT
 ```
+
+## LOGICAL POSITION OF THIS GAP
+
+`ConcreteUniformLogDNBound` is a **sufficient quantitative producer** for the
+terminal RH chain.  The minimal vanishing frontier remains
+
+```lean
+Nonempty ConcreteVanishingUpperBound
+```
+
+equivalently the concrete `DN → 0` endpoint already exposed by the NB layer.
+
+The logarithmic producer implies that minimal frontier because
+
+```text
+K / log(N+2) → 0.
+```
+
+No converse `DN → 0 → ConcreteUniformLogDNBound` is claimed.  In particular,
+qualitative Nyman--Beurling convergence does not by itself supply an
+`O(1/log N)` rate.  Issue #7 therefore tracks a strong explicit route to the
+material frontier, not a proved equivalent reformulation of RH.
+
