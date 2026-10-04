@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.FourierAeBridgeReduction
+import MCore.RH.Analytic.FourierPointwiseBridgeReduction
+import MCore.RH.Analytic.ResidualLogPullbackLp
 import MCore.RH.Analytic.MellinPlancherelBridges
 import MCore.RH.Analytic.CriticalLineResidual
 import MCore.RH.Analytic.ResidualMellinAlgebra
@@ -296,3 +299,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residualFrequencyScaling_realized
 
 #print axioms MCore.RH.R0.residualLogPullbackIsometry_realized
+
+#print axioms MCore.RH.R0.residualLogPullback_memLp
+
+#print axioms MCore.RH.R0.pointwiseFourier_memLp_of_aeBridge
+
+#print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_aeBridge
