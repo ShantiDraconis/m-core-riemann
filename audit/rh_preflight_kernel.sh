@@ -19,6 +19,7 @@ files=(
   lean/MCore/RH/R0/ConcreteGramLogRate.lean
   lean/MCore/RH/R0/HardFrontierReduction.lean
   lean/MCore/RH/R0/FrontierExposure.lean
+  lean/MCore/RH/R0/GramExplicit.lean
   lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
   lean/MCore/RH/R0/ConcreteVanishingProducer.lean
   lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
@@ -46,6 +47,7 @@ lake env lean lean/MCore/RH/R0/ConcreteZeroObstruction.lean
 lake env lean lean/MCore/RH/R0/ConcreteGramLogRate.lean
 lake env lean lean/MCore/RH/R0/HardFrontierReduction.lean
 lake env lean lean/MCore/RH/R0/FrontierExposure.lean
+lake env lean lean/MCore/RH/R0/GramExplicit.lean
 lake env lean lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
 lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
 lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
