@@ -74,9 +74,9 @@ theorem residualMellinPlancherel_of_fourier
   intro N c
   rw [hlog c, hfourier c, hscale c]
   congr 1
-  apply integral_congr
-  intro t
-  rw [← mellin_residual_eq_fourier_logLift c t]
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun t => by
+    rw [← mellin_residual_eq_fourier_logLift c t])
 
 #print axioms MCore.RH.R0.mellin_residual_eq_fourier_logLift
 #print axioms MCore.RH.R0.residualCriticalFrequencyScaling_realized
