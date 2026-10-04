@@ -14,12 +14,6 @@ elab "d3_gap " name:str : tactic => do
   logInfo m!"[RH-D3-GAP:{name.getString}]\n{body}"
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
-/-- Logarithmic pullback at the critical exponent. -/
-noncomputable def criticalLogPullback
-    {N : ℕ} (c : Fin N → ℝ) (u : ℝ) : ℂ :=
-  (Real.exp (-u / 2) : ℂ) *
-    residualRepresentativeC c (Real.exp (-u))
-
 /-- Change x = exp(-u): ordinary L2(dx) becomes ordinary L2(du). -/
 def D3_LogPullbackIsometry : Prop :=
   ∀ {N : ℕ} (c : Fin N → ℝ),
