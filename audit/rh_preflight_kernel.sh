@@ -83,6 +83,8 @@ files=(
   lean/MCore/RH/Analytic/MellinPlancherelReduction.lean
   lean/MCore/RH/Analytic/LogPullbackIsometry.lean
   lean/MCore/RH/Analytic/FourierMellinCriticalLine.lean
+  lean/MCore/RH/Analytic/CriticalLogPullbackL2.lean
+  lean/MCore/RH/Analytic/FourierPlancherelPinnedGap.lean
   lean/MCore/RH/Analytic/D3SingleGap.lean
   lean/MCore/RH/Analytic/MellinPlancherelEasyLaws.lean
   lean/MCore/RH/Analytic/MellinPlancherelDecomposition.lean
@@ -180,6 +182,8 @@ lake env lean lean/MCore/RH/Analytic/MellinResidualAlgebra.lean
 lake env lean lean/MCore/RH/Analytic/MellinPlancherelReduction.lean
 lake env lean lean/MCore/RH/Analytic/LogPullbackIsometry.lean
 lake env lean lean/MCore/RH/Analytic/FourierMellinCriticalLine.lean
+lake env lean lean/MCore/RH/Analytic/CriticalLogPullbackL2.lean
+lake env lean lean/MCore/RH/Analytic/FourierPlancherelPinnedGap.lean
 lake env lean lean/MCore/RH/Analytic/D3SingleGap.lean
 lake env lean lean/MCore/RH/Analytic/MellinPlancherelEasyLaws.lean
 lake env lean lean/MCore/RH/Analytic/MellinPlancherelDecomposition.lean
