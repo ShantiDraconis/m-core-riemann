@@ -101,6 +101,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.fractionalTail_eq_continued
 #print axioms MCore.RH.R0.fractionalTailKernel_locallyIntegrable
 #print axioms MCore.RH.R0.fractionalTailKernel_mellin_differentiableAt
+#print axioms MCore.RH.R0.fractionalTailComplex_differentiableAt
 #print axioms MCore.RH.R0.tailMellinAnalytic_realized
 #print axioms MCore.RH.R0.tailAnalyticContinuation_realized
 #print axioms MCore.RH.R0.fractionalZetaMellinIdentity_realized
