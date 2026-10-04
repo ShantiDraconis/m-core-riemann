@@ -37,3 +37,5 @@ import MCore.RH.R0.VasyuninFiniteGram
 import MCore.RH.Analytic.ResidualNormBridge
 
 import MCore.RH.Analytic.MellinPlancherelFourierReduction
+
+import MCore.RH.R0.VasyuninStructural
