@@ -11,13 +11,28 @@ theorem fractional_mellin_tail_integrable
     IntegrableOn
       (fun t : ℝ => ((t : ℂ) ^ (-s - 1)) * (Int.fract t : ℂ))
       (Ioi 1) := by
-  exact (integrableOn_Ioi_cpow_of_lt
-    (by simp only [sub_re, neg_re, one_re]; linarith) zero_lt_one).mul_bounded
+  have hpow :
+      IntegrableOn
+        (fun t : ℝ => (t : ℂ) ^ (-s - 1))
+        (Ioi 1) :=
+    integrableOn_Ioi_cpow_of_lt
+      (by simp only [sub_re, neg_re, one_re]; linarith)
+      zero_lt_one
+  apply Integrable.mono' hpow.norm
+  · exact AEStronglyMeasurable.mul
+      hpow.aestronglyMeasurable
       ((measurable_id.fract).ofReal.aestronglyMeasurable.restrict)
-      (by
-        filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
-        rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Int.fract_nonneg t)]
-        exact (Int.fract_lt_one t).le)
+  · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+    rw [norm_mul]
+    have hfract : ‖(Int.fract t : ℂ)‖ ≤ 1 := by
+      rw [Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (Int.fract_nonneg t)]
+      exact (Int.fract_lt_one t).le
+    calc
+      ‖(t : ℂ) ^ (-s - 1)‖ * ‖(Int.fract t : ℂ)‖
+          ≤ ‖(t : ℂ) ^ (-s - 1)‖ * 1 :=
+        mul_le_mul_of_nonneg_left hfract (norm_nonneg _)
+      _ = ‖(t : ℂ) ^ (-s - 1)‖ := by ring
 
 /-- The near-zero fractional Mellin integrand is integrable for Re(s)<1. -/
 theorem fractional_mellin_nearZero_integrable
@@ -77,7 +92,17 @@ theorem mellin_rho_base_realized
   exact mellin_rho_base_of_fractionalZeta
     fractionalZetaMellinIdentity_realized s hs0 hs1
 
+/-- D1 for the full concrete generator family. -/
+theorem mellin_rho_realized
+    (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    mellin (rhoRepresentativeC n) s =
+      - (((rhoIndex n : ℕ) : ℂ) ^ (-s)) * riemannZeta s / s := by
+  rw [mellin_rhoRepresentativeC_dilate]
+  rw [mellin_rho_base_realized s hs0 hs1]
+  ring
+
 #print axioms MCore.RH.R0.fractionalZetaMellinIdentity_realized
 #print axioms MCore.RH.R0.mellin_rho_base_realized
+#print axioms MCore.RH.R0.mellin_rho_realized
 
 end MCore.RH.R0
