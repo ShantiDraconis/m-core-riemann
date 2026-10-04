@@ -1,3 +1,4 @@
+import MCore.RH.R0.HardFrontierReduction
 import MCore.RH.R0.ConcreteGramLogRate
 import MCore.RH.R0.ConcreteZeroObstruction
 import MCore.RH.NB.OrthogonalWitnessObstruction
@@ -35,3 +36,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.ConcreteGramLogRate.toUniformLogDNBound
 #print axioms MCore.RH.R0.uniformLogDNBound_to_ConcreteGramLogRate
 #print axioms MCore.RH.R0.concreteGramLogRate_iff_uniformLogDNBound
+#print axioms MCore.RH.R0.hardFrontierTarget_implies_ConcreteUniformLogDNBound
+#print axioms MCore.RH.R0.hard_frontier_of_ConcreteGramLogRate
+#print axioms MCore.RH.R0.hard_frontier_of_CriticalLineWeightedErrorRate
+#print axioms MCore.RH.R0.no_HardFrontierTarget_of_orthogonal_witness
