@@ -47,12 +47,8 @@ theorem DISCOVER_D1_TAIL_SERIES_CLOSED_FORM : ComplexTailSeriesClosedForm := by
   d1_gap "TAIL_SERIES_LIMIT_FROM_PARTIAL_FORMULA"
   exact ?_
 
-theorem DISCOVER_D1_TAIL_RIGHT
-    (hbridge : ComplexTailIntegralSeriesBridge)
-    (hclosed : ComplexTailSeriesClosedForm) :
-    D1_TailFormulaRight := by
-  intro s hs
-  exact tailFormulaRight_of_series hbridge hclosed s hs
+theorem DISCOVER_D1_TAIL_RIGHT : D1_TailFormulaRight := by
+  exact tailFormulaRight_realized
 
 theorem DISCOVER_D1_ANALYTIC_CONTINUATION : D1_TailAnalyticContinuation := by
   unfold D1_TailAnalyticContinuation
