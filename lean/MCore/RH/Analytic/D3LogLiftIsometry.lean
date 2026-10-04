@@ -44,13 +44,13 @@ theorem residualLogLiftIsometry_realized :
   rw [← rexp_neg_image_public]
   rw [integral_image_eq_integral_abs_deriv_smul
     MeasurableSet.univ rexp_neg_deriv_public rexp_neg_injOn_public]
-  apply integral_congr
-  intro u
-  change |(-Real.exp (-u))| • g (Real.exp (-u)) =
-    ‖residualLogLift c u‖ ^ 2
-  rw [abs_neg, abs_of_pos (Real.exp_pos _), real_smul]
-  rw [residualLogLift_normSq]
-  rfl
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun u => by
+    change |(-Real.exp (-u))| • g (Real.exp (-u)) =
+      ‖residualLogLift c u‖ ^ 2
+    rw [abs_neg, abs_of_pos (Real.exp_pos _), smul_eq_mul]
+    rw [residualLogLift_normSq]
+    rfl)
 
 #print axioms MCore.RH.R0.residualLogLift_normSq
 #print axioms MCore.RH.R0.residualLogLiftIsometry_realized
