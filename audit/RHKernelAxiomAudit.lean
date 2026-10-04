@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.FourierPlancherelBridge
+import MCore.RH.Analytic.LogResidualIsometry
+import MCore.RH.Analytic.ResidualPlancherelReduction
 import MCore.RH.Analytic.MellinPlancherelBridge
 import MCore.RH.Analytic.MellinPlancherelCoreReduction
 import MCore.RH.Analytic.MellinLogIsometry
@@ -249,3 +252,13 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.mellin_rhoCombinationC
 
 #print axioms MCore.RH.R0.mellin_residualRepresentativeC
+
+#print axioms MCore.RH.R0.residualCarrier_norm_sq_eq_integral
+
+#print axioms MCore.RH.R0.logResidualIsometry_realized
+
+#print axioms MCore.RH.R0.lp2_norm_sq_eq_integral_normSq
+
+#print axioms MCore.RH.R0.classicalFourierPlancherel_of_compatibility
+
+#print axioms MCore.RH.R0.d3_fourier_gap_suffices
