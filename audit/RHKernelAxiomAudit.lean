@@ -1,3 +1,7 @@
+import MCore.RH.Analytic.MellinTarget
+import MCore.RH.R0.GramAutocorrelation
+import MCore.RH.R0.TargetClosedForm
+import MCore.RH.R0.GramIntegral
 import MCore.RH.R0.GramInverse
 import MCore.RH.R0.BaseMellinPositive
 import MCore.RH.R0.WeightedScaling
@@ -70,3 +74,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.base_weighted_integral_pos
 #print axioms MCore.RH.R0.concreteMomentBridge_realized
 #print axioms MCore.RH.R0.optimalGramCoeff_eq_inv_mulVec_target
+#print axioms MCore.RH.R0.concreteTargetVector_eq_setIntegral
+#print axioms MCore.RH.R0.concreteGramMatrix_eq_setIntegral
+#print axioms MCore.RH.R0.fractionalTailEulerIdentity_realized
+#print axioms MCore.RH.R0.concreteTargetVector_closed_form
+#print axioms MCore.RH.R0.concreteGramMatrix_eq_fractionalAutocorrelation
+#print axioms MCore.RH.R0.mellin_chiRepresentativeC
