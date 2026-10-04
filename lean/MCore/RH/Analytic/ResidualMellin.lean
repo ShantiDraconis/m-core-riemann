@@ -14,7 +14,7 @@ noncomputable def residualDirichletPolynomial
 /-- Pointwise complex residual representative. -/
 noncomputable def residualRepresentativeC
     {N : ℕ} (c : Fin N → ℝ) (x : ℝ) : ℂ :=
-  chiRepresentativeC x - ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x
+  chiRepresentativeC x - ∑ i : Fin N, (c i : ℂ) • rhoRepresentativeC i x
 
 /-- Finite-subset Mellin convergence, preserving the concrete generator indices. -/
 theorem generatorCombination_finset_mellinConvergent
@@ -22,7 +22,7 @@ theorem generatorCombination_finset_mellinConvergent
     (hs0 : 0 < s.re) (hs1 : s.re < 1)
     (S : Finset (Fin N)) :
     MellinConvergent
-      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := by
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) • rhoRepresentativeC i x) s := by
   classical
   induction S using Finset.induction_on with
   | empty =>
@@ -39,7 +39,7 @@ theorem generatorCombination_mellinConvergent
     {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent
-      (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s := by
+      (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) • rhoRepresentativeC i x) s := by
   simpa using
     generatorCombination_finset_mellinConvergent c s hs0 hs1 Finset.univ
 
@@ -59,8 +59,8 @@ theorem mellin_generatorCombination_finset
     (hs0 : 0 < s.re) (hs1 : s.re < 1)
     (S : Finset (Fin N)) :
     mellin
-      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s =
-      ∑ i ∈ S, (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) • rhoRepresentativeC i x) s =
+      ∑ i ∈ S, (c i : ℂ) • mellin (rhoRepresentativeC i) s := by
   classical
   induction S using Finset.induction_on with
   | empty =>
@@ -80,11 +80,12 @@ theorem mellin_generatorCombination
     {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     mellin
-      (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s =
+      (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) • rhoRepresentativeC i x) s =
       - riemannZeta s / s * residualDirichletPolynomial c s := by
   rw [mellin_generatorCombination_finset c s hs0 hs1 Finset.univ]
   simp_rw [mellin_rho_realized _ s hs0 hs1]
   unfold residualDirichletPolynomial
+  simp only [smul_eq_mul]
   ring
 
 /-- D3 algebraic layer: Mellin transform of the residual is exactly (1 + zeta*P_c)/s. -/
