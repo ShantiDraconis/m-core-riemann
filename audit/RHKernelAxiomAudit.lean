@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.E1EvaluationReduction
+import MCore.RH.Analytic.OffLineZeroReflection
+import MCore.RH.Analytic.CriticalEvaluationKernel
 import MCore.RH.Analytic.D3PinnedGap
 import MCore.RH.Analytic.D3LogLiftIsometry
 import MCore.RH.Analytic.D3FourierReduction
@@ -163,3 +166,15 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residualCriticalFrequencyScaling_realized
 
 #print axioms MCore.RH.R0.residualLogLiftIsometry_realized
+
+#print axioms MCore.RH.R0.criticalEvaluationKernel_normSq
+
+#print axioms MCore.RH.R0.criticalEvaluationKernel_normSq_integrable
+
+#print axioms MCore.RH.R0.integral_criticalEvaluationKernel_normSq
+
+#print axioms MCore.RH.R0.offLineStripZero_to_right
+
+#print axioms MCore.RH.R0.spectralZeroWitness_of_reproducing
+
+#print axioms MCore.RH.R0.offLineStripZero_to_physical_witness
