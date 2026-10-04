@@ -1,5 +1,6 @@
 import MCore.RH.Analytic.RegularizedZeta
 import Mathlib.Analysis.Complex.Convex
+import Mathlib.Analysis.Analytic.Uniqueness
 
 namespace MCore.RH.R0
 
