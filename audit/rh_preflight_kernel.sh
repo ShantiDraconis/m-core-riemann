@@ -26,6 +26,7 @@ files=(
   lean/MCore/RH/R0/ExplicitGramRate.lean
   lean/MCore/RH/R0/VasyuninFiniteGram.lean
   lean/MCore/RH/R0/VasyuninStructural.lean
+  lean/MCore/RH/R0/VasyuninGCD.lean
   lean/MCore/RH/Analytic/MellinTarget.lean
   lean/MCore/RH/Analytic/MellinRhoReduction.lean
   lean/MCore/RH/Analytic/MellinTailPartial.lean
@@ -106,6 +107,7 @@ lake env lean lean/MCore/RH/R0/FrontierExposure.lean
 lake env lean lean/MCore/RH/R0/GramExplicit.lean
 lake env lean lean/MCore/RH/R0/LinearIndependentReduction.lean
 lake env lean lean/MCore/RH/R0/VasyuninStructural.lean
+lake env lean lean/MCore/RH/R0/VasyuninGCD.lean
 lake env lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
 lake env lean lean/MCore/RH/Analytic/D1KernelEntry.lean
 lake env lean lean/MCore/RH/Analytic/MellinResidual.lean
