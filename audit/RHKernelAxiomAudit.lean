@@ -1,3 +1,5 @@
+import MCore.RH.Analytic.ResidualNormBridge
+import MCore.RH.Analytic.MellinCriticalLine
 import MCore.RH.R0.VasyuninFiniteGram
 import MCore.RH.R0.ExplicitGramRate
 import MCore.RH.Analytic.E1EvaluationReduction
@@ -192,3 +194,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.explicitGramResidual_eq_vasyunin
 
 #print axioms MCore.RH.R0.finiteVasyuninRateTarget_iff_explicitGramRate
+
+#print axioms MCore.RH.R0.explicitResidualMellinPlancherel_of_bridges
+
+#print axioms MCore.RH.R0.residualRepresentativeNormBridge_realized
