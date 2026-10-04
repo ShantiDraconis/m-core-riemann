@@ -35,23 +35,30 @@ theorem regularizedZeta_analyticAt_one :
   apply Complex.analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt
   · filter_upwards [self_mem_nhdsWithin] with s hs
     rw [mem_compl_singleton_iff] at hs
-    rw [regularizedZeta, Function.update_of_ne hs]
-    exact (differentiableAt_riemannZeta hs).sub
-      ((differentiableAt_const _).div
-        ((differentiableAt_id.sub_const _))
-        (sub_ne_zero.mpr hs))
+    apply DifferentiableAt.congr_of_eventuallyEq
+    · exact (differentiableAt_riemannZeta hs).sub
+        ((differentiableAt_const _).div
+          (differentiableAt_id.sub_const _)
+          (sub_ne_zero.mpr hs))
+    · filter_upwards [eventually_ne_nhds hs] with t ht
+      simp [regularizedZeta, ht]
   · exact regularizedZeta_continuousAt_one
 
 /-- Away from 1 the regularized expression is holomorphic by ordinary zeta analyticity. -/
 theorem regularizedZeta_analyticAt
     {s : ℂ} (hs : s ≠ 1) :
     AnalyticAt ℂ regularizedZeta s := by
-  rw [regularizedZeta]
-  rw [Function.update_of_ne hs]
-  exact ((differentiableAt_riemannZeta hs).sub
-    ((differentiableAt_const _).div
-      (differentiableAt_id.sub_const _)
-      (sub_ne_zero.mpr hs))).analyticAt
+  have hdiff :
+      DifferentiableAt ℂ
+        (fun z : ℂ => riemannZeta z - 1 / (z - 1)) s := by
+    exact (differentiableAt_riemannZeta hs).sub
+      ((differentiableAt_const _).div
+        (differentiableAt_id.sub_const _)
+        (sub_ne_zero.mpr hs))
+  apply DifferentiableAt.analyticAt
+  apply hdiff.congr_of_eventuallyEq
+  filter_upwards [eventually_ne_nhds hs] with t ht
+  simp [regularizedZeta, ht]
 
 /-- The pole-removed zeta is analytic everywhere. -/
 theorem regularizedZeta_analytic :
