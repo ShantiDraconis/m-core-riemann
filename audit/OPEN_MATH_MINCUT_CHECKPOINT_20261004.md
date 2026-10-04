@@ -22,3 +22,27 @@ B. choose explicit c_N and prove coefficient energy <= K / log(N+2) uniformly.
 
 Infrastructure repairs are not mathematical progress and must be kept separate.
 No RH terminal promotion is asserted by this checkpoint.
+
+
+## Explicit coefficient research pruning preserved
+
+Historical certified/audited material additionally fixes the following research state:
+
+- The undamped full natural Möbius partial-sum sequence is rejected as the critical L2 convergence route. This does not reject subsequences, damped/Riesz regularizations, or optimal projections.
+- Finite Arb evidence selected explicit damped Möbius candidates near alpha = 3/16 and alpha = 1/4, but finite-N evidence is not promoted to an asymptotic theorem.
+- For
+  P_{N,alpha}(s) = sum_{n<=N} mu(n) w_{N,alpha}(n) / n^s,
+  the exact analytic target recorded by the audit is the Mellin-Plancherel weighted mean-square residual
+  |1 - zeta(1/2+it) P_{N,alpha}(1/2+it)|^2 / (1/4+t^2).
+- Therefore the next genuine mathematical forcing target is an unconditional proof that this weighted mean-square tends to zero for one fixed explicit admissible coefficient family, or an equivalent direct L2-error theorem already mapped by ExplicitCoefficientProducer.
+
+Current work branch contains all of:
+- ExplicitCoefficientProducer.lean
+- CoefficientRealization.lean
+- CoefficientPythagoras.lean
+- CoefficientGramEnergy.lean
+- CoefficientLogMajorantProducer.lean
+- ChiNorm.lean
+- GramTerminalLink.lean
+
+A certificate run at pre-checkpoint HEAD 0224ffc217a5d58047f16f70886ed14eb528158f succeeded: run 37190899941.
