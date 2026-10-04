@@ -1,4 +1,4 @@
-import MCore.RH.Analytic.MellinPlancherelReduction
+import MCore.RH.Analytic.MellinPlancherelCoreReduction
 import Lean
 
 open Lean Elab Tactic
@@ -16,10 +16,15 @@ elab "d3_gap " name:str : tactic => do
 After D1/D2 and finite Mellin linearity, D3 has exactly one remaining
 analytic producer: Mellin-Plancherel for the residual norm.
 -/
-theorem DISCOVER_D3_PLANCHEREL_CORE :
-    ResidualMellinPlancherelCore := by
-  unfold ResidualMellinPlancherelCore
-  d3_gap "RESIDUAL_MELLIN_PLANCHEREL_CORE"
+theorem DISCOVER_D3_FOURIER_PLANCHEREL_CORE :
+    ResidualFourierPlancherelCore := by
+  unfold ResidualFourierPlancherelCore
+  d3_gap "RESIDUAL_FOURIER_PLANCHEREL_CORE"
   exact ?_
+
+theorem DISCOVER_D3_PLANCHEREL_CORE
+    (hF : ResidualFourierPlancherelCore) :
+    ResidualMellinPlancherelCore :=
+  residualMellinPlancherelCore_of_fourier hF
 
 end MCore.RH.R0
