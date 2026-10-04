@@ -21,3 +21,8 @@ mcore:
 .PHONY: rh-material-gate
 rh-material-gate:
 	bash audit/rh_material_gate.sh
+
+
+.PHONY: rh-discover
+rh-discover:
+	bash audit/rh_discovery_kernel.sh
