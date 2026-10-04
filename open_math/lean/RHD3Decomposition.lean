@@ -1,4 +1,5 @@
 import MCore.RH.Analytic.MellinPlancherelReduction
+import MCore.RH.Analytic.LogPullbackIsometry
 import Lean
 
 open Lean Elab Tactic
@@ -44,9 +45,7 @@ theorem d3_components_to_plancherel
   rw [hlog c, hfourier c, hmellin c]
 
 theorem DISCOVER_D3_LOG_PULLBACK : D3_LogPullbackIsometry := by
-  unfold D3_LogPullbackIsometry
-  d3_gap "LOG_PULLBACK_ISOMETRY"
-  exact ?_
+  exact d3_logPullbackIsometry_realized
 
 theorem DISCOVER_D3_FOURIER_PLANCHEREL : D3_FourierPlancherel := by
   unfold D3_FourierPlancherel
