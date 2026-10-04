@@ -28,6 +28,9 @@ files=(
   lean/MCore/RH/R0/VasyuninStructural.lean
   lean/MCore/RH/R0/VasyuninGCD.lean
   lean/MCore/RH/R0/VasyuninRateReduction.lean
+  lean/MCore/RH/R0/VasyuninIntegrability.lean
+  lean/MCore/RH/R0/VasyuninUnitBlocksReduction.lean
+  lean/MCore/RH/R0/VasyuninCoprimeBasics.lean
   lean/MCore/RH/Analytic/MellinTarget.lean
   lean/MCore/RH/Analytic/MellinRhoReduction.lean
   lean/MCore/RH/Analytic/MellinTailPartial.lean
