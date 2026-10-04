@@ -1,5 +1,6 @@
 import MCore.RH.Analytic.MellinPlancherelReduction
 import MCore.RH.Analytic.LogPullbackIsometry
+import MCore.RH.Analytic.FourierMellinCriticalLine
 import Lean
 
 open Lean Elab Tactic
@@ -53,8 +54,6 @@ theorem DISCOVER_D3_FOURIER_PLANCHEREL : D3_FourierPlancherel := by
   exact ?_
 
 theorem DISCOVER_D3_FOURIER_TO_MELLIN : D3_FourierToMellinLine := by
-  unfold D3_FourierToMellinLine
-  d3_gap "FOURIER_TO_MELLIN_CRITICAL_LINE"
-  exact ?_
+  exact d3_fourierToMellinLine_realized
 
 end MCore.RH.R0
