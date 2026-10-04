@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.MellinPlancherelReduction
+import MCore.RH.Analytic.MellinCriticalDensity
+import MCore.RH.Analytic.CriticalLineBasic
 import MCore.RH.Analytic.MellinResidualAlgebra
 import MCore.RH.Analytic.MellinTargetConvergence
 import MCore.RH.Analytic.MellinRhoConvergence
@@ -126,3 +129,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.chiRepresentativeC_mellinConvergent
 
 #print axioms MCore.RH.R0.residual_mellin_closed_form
+
+#print axioms MCore.RH.R0.criticalLine_norm_sq
+
+#print axioms MCore.RH.R0.residual_mellin_critical_sq
+
+#print axioms MCore.RH.R0.d3_reduced_to_mellin_plancherel
