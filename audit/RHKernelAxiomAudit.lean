@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.CriticalLineResidual
 import MCore.RH.Analytic.ResidualMellinAlgebra
 import MCore.RH.Analytic.FourierCompatibilityRealization
 import MCore.RH.Analytic.FourierCompatibilityReduction
@@ -282,3 +283,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.criticalLine_normSq
 
 #print axioms MCore.RH.R0.mellin_concreteCombinationC
+
+#print axioms MCore.RH.R0.mellin_concreteResidualC_criticalLine
+
+#print axioms MCore.RH.R0.normSq_mellin_concreteResidualC_criticalLine
+
+#print axioms MCore.RH.R0.d3_residual_identity_of_plancherel
