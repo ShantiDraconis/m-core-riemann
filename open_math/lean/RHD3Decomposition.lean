@@ -1,4 +1,4 @@
-import MCore.RH.Analytic.FourierL1L2Bridge
+import MCore.RH.Analytic.D3FromFourierPlancherel
 import Lean
 
 open Lean Elab Tactic
@@ -13,27 +13,24 @@ elab "d3_gap " name:str : tactic => do
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
 /--
-The only unresolved D3 producer:
-the ordinary Fourier integral of each concrete log residual must represent
-the same L2 vector as Mathlib's unitary L2 Fourier transform.
+The only remaining D3 formalization obligation.
+This is classical Fourier analysis, not an RH-specific mathematical hypothesis.
 -/
-theorem DISCOVER_D3_FOURIER_L1_L2 :
-    ResidualFourierCompatibilityProducer := by
-  d3_gap "FOURIER_L1_L2_COMPATIBILITY"
+theorem DISCOVER_D3_FOURIER_L1L2 : FourierIntegralPlancherelL1L2 := by
+  d3_gap "FOURIER_L1_INTER_L2_PLANCHEREL"
   exact ?_
 
-/-- Once the standard Fourier bridge is supplied, the whole D3 identity closes. -/
-theorem D3_FROM_FOURIER_COMPATIBILITY
-    (h : ResidualFourierCompatibilityProducer)
+/-- Once the classical bridge is supplied, the exact D3 identity is automatic. -/
+theorem D3_FROM_CLASSICAL_BRIDGE
+    (hP : FourierIntegralPlancherelL1L2)
     {N : ℕ} (c : Fin N → ℝ) :
-    ‖concreteNBData.chi -
-      concreteNBData.coefficientApproximantAt concreteGeneratorFamily N c‖ ^ 2 =
+    (∫ x : ℝ in Set.Ioi 0, ‖residualRepresentativeC c x‖ ^ 2) =
       (1 / (2 * Real.pi)) *
         ∫ t : ℝ,
           Complex.normSq
-            (1 + riemannZeta (criticalLinePoint t) *
-              concreteDirichletPolynomial c (criticalLinePoint t)) /
+            (1 + riemannZeta (criticalLine t) *
+              concreteDirichletPolynomial c (criticalLine t)) /
             ((1 / 4 : ℝ) + t ^ 2) := by
-  exact d3_of_fourierCompatibility h c
+  exact d3_explicit_of_fourierIntegral hP c
 
 end MCore.RH.R0
