@@ -30,9 +30,9 @@ theorem residual_spectral_identity_of_plancherel
         ∫ t : ℝ, residualSpectralDensity c t := by
   rw [hP c]
   congr 1
-  apply integral_congr
-  intro t
-  exact normSq_mellin_residual_criticalLine c t
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun t =>
+    normSq_mellin_residual_criticalLine c t)
 
 /--
 D3 has now been reduced to one producer. No zeta algebra, Mellin scaling,
