@@ -43,6 +43,8 @@ files=(
   lean/MCore/RH/Analytic/MellinFourierBridge.lean
   lean/MCore/RH/Analytic/MellinCriticalLine.lean
   lean/MCore/RH/Analytic/ResidualMellin.lean
+  lean/MCore/RH/Analytic/MellinPlancherelCoreReduction.lean
+  lean/MCore/RH/Analytic/MellinLogIsometry.lean
   lean/MCore/RH/Analytic/D3PinnedGap.lean
   lean/MCore/RH/Analytic/E1EvaluationReduction.lean
   lean/MCore/RH/Analytic/OffLineZeroReflection.lean
@@ -124,6 +126,8 @@ lake env lean lean/MCore/RH/Analytic/LogPullbackNorm.lean
 lake env lean lean/MCore/RH/Analytic/MellinFourierBridge.lean
 lake env lean lean/MCore/RH/Analytic/MellinCriticalLine.lean
 lake env lean lean/MCore/RH/Analytic/ResidualMellin.lean
+lake env lean lean/MCore/RH/Analytic/MellinPlancherelCoreReduction.lean
+lake env lean lean/MCore/RH/Analytic/MellinLogIsometry.lean
 lake env lean lean/MCore/RH/Analytic/D3PinnedGap.lean
 lake env lean lean/MCore/RH/Analytic/E1EvaluationReduction.lean
 lake env lean lean/MCore/RH/Analytic/OffLineZeroReflection.lean
