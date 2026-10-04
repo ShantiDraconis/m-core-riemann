@@ -1,111 +1,77 @@
-import MCore.RH.Analytic.MellinRhoClosedForm
-import MCore.RH.Analytic.MellinTarget
+import MCore.RH.Analytic.MellinConcrete
 import MCore.RH.R0.RhoBasicFacts
+import MCore.RH.R0.ChiMemLp
 import Mathlib.Analysis.MellinTransform
 
 namespace MCore.RH.R0
 
 open MeasureTheory Set Filter Asymptotics Complex
 
-/-- Complex rho representative is locally integrable on the positive half-line. -/
-theorem rhoRepresentativeC_locallyIntegrable
-    (n : ℕ) :
-    LocallyIntegrableOn (rhoRepresentativeC n) (Ioi 0) := by
-  have hmeas :
-      AEStronglyMeasurable (rhoRepresentativeC n)
-        (volume.restrict (Ioi 0)) := by
-    exact (rhoRepresentative_measurable_public n).ofReal.aestronglyMeasurable.restrict
-  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm hmeas ?_
-  filter_upwards with x
-  rw [enorm_le_iff_norm_le]
-  rw [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (rhoRepresentative_nonneg n x)]
-  exact rhoRepresentative_le_one n x
-
-/-- Near zero, every rho_n is O(1). -/
-theorem rhoRepresentativeC_isBigO_nhdsGT
-    (n : ℕ) :
+/-- Near zero every concrete rho generator is O(1). -/
+theorem rhoRepresentativeC_isBigO_zero (n : ℕ) :
     rhoRepresentativeC n =O[𝓝[>] (0 : ℝ)]
-      (fun x : ℝ => x ^ (0 : ℝ)) := by
-  apply Asymptotics.IsBigO.of_bound 1
+      (fun x : ℝ => (x ^ (0 : ℝ) : ℂ)) := by
+  refine isBigO_iff.2 ⟨1, ?_⟩
   filter_upwards with x
-  rw [norm_rpow_of_nonneg (show 0 ≤ x by positivity)]
-  simp only [Real.rpow_zero, norm_one, one_mul]
-  rw [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (rhoRepresentative_nonneg n x)]
-  exact rhoRepresentative_le_one n x
+  rw [norm_rhoRepresentativeC, Complex.norm_real]
+  have h0 : 0 ≤ rhoRepresentative n x := rhoRepresentative_nonneg n x
+  have h1 : rhoRepresentative n x ≤ 1 := rhoRepresentative_le_one n x
+  simp [Real.norm_eq_abs, abs_of_nonneg h0, h1]
 
-/-- At infinity, every rho_n is O(x^-1) by its exact tail formula. -/
-theorem rhoRepresentativeC_isBigO_atTop
-    (n : ℕ) :
+/-- At infinity rho_n(x)=1/((n+1)x), hence O(x^-1). -/
+theorem rhoRepresentativeC_isBigO_top (n : ℕ) :
     rhoRepresentativeC n =O[atTop]
-      (fun x : ℝ => x ^ (-1 : ℝ)) := by
-  apply Asymptotics.IsBigO.of_bound (1 / (((rhoIndex n : ℕ) : ℝ)))
+      (fun x : ℝ => (x ^ (-1 : ℝ) : ℂ)) := by
+  refine isBigO_iff.2 ⟨1 / (((rhoIndex n : ℕ) : ℝ)), ?_⟩
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
   have hx0 : 0 < x := zero_lt_one.trans hx
-  rw [rhoRepresentativeC, rhoRepresentative_tail n hx]
-  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-  rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg _ _)]
-  have ha : 0 < (((rhoIndex n : ℕ) : ℝ)) := by
-    exact_mod_cast rhoIndex_pos n
-  have hpow : x ^ (-1 : ℝ) = 1 / x := by
-    rw [Real.rpow_neg_one]
-  rw [hpow]
-  field_simp
-  positivity
+  rw [rhoRepresentative_tail n hx, norm_rhoRepresentativeC]
+  rw [Complex.norm_real, Real.norm_eq_abs]
+  have hval : 0 ≤ 1 / (((rhoIndex n : ℕ) : ℝ) * x) := by positivity
+  rw [abs_of_nonneg hval]
+  rw [show x ^ (-1 : ℝ) = x⁻¹ by simpa using Real.rpow_neg_one x]
+  simp [rhoIndex, hx0.ne', mul_assoc, mul_comm, mul_left_comm]
 
-/-- Mellin convergence of every rho_n on the full open strip 0 < Re(s) < 1. -/
-theorem rhoRepresentativeC_mellinConvergent
-    (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
-    MellinConvergent (rhoRepresentativeC n) s := by
-  exact mellinConvergent_of_isBigO_rpow
-    (rhoRepresentativeC_locallyIntegrable n)
-    (rhoRepresentativeC_isBigO_atTop n)
-    hs1
-    (rhoRepresentativeC_isBigO_nhdsGT n)
-    hs0
-
-/-- Complex target is locally integrable on the positive half-line. -/
-theorem chiRepresentativeC_locallyIntegrable :
-    LocallyIntegrableOn chiRepresentativeC (Ioi 0) := by
-  have hmeas :
-      AEStronglyMeasurable chiRepresentativeC
-        (volume.restrict (Ioi 0)) := by
-    exact chi_measurable.ofReal.aestronglyMeasurable.restrict
-  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm hmeas ?_
-  filter_upwards with x
-  rw [enorm_le_iff_norm_le]
-  simp [chiRepresentativeC, chiRepresentative]
-
-/-- Near zero, chi is O(1). -/
-theorem chiRepresentativeC_isBigO_nhdsGT :
+/-- The concrete target is O(1) near zero. -/
+theorem chiRepresentativeC_isBigO_zero :
     chiRepresentativeC =O[𝓝[>] (0 : ℝ)]
-      (fun x : ℝ => x ^ (0 : ℝ)) := by
-  apply Asymptotics.IsBigO.of_bound 1
+      (fun x : ℝ => (x ^ (0 : ℝ) : ℂ)) := by
+  refine isBigO_iff.2 ⟨1, ?_⟩
   filter_upwards with x
-  rw [norm_rpow_of_nonneg (show 0 ≤ x by positivity)]
   simp [chiRepresentativeC, chiRepresentative]
 
-/-- At infinity, chi is eventually zero, hence O(x^-1). -/
-theorem chiRepresentativeC_isBigO_atTop :
+/-- The concrete target vanishes identically beyond 1, hence is O(x^-1) at infinity. -/
+theorem chiRepresentativeC_isBigO_top :
     chiRepresentativeC =O[atTop]
-      (fun x : ℝ => x ^ (-1 : ℝ)) := by
-  have hzero :
-      chiRepresentativeC =ᶠ[atTop] (fun _ : ℝ => (0 : ℂ)) := by
+      (fun x : ℝ => (x ^ (-1 : ℝ) : ℂ)) := by
+  have hzero : chiRepresentativeC =ᶠ[atTop] 0 := by
     filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
     simp [chiRepresentativeC, chiRepresentative, hx.not_lt]
   exact hzero.trans_isBigO (Asymptotics.isBigO_zero _ _)
 
-/-- Mellin convergence of chi on 0 < Re(s); in particular on the critical strip. -/
+/-- Mellin convergence for every rho_n on the critical strip 0<Re(s)<1. -/
+theorem rhoRepresentativeC_mellinConvergent
+    (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    MellinConvergent (rhoRepresentativeC n) s := by
+  apply mellinConvergent_of_isBigO_rpow
+    (a := (0 : ℝ)) (b := (1 : ℝ))
+  · exact hs0
+  · exact hs1
+  · exact (rhoRepresentative_measurable_public n).ofReal.locallyIntegrableOn
+  · simpa using rhoRepresentativeC_isBigO_zero n
+  · simpa using rhoRepresentativeC_isBigO_top n
+
+/-- Mellin convergence for chi on the same strip. -/
 theorem chiRepresentativeC_mellinConvergent
-    (s : ℂ) (hs0 : 0 < s.re) :
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent chiRepresentativeC s := by
-  exact mellinConvergent_of_isBigO_rpow
-    chiRepresentativeC_locallyIntegrable
-    chiRepresentativeC_isBigO_atTop
-    (by linarith)
-    chiRepresentativeC_isBigO_nhdsGT
-    hs0
+  apply mellinConvergent_of_isBigO_rpow
+    (a := (0 : ℝ)) (b := (1 : ℝ))
+  · exact hs0
+  · exact hs1
+  · exact chi_measurable.ofReal.locallyIntegrableOn
+  · simpa using chiRepresentativeC_isBigO_zero
+  · simpa using chiRepresentativeC_isBigO_top
 
 #print axioms MCore.RH.R0.rhoRepresentativeC_mellinConvergent
 #print axioms MCore.RH.R0.chiRepresentativeC_mellinConvergent
