@@ -1,5 +1,5 @@
 import MCore.RH.Analytic.MellinResidual
-import MCore.RH.R0.GramEnergy
+import MCore.RH.NB.GramEnergy
 import Mathlib.Analysis.Fourier.FourierTransform
 import Mathlib.Analysis.MellinInversion
 
