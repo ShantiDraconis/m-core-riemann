@@ -358,3 +358,5 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.criticalLogPullbackMemL2_realized
 
 #print axioms MCore.RH.R0.d3_fourierPlancherel_of_pinned
+
+#print axioms MCore.RH.R0.residual_mellinConvergent
