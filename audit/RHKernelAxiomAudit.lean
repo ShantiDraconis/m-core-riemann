@@ -1,3 +1,4 @@
+import MCore.RH.R0.ExplicitGramRate
 import MCore.RH.Analytic.E1EvaluationReduction
 import MCore.RH.Analytic.OffLineZeroReflection
 import MCore.RH.Analytic.CriticalEvaluationKernel
@@ -178,3 +179,11 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.spectralZeroWitness_of_reproducing
 
 #print axioms MCore.RH.R0.offLineStripZero_to_physical_witness
+
+#print axioms MCore.RH.R0.explicitTargetVector_eq_concrete
+
+#print axioms MCore.RH.R0.explicitGramMatrix_eq_concrete
+
+#print axioms MCore.RH.R0.concreteDN_eq_explicitGramResidual
+
+#print axioms MCore.RH.R0.explicitGramRateTarget_iff_uniformLogDNBound
