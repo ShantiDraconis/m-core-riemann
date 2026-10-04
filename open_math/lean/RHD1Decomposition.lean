@@ -1,4 +1,5 @@
 import MCore.RH.Analytic.MellinRhoReduction
+import MCore.RH.Analytic.MellinTailRightReduction
 import Lean
 
 open Lean Elab Tactic
@@ -35,10 +36,22 @@ def D1_NearZeroIdentity : Prop :=
       ((t : ℂ) ^ (-s - 1)) * (Int.fract t : ℂ)) =
       1 / (1 - s)
 
-theorem DISCOVER_D1_TAIL_RIGHT : D1_TailFormulaRight := by
-  unfold D1_TailFormulaRight
-  d1_gap "TAIL_FORMULA_RE_GT_ONE"
+theorem DISCOVER_D1_TAIL_SERIES_BRIDGE : ComplexTailIntegralSeriesBridge := by
+  unfold ComplexTailIntegralSeriesBridge
+  d1_gap "TAIL_INTEGRAL_SERIES_BRIDGE"
   exact ?_
+
+theorem DISCOVER_D1_TAIL_SERIES_CLOSED_FORM : ComplexTailSeriesClosedForm := by
+  unfold ComplexTailSeriesClosedForm
+  d1_gap "TAIL_SERIES_CLOSED_FORM"
+  exact ?_
+
+theorem DISCOVER_D1_TAIL_RIGHT
+    (hbridge : ComplexTailIntegralSeriesBridge)
+    (hclosed : ComplexTailSeriesClosedForm) :
+    D1_TailFormulaRight := by
+  intro s hs
+  exact tailFormulaRight_of_series hbridge hclosed s hs
 
 theorem DISCOVER_D1_ANALYTIC_CONTINUATION : D1_TailAnalyticContinuation := by
   unfold D1_TailAnalyticContinuation
@@ -46,9 +59,8 @@ theorem DISCOVER_D1_ANALYTIC_CONTINUATION : D1_TailAnalyticContinuation := by
   exact ?_
 
 theorem DISCOVER_D1_NEAR_ZERO : D1_NearZeroIdentity := by
-  unfold D1_NearZeroIdentity
-  d1_gap "NEAR_ZERO_ELEMENTARY"
-  exact ?_
+  intro s hs
+  exact d1_nearZero_identity s hs
 
 theorem DISCOVER_D1_FRACTIONAL_ZETA : FractionalZetaMellinIdentity := by
   unfold FractionalZetaMellinIdentity
