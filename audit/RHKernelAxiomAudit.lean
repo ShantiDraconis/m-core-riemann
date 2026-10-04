@@ -1,3 +1,7 @@
+import MCore.RH.R0.ExponentialUniqueness
+import MCore.RH.R0.WeightedIntegrability
+import MCore.RH.R0.LpToAE
+import MCore.RH.R0.RhoBasicFacts
 import MCore.RH.R0.LinearIndependentReduction
 import MCore.RH.R0.GramExplicit
 import MCore.RH.R0.FrontierExposure
@@ -54,3 +58,6 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.rhoIndex_cast_injective
 #print axioms MCore.RH.R0.concreteGeneratorFamily_linearIndependent_of_moments
 #print axioms MCore.RH.R0.concreteGramMatrix_posDef_of_moments
+#print axioms MCore.RH.R0.concreteFiniteCombination_eq_zero_ae
+#print axioms MCore.RH.R0.rho_weighted_integrableOn_Ioi
+#print axioms MCore.RH.R0.concreteMomentUniqueness_vandermonde
