@@ -6,14 +6,14 @@ cd "$ROOT"
 
 REAL_FILE="lean/MCore/RH/R0/HardFrontierReal.lean"
 REAL_MODULE="MCore.RH.R0.HardFrontierReal"
-REAL_DECL="MCore.RH.R0.concreteUniformLogDNBound_real"
+REAL_DECL="MCore.RH.R0.explicitGramRateTarget_real"
 
 echo "[RH-MATERIAL] checking structural frontier exposure"
 lake env lean lean/MCore/RH/R0/FrontierExposure.lean
 
 if [[ ! -f "$REAL_FILE" ]]; then
   echo "[RH-MATERIAL] MATERIAL_OPEN_GAPS=1"
-  echo "[RH-MATERIAL] GAP_ID=ConcreteUniformLogDNBound"
+  echo "[RH-MATERIAL] GAP_ID=ExplicitGramRateTarget"
   echo "[RH-MATERIAL] REQUIRED_FILE=$REAL_FILE"
   echo "[RH-MATERIAL] REQUIRED_DECL=$REAL_DECL"
   echo "[RH-MATERIAL] STATUS=OPEN_MATH"
@@ -32,17 +32,21 @@ trap 'rm -f "$TMP"' EXIT
 cat > "$TMP" <<'LEAN'
 import MCore.RH.R0.HardFrontierReal
 
-#check MCore.RH.R0.concreteUniformLogDNBound_real
-#print axioms MCore.RH.R0.concreteUniformLogDNBound_real
+#check MCore.RH.R0.explicitGramRateTarget_real
+#print axioms MCore.RH.R0.explicitGramRateTarget_real
+
+example : MCore.RH.R0.ExplicitGramRateTarget :=
+  MCore.RH.R0.explicitGramRateTarget_real
 
 example : MCore.RH.R0.ConcreteUniformLogDNBound :=
-  MCore.RH.R0.concreteUniformLogDNBound_real
+  MCore.RH.R0.explicitGramRateTarget_iff_uniformLogDNBound.mp
+    MCore.RH.R0.explicitGramRateTarget_real
 LEAN
 
 lake env lean "$TMP"
 
 echo "[RH-MATERIAL] MATERIAL_OPEN_GAPS=0"
-echo "[RH-MATERIAL] GAP_ID=ConcreteUniformLogDNBound"
+echo "[RH-MATERIAL] GAP_ID=ExplicitGramRateTarget"
 echo "[RH-MATERIAL] REQUIRED_DECL=$REAL_DECL"
 echo "[RH-MATERIAL] STATUS=GREEN_TERMINAL_CANDIDATE"
 echo "[RH-MATERIAL] TERMINAL_PROMOTION=ALLOWED_AFTER_FULL_STRICT_PREFLIGHT"
