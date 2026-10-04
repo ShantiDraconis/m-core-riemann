@@ -1,5 +1,6 @@
 import MCore.RH.R0.VasyuninGCD
 import MCore.RH.R0.VasyuninIntegrability
+import MCore.RH.R0.VasyuninResidueClasses
 import Lean
 
 namespace MCore.RH.R0
@@ -47,18 +48,15 @@ def V2_UnitBlockExpansion : Prop :=
 Finite residue-class reduction modulo k. This is where rationality of h/k
 turns the infinite piecewise-linear pattern into k residue classes.
 -/
-noncomputable def vasyuninUnitBlock (h k n : ℕ) : ℝ :=
-  ∫ t : ℝ in Ioc (n : ℝ) (n + 1),
-    rationalAutocorrelationIntegrand h k t
-
 /--
-Genuine residue-class reduction: regroup the absolutely convergent unit-block
-series by n = q*k + r. No arbitrary existential block values are allowed.
+Genuine residue-class reduction: regroup the summable unit-block series by
+n = r + k*q in the canonical residue type ZMod k.
 -/
 def V3_ResidueClassReduction : Prop :=
   ∀ h k : ℕ, 0 < h → 0 < k → Nat.Coprime h k →
     fractionalAutocorrelation ((h : ℝ) / (k : ℝ)) =
-      ∑ r : Fin k, ∑' q : ℕ, vasyuninUnitBlock h k (q * k + r.1)
+      ∑ r : ZMod k, ∑' q : ℕ,
+        vasyuninUnitBlockCore h k (r.val + k * q)
 
 /--
 Analytic evaluation of the finite residue-class expression in terms of
@@ -96,9 +94,8 @@ theorem DISCOVER_V2_UNIT_BLOCKS : V2_UnitBlockExpansion := by
       rationalAutocorrelationIntegrable_realized h k hh hk
 
 theorem DISCOVER_V3_RESIDUE_CLASSES : V3_ResidueClassReduction := by
-  unfold V3_ResidueClassReduction
-  vasyunin_core_gap "RESIDUE_CLASS_REDUCTION"
-  exact ?_
+  intro h k hh hk hcop
+  exact fractionalAutocorrelation_eq_sum_residue_classes h k hh hk
 
 theorem DISCOVER_V4_COTANGENT : V4_CotangentEvaluation := by
   unfold V4_CotangentEvaluation
