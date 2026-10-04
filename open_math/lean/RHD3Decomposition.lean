@@ -1,4 +1,4 @@
-import MCore.RH.Analytic.MellinPlancherelCoreReduction
+import MCore.RH.Analytic.MellinPlancherelBridge
 import Lean
 
 open Lean Elab Tactic
@@ -12,19 +12,32 @@ elab "d3_gap " name:str : tactic => do
   logInfo m!"[RH-D3-GAP:{name.getString}]\n{body}"
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
-/--
-After D1/D2 and finite Mellin linearity, D3 has exactly one remaining
-analytic producer: Mellin-Plancherel for the residual norm.
--/
-theorem DISCOVER_D3_FOURIER_PLANCHEREL_CORE :
-    ResidualFourierPlancherelCore := by
-  unfold ResidualFourierPlancherelCore
-  d3_gap "RESIDUAL_FOURIER_PLANCHEREL_CORE"
+theorem DISCOVER_D3_LOG_ISOMETRY : ResidualLogPullbackIsometry := by
+  unfold ResidualLogPullbackIsometry
+  d3_gap "LOG_PULLBACK_ISOMETRY"
   exact ?_
 
-theorem DISCOVER_D3_PLANCHEREL_CORE
-    (hF : ResidualFourierPlancherelCore) :
-    ResidualMellinPlancherelCore :=
-  residualMellinPlancherelCore_of_fourier hF
+theorem DISCOVER_D3_LOG_L1 : ResidualLogPullbackIntegrable := by
+  unfold ResidualLogPullbackIntegrable
+  d3_gap "LOG_PULLBACK_L1"
+  exact ?_
+
+theorem DISCOVER_D3_LOG_L2 : ResidualLogPullbackSqIntegrable := by
+  unfold ResidualLogPullbackSqIntegrable
+  d3_gap "LOG_PULLBACK_L2_SQ"
+  exact ?_
+
+theorem DISCOVER_D3_FOURIER_PLANCHEREL : FourierPlancherelR := by
+  unfold FourierPlancherelR
+  d3_gap "FOURIER_PLANCHEREL_PINNED_MATHLIB"
+  exact ?_
+
+theorem DISCOVER_D3_RESIDUAL
+    (hLog : ResidualLogPullbackIsometry)
+    (hL1 : ResidualLogPullbackIntegrable)
+    (hL2 : ResidualLogPullbackSqIntegrable)
+    (hPl : FourierPlancherelR) :
+    ResidualMellinPlancherel := by
+  exact residualMellinPlancherel_of_fourier hLog hL1 hL2 hPl
 
 end MCore.RH.R0
