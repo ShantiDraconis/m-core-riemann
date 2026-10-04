@@ -32,9 +32,9 @@ theorem rhoCombinationC_mellinConvergent
   classical
   unfold rhoCombinationC MellinConvergent
   simpa only [smul_sum] using
-    (Finset.integrable_finset_sum Finset.univ fun i hi =>
+    (integrable_finsetSum Finset.univ fun i hi =>
       by
-        simpa [mul_smul, Complex.realCast_smul_eq_coe_mul] using
+        simpa [smul_eq_mul, mul_assoc] using
           (rhoRepresentativeC_mellinConvergent i s hs0 hs1).const_smul (c i : ℂ))
 
 /-- Mellin transform of a finite rho combination. -/
@@ -54,7 +54,7 @@ theorem mellin_rhoCombinationC
     rw [mellin_rho_realized i s hs0 hs1]
     ring
   · intro i hi
-    simpa [MellinConvergent, mul_smul, Complex.realCast_smul_eq_coe_mul] using
+    simpa [MellinConvergent, smul_eq_mul, mul_assoc] using
       (rhoRepresentativeC_mellinConvergent i s hs0 hs1).const_smul (c i : ℂ)
 
 /-- Residual Mellin convergence on the critical strip. -/
