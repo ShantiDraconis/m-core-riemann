@@ -1,4 +1,5 @@
 import MCore.RH.Analytic.MellinPlancherelBridges
+import MCore.RH.Analytic.MellinLogIsometry
 import Lean
 
 open Lean Elab Tactic
@@ -13,10 +14,8 @@ elab "d3_gap " name:str : tactic => do
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
 theorem DISCOVER_D3_LOG_ISOMETRY :
-    ResidualLogPullbackIsometry := by
-  unfold ResidualLogPullbackIsometry
-  d3_gap "LOG_PULLBACK_ISOMETRY"
-  exact ?_
+    ResidualLogPullbackIsometry :=
+  residualLogPullbackIsometry_realized
 
 theorem DISCOVER_D3_FOURIER_PLANCHEREL :
     ResidualFourierPlancherel := by
