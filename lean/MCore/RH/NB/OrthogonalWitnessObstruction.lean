@@ -1,4 +1,4 @@
-import MCore.RH.NB.Distance
+import MCore.RH.NB.ZeroLimitFrontier
 import Mathlib.Analysis.InnerProductSpace.Orthogonal
 
 namespace MCore.RH.NB
@@ -96,7 +96,26 @@ theorem orthogonalWitnessDelta_pos
 #print axioms MCore.RH.NB.NBHilbertData.mem_V_orthogonal_of_forall_generator_inner_eq_zero
 #print axioms MCore.RH.NB.NBHilbertData.orthogonal_witness_lower_bound_mul
 #print axioms MCore.RH.NB.NBHilbertData.orthogonalWitnessDelta_le_DN
+/-- A nontrivial orthogonal witness forbids DN convergence to zero. -/
+theorem not_DNToZero_of_orthogonal_witness
+    (rho : D.GeneratorFamily) (w : D.H)
+    (hw : w ≠ 0)
+    (hchi : inner ℝ D.chi w ≠ 0)
+    (hgen : ∀ n : ℕ, inner ℝ (rho n) w = 0) :
+    ¬ D.DNToZero rho := by
+  intro hzero
+  have hδpos : 0 < D.orthogonalWitnessDelta w :=
+    D.orthogonalWitnessDelta_pos w hw hchi
+  have hlt :
+      ∀ᶠ N : ℕ in Filter.atTop,
+        D.DN rho N < D.orthogonalWitnessDelta w :=
+    (tendsto_order.1 hzero).2 _ hδpos
+  rcases hlt.exists with ⟨N, hN⟩
+  exact (not_lt_of_ge
+    (D.orthogonalWitnessDelta_le_DN rho w hw hgen N)) hN
+
 #print axioms MCore.RH.NB.NBHilbertData.orthogonalWitnessDelta_pos
+#print axioms MCore.RH.NB.NBHilbertData.not_DNToZero_of_orthogonal_witness
 
 end NBHilbertData
 end MCore.RH.NB
