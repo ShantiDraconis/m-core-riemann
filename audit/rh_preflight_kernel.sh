@@ -34,6 +34,7 @@ files=(
   lean/MCore/RH/Analytic/MellinTailRight.lean
   lean/MCore/RH/Analytic/MellinTailContinuation.lean
   lean/MCore/RH/Analytic/D1KernelEntry.lean
+  lean/MCore/RH/Analytic/ResidualMellinAlgebra.lean
   lean/MCore/RH/Analytic/MellinPlancherelBridge.lean
   lean/MCore/RH/Analytic/MellinResidual.lean
   lean/MCore/RH/Analytic/ResidualNormBridge.lean
@@ -124,6 +125,7 @@ lake env lean lean/MCore/RH/R0/VasyuninGCD.lean
 lake env lean lean/MCore/RH/R0/VasyuninRateReduction.lean
 lake env lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
 lake env lean lean/MCore/RH/Analytic/D1KernelEntry.lean
+lake env lean lean/MCore/RH/Analytic/ResidualMellinAlgebra.lean
 lake env lean lean/MCore/RH/Analytic/MellinResidual.lean
 lake env lean lean/MCore/RH/Analytic/ResidualNormBridge.lean
 lake env lean lean/MCore/RH/Analytic/MellinPlancherelFourierReduction.lean
