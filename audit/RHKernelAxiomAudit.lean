@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.MellinPlancherelBridge
 import MCore.RH.Analytic.MellinPlancherelCoreReduction
 import MCore.RH.Analytic.MellinLogIsometry
 import MCore.RH.R0.VasyuninRateReduction
@@ -240,3 +241,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.criticalLine_frequency_rescale
 
 #print axioms MCore.RH.R0.residualMellinPlancherelCore_of_fourier
+
+#print axioms MCore.RH.R0.mellin_complexResidual
+
+#print axioms MCore.RH.R0.residual_plancherel_explicit
