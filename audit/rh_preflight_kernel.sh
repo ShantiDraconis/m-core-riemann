@@ -31,6 +31,9 @@ files=(
   lean/MCore/RH/Analytic/D1KernelEntry.lean
   lean/MCore/RH/Analytic/ResidualMellin.lean
   lean/MCore/RH/Analytic/D3PinnedGap.lean
+  lean/MCore/RH/Analytic/E1EvaluationReduction.lean
+  lean/MCore/RH/Analytic/OffLineZeroReflection.lean
+  lean/MCore/RH/Analytic/CriticalEvaluationKernel.lean
   lean/MCore/RH/Analytic/D3LogLiftIsometry.lean
   lean/MCore/RH/Analytic/D3FourierReduction.lean
   lean/MCore/RH/Analytic/D3Reduction.lean
@@ -98,6 +101,9 @@ lake env lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
 lake env lean lean/MCore/RH/Analytic/D1KernelEntry.lean
 lake env lean lean/MCore/RH/Analytic/ResidualMellin.lean
 lake env lean lean/MCore/RH/Analytic/D3PinnedGap.lean
+lake env lean lean/MCore/RH/Analytic/E1EvaluationReduction.lean
+lake env lean lean/MCore/RH/Analytic/OffLineZeroReflection.lean
+lake env lean lean/MCore/RH/Analytic/CriticalEvaluationKernel.lean
 lake env lean lean/MCore/RH/Analytic/D3LogLiftIsometry.lean
 lake env lean lean/MCore/RH/Analytic/D3FourierReduction.lean
 lake env lean lean/MCore/RH/Analytic/D3Reduction.lean
