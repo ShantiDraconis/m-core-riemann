@@ -24,10 +24,21 @@ def L1FourierTemperedPairing : Prop :=
       (∫ y : ℝ, g y * 𝓕 f y) =
         ∫ x : ℝ, (𝓕 g) x * f x
 
+/-- The classical Fourier integral of an L1 function is locally integrable. -/
+theorem classicalFourierLocallyIntegrable_realized :
+    ClassicalFourierLocallyIntegrable := by
+  intro f hf
+  have hcont : Continuous (fun y : ℝ => 𝓕 f y) := by
+    exact VectorFourier.fourierIntegral_continuous
+      Real.continuous_fourierChar
+      (innerSL ℝ).continuous₂
+      hf
+  exact hcont.locallyIntegrable
+
 /-- Mathlib already supplies the L2-distributional Fourier compatibility. -/
 theorem l2FourierTemperedCompatibility_closed
     (F : Lp ℂ 2 volume) :
-    𝓕 (F : TemperedDistribution ℝ ℂ) =
+    𝓕 (F : 𝓢'(ℝ, ℂ)) =
       ((MeasureTheory.Lp.fourierTransformₗᵢ ℝ ℂ) F : Lp ℂ 2 volume) := by
   exact MeasureTheory.Lp.fourier_toTemperedDistribution_eq F
 
@@ -56,6 +67,7 @@ theorem l1l2FourierCompatibility_of_core
   intro f hf1 hf2
   exact hcore.2.2 f hf1 hf2 (hcore.2.1 f hf1)
 
+#print axioms MCore.RH.R0.classicalFourierLocallyIntegrable_realized
 #print axioms MCore.RH.R0.l2FourierTemperedCompatibility_closed
 #print axioms MCore.RH.R0.l1l2FourierCompatibility_of_core
 
