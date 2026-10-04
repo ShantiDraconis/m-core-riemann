@@ -53,8 +53,8 @@ theorem fractionalTailKernel_eventually_zero_nhdsGT :
 /-- Hence the cutoff kernel satisfies any polynomial bound near 0; exponent 0 is enough here. -/
 theorem fractionalTailKernel_isBigO_nhdsGT :
     fractionalTailKernel =O[𝓝[>] (0 : ℝ)] (fun t : ℝ => t ^ (0 : ℝ)) := by
-  exact (Asymptotics.isBigO_zero _ _).congr_left
-    fractionalTailKernel_eventually_zero_nhdsGT.symm
+  exact fractionalTailKernel_eventually_zero_nhdsGT.trans_isBigO
+    (Asymptotics.isBigO_zero _ _)
 
 /-- The set-integral tail is exactly the Mellin transform of the cutoff kernel at -s. -/
 theorem fractionalTailComplex_eq_mellin (s : ℂ) :
@@ -78,8 +78,8 @@ theorem fractionalTailKernel_mellin_differentiableAt
     (by simpa only [neg_zero, Real.rpow_zero] using fractionalTailKernel_isBigO_atTop)
     hz
     (by
-      exact (Asymptotics.isBigO_zero _ _).congr_left
-        fractionalTailKernel_eventually_zero_nhdsGT.symm)
+      exact fractionalTailKernel_eventually_zero_nhdsGT.trans_isBigO
+        (Asymptotics.isBigO_zero _ _))
     (by
       dsimp [b]
       linarith)
