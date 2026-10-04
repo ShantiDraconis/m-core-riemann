@@ -26,3 +26,21 @@ rh-material-gate:
 .PHONY: rh-discover
 rh-discover:
 	bash audit/rh_discovery_kernel.sh
+
+
+.PHONY: rh-all-gaps rh-clay-questions rh-bridge-decomposition rh-geometry-discovery rh-force-all
+
+rh-all-gaps:
+	bash audit/rh_all_gaps.sh
+
+rh-clay-questions:
+	bash audit/rh_clay_question_tree.sh
+
+rh-bridge-decomposition:
+	bash audit/rh_bridge_decomposition.sh
+
+rh-geometry-discovery:
+	bash audit/rh_geometry_discovery.sh
+
+rh-force-all:
+	bash audit/rh_force_all_proofs.sh
