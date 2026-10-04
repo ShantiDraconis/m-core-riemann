@@ -1,4 +1,6 @@
 import MCore.RH.R0.LinearIndependentReduction
+import MCore.RH.R0.LpToAE
+import MCore.RH.R0.WeightedIntegrability
 import MCore.RH.Analytic.MellinConcrete
 import Lean
 
@@ -63,14 +65,12 @@ def A1_BaseMellinPositive : Prop :=
 theorem DISCOVER_A1_AE_ZERO (N : ℕ) : A1_AEZeroBridge N := by
   unfold A1_AEZeroBridge
   intro c h
-  a1_gap "AE_ZERO_FROM_LP"
-  exact ?_
+  exact concreteFiniteCombination_eq_zero_ae c h
 
 theorem DISCOVER_A1_WEIGHTED_INTEGRABLE : A1_WeightedIntegrability := by
   unfold A1_WeightedIntegrability
   intro n s hs0 hs1
-  a1_gap "WEIGHTED_INTEGRABILITY"
-  exact ?_
+  exact A1_WeightedIntegrability_realized n s hs0 hs1
 
 theorem DISCOVER_A1_LINEARITY (N : ℕ) : A1_WeightedIntegralLinearity N := by
   unfold A1_WeightedIntegralLinearity
