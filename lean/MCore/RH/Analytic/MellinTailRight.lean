@@ -39,7 +39,7 @@ theorem natFloor_cast_eq_sub_fract
     {t : ℝ} (ht : 0 ≤ t) :
     (((⌊t⌋₊ : ℕ) : ℂ)) = (t : ℂ) - (Int.fract t : ℂ) := by
   have hfloor : ((⌊t⌋₊ : ℕ) : ℤ) = ⌊t⌋ := by
-    exact_mod_cast Nat.floor_coe ht
+    exact Int.natCast_floor_eq_floor ht
   rw [Int.fract]
   push_cast [hfloor]
   ring
