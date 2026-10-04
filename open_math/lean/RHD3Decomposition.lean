@@ -1,5 +1,6 @@
 import MCore.RH.Analytic.D3FourierReduction
 import MCore.RH.Analytic.FourierCompatibilityReduction
+import MCore.RH.Analytic.FourierCompatibilityRealization
 import Lean
 
 open Lean Elab Tactic
