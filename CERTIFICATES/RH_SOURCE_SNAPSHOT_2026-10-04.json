@@ -1,0 +1,147 @@
+{
+  "certificate_id": "RH_SOURCE_SNAPSHOT_2026-10-04",
+  "scope": "Riemann/Nyman-Beurling structural and analytic source snapshot",
+  "branch": "atk/terminal-parameter-law-20261003",
+  "state": "FROZEN_SOURCE_PENDING_KERNEL",
+  "kernel_certified": false,
+  "terminal_certified": false,
+  "claim": "No Clay/RH proof claim. This certificate freezes source-level reductions and formalization candidates only.",
+  "invariants": {
+    "no_promotion_without_kernel_green": true,
+    "hard_frontier_file_required_for_terminal": "lean/MCore/RH/R0/HardFrontierReal.lean",
+    "material_open_gap": "ConcreteUniformLogDNBound",
+    "expected_terminal_frontier": "exists K >= 0, forall N, DN(N) <= K/log(N+2)"
+  },
+  "source_ready": [
+    {
+      "lane": "A1.0",
+      "file": "lean/MCore/RH/R0/LpToAE.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "A1.1",
+      "file": "lean/MCore/RH/R0/WeightedIntegrability.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "A1.2",
+      "file": "lean/MCore/RH/R0/WeightedIntegralLinearity.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "A1.3",
+      "file": "lean/MCore/RH/R0/WeightedScaling.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "A1.4",
+      "file": "lean/MCore/RH/R0/BaseMellinPositive.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "A1/A3/B1 assembly",
+      "file": "lean/MCore/RH/R0/LinearIndependent.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "A2",
+      "file": "lean/MCore/RH/R0/ExponentialUniqueness.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "B2/B3",
+      "file": "lean/MCore/RH/R0/GramInverse.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "C2/C3",
+      "file": "lean/MCore/RH/R0/GramIntegral.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "C4 reduction",
+      "file": "lean/MCore/RH/R0/TargetClosedFormReduction.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "C4 Euler tail",
+      "file": "lean/MCore/RH/R0/FractionalTailEuler.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "C4 closed form",
+      "file": "lean/MCore/RH/R0/TargetClosedForm.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "C5",
+      "file": "lean/MCore/RH/R0/GramAutocorrelation.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D2",
+      "file": "lean/MCore/RH/Analytic/MellinTarget.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 reduction",
+      "file": "lean/MCore/RH/Analytic/MellinRhoReduction.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 near zero",
+      "file": "lean/MCore/RH/Analytic/MellinNearZero.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 Abel right tail",
+      "file": "lean/MCore/RH/Analytic/MellinTailRight.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 regularized zeta",
+      "file": "lean/MCore/RH/Analytic/RegularizedZeta.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 continuation reduction",
+      "file": "lean/MCore/RH/Analytic/MellinTailContinuationReduction.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 continuation",
+      "file": "lean/MCore/RH/Analytic/MellinTailContinuation.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 full rho family",
+      "file": "lean/MCore/RH/Analytic/MellinRhoClosedForm.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    },
+    {
+      "lane": "D1 entry",
+      "file": "lean/MCore/RH/Analytic/D1KernelEntry.lean",
+      "status": "SOURCE_READY_BUILD_PENDING"
+    }
+  ],
+  "discovery_only": [
+    "open_math/lean/RHClayQuestionTree.lean",
+    "open_math/lean/RHA1Decomposition.lean",
+    "open_math/lean/RHE1WitnessDecomposition.lean",
+    "open_math/lean/RHD1Decomposition.lean",
+    "open_math/lean/RHForcedAll.lean"
+  ],
+  "audits": [
+    "audit/rh_preflight_kernel.sh",
+    "audit/RHKernelAxiomAudit.lean",
+    "audit/rh_force_all_proofs.sh",
+    "audit/rh_bridge_decomposition.sh"
+  ],
+  "explicit_open": [
+    "Kernel build has not been observed for the frozen source snapshot.",
+    "D3 Mellin-Plancherel is not certified.",
+    "E1 correct L2 zero witness is not certified.",
+    "H1 / ConcreteUniformLogDNBound is OPEN_MATH."
+  ],
+  "promotion_rule": "Only after real Lean kernel success plus clean axiom audit may SOURCE_READY be promoted to GREEN/FROZEN/CERTIFIED."
+}
