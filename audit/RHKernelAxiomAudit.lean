@@ -1,3 +1,4 @@
+import MCore.RH.R0.VasyuninGCD
 import MCore.RH.R0.VasyuninStructural
 import MCore.RH.Analytic.MellinPlancherelFourierReduction
 import MCore.RH.Analytic.MellinFourierBridge
@@ -211,3 +212,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.vasyuninGramEntry_symm
 
 #print axioms MCore.RH.R0.vasyuninGramMatrix_symm
+
+#print axioms MCore.RH.R0.vasyuninGCDReduction_realized
+
+#print axioms MCore.RH.R0.vasyuninGramFormula_of_coprime
