@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.FourierLpCompatibility
+import MCore.RH.Analytic.FourierPlancherelReduction
+import MCore.RH.Analytic.LogPullbackNorm
 import MCore.RH.R0.VasyuninGCD
 import MCore.RH.R0.VasyuninStructural
 import MCore.RH.Analytic.MellinPlancherelFourierReduction
@@ -216,3 +219,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.vasyuninGCDReduction_realized
 
 #print axioms MCore.RH.R0.vasyuninGramFormula_of_coprime
+
+#print axioms MCore.RH.R0.residualLogPullbackNorm_realized
+
+#print axioms MCore.RH.R0.fourier_energy_frequency_rescale
+
+#print axioms MCore.RH.R0.residualFourierPlancherel_of_compatibility
