@@ -4,6 +4,7 @@ import MCore.RH.R0.HardFrontierReduction
 import MCore.RH.R0.ConcreteZeroObstruction
 import MCore.RH.Analytic.MellinConcrete
 import Lean
+import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 
 open scoped BigOperators
 
@@ -100,28 +101,34 @@ theorem GAP_C3_GRAM_AS_INTEGRAL (N : ℕ) (i j : Fin N) :
 /-- C4. Reduce target integral to a closed elementary/log expression. -/
 theorem GAP_C4_TARGET_CLOSED_FORM (N : ℕ) (i : Fin N) :
     concreteTargetVector N i =
-      (1 + Real.log ((rhoIndex i : ℕ) : ℝ)) /
+      (Real.log ((rhoIndex i : ℕ) : ℝ) + 1 -
+        Real.eulerMascheroniConstant) /
         (((rhoIndex i : ℕ) : ℝ)) := by
   dump_gap "C4_TARGET_CLOSED_FORM"
   exact ?_
 
 /--
-C5. Placeholder target for a true explicit Gram closed form.
-We deliberately do not guess the dilogarithmic formula here.
-The goal is to derive and then replace this interface with the exact identity.
+C5. Arithmetic kernel for the Gram entry after t = 1/x.
+No closed-form dilogarithm expression is guessed: the kernel is the exact
+positive integral that any later arithmetic simplification must evaluate.
 -/
-def ConcreteGramClosedFormAvailable : Prop :=
-  ∃ F : ℕ → ℕ → ℝ,
-    ∀ (N : ℕ) (i j : Fin N),
-      concreteGramMatrix N i j = F (rhoIndex i) (rhoIndex j)
-
-theorem GAP_C5_GRAM_CLOSED_FORM :
-    ConcreteGramClosedFormAvailable := by
-  unfold ConcreteGramClosedFormAvailable
-  dump_gap "C5_GRAM_CLOSED_FORM"
+theorem GAP_C5_GRAM_ARITHMETIC_KERNEL (N : ℕ) (i j : Fin N) :
+    concreteGramMatrix N i j =
+      ∫ t : ℝ in Set.Ioi 0,
+        (Int.fract (t / ((rhoIndex i : ℕ) : ℝ)) *
+          Int.fract (t / ((rhoIndex j : ℕ) : ℝ))) / (t ^ 2) := by
+  dump_gap "C5_GRAM_ARITHMETIC_KERNEL"
   exact ?_
 
 /-! ## D. Mellin-Plancherel / zeta identity layer -/
+
+noncomputable def concreteDirichletPolynomial
+    (N : ℕ) (c : Fin N → ℝ) (s : ℂ) : ℂ :=
+  ∑ i : Fin N,
+    (c i : ℂ) * ((((rhoIndex i : ℕ) : ℂ)) ^ (-s))
+
+noncomputable def criticalLinePoint (t : ℝ) : ℂ :=
+  ((1 / 2 : ℝ) : ℂ) + Complex.I * (t : ℂ)
 
 /-- D1. Base generator Mellin identity on the convergence strip. -/
 theorem GAP_D1_MELLIN_RHO_BASE_ZETA (s : ℂ)
@@ -139,16 +146,26 @@ theorem GAP_D2_MELLIN_CHI (s : ℂ)
   exact ?_
 
 /--
-D3. Concrete L2 Mellin-Plancherel identity.
-The exact normalization is intentionally forced to be checked by Lean.
+D3. Exact residual identity needed by the analytic route.
+This forces the normalization, complex casts, critical-line parametrization,
+and the weighted L2 measure to be checked by Lean.
 -/
-def ConcreteMellinPlancherel : Prop :=
-  ∀ f : concreteNBData.H, True
+def ConcreteResidualMellinIdentity : Prop :=
+  ∀ (N : ℕ) (c : Fin N → ℝ),
+    ‖concreteNBData.chi -
+      concreteNBData.coefficientApproximantAt
+        concreteGeneratorFamily N c‖ ^ 2 =
+      (1 / (2 * Real.pi)) *
+        ∫ t : ℝ,
+          Complex.normSq
+            (1 + riemannZeta (criticalLinePoint t) *
+              concreteDirichletPolynomial N c (criticalLinePoint t)) /
+            ((1 / 4 : ℝ) + t ^ 2)
 
 theorem GAP_D3_MELLIN_PLANCHEREL :
-    ConcreteMellinPlancherel := by
-  unfold ConcreteMellinPlancherel
-  intro f
+    ConcreteResidualMellinIdentity := by
+  unfold ConcreteResidualMellinIdentity
+  intro N c
   dump_gap "D3_MELLIN_PLANCHEREL"
   exact ?_
 
