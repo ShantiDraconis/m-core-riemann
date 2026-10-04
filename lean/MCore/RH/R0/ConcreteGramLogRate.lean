@@ -78,6 +78,32 @@ theorem ConcreteGramLogRate.toUniformLogDNBound
           norm_num
     _ ≤ logMajorant h.K N := h.reduced_energy_le N
 
+/-- Canonical optimal coefficient vector chosen from the certified projection theorem. -/
+noncomputable def optimalGramCoeff (N : ℕ) : Fin N → ℝ :=
+  Classical.choose
+    (concreteNBData.exists_optimal_coefficients_reduced_energy
+      concreteGeneratorFamily N)
+
+theorem optimalGramCoeff_reduced_energy (N : ℕ) :
+    concreteNBData.DN concreteGeneratorFamily N =
+      ‖concreteNBData.chi‖ ^ 2 -
+        ∑ i : Fin N,
+          optimalGramCoeff N i *
+            concreteNBData.targetEntry concreteGeneratorFamily i :=
+  (Classical.choose_spec
+    (concreteNBData.exists_optimal_coefficients_reduced_energy
+      concreteGeneratorFamily N)).1
+
+theorem optimalGramCoeff_normal (N : ℕ) :
+    ∀ j : Fin N,
+      (∑ i : Fin N,
+        optimalGramCoeff N i *
+          concreteNBData.gramEntry concreteGeneratorFamily i j) =
+        concreteNBData.targetEntry concreteGeneratorFamily j :=
+  (Classical.choose_spec
+    (concreteNBData.exists_optimal_coefficients_reduced_energy
+      concreteGeneratorFamily N)).2
+
 /--
 Conversely, every canonical DN logarithmic bound has an optimal coefficient
 vector satisfying the Gram normal equations at each stage, so this Gram
@@ -87,18 +113,15 @@ noncomputable theorem uniformLogDNBound_to_ConcreteGramLogRate
     (h : ConcreteUniformLogDNBound) :
     ConcreteGramLogRate := by
   rcases h with ⟨K, hK, hDN⟩
-  choose coeff hred hnormal using
-    fun N => concreteNBData.exists_optimal_coefficients_reduced_energy
-      concreteGeneratorFamily N
   refine {
     K := K
     hK := hK
-    coeff := coeff
+    coeff := optimalGramCoeff
     normal := ?_
     reduced_energy_le := ?_
   }
   · intro N j
-    exact hnormal N j
+    exact optimalGramCoeff_normal N j
   · intro N
     have hchi : ‖concreteNBData.chi‖ ^ 2 = 1 := by
       rw [concreteNBData_chi_norm]
@@ -106,16 +129,17 @@ noncomputable theorem uniformLogDNBound_to_ConcreteGramLogRate
     have hEq :
         concreteNBData.DN concreteGeneratorFamily N =
           1 - ∑ i : Fin N,
-            coeff N i *
+            optimalGramCoeff N i *
               concreteNBData.targetEntry concreteGeneratorFamily i := by
       calc
         concreteNBData.DN concreteGeneratorFamily N
             = ‖concreteNBData.chi‖ ^ 2 -
                 ∑ i : Fin N,
-                  coeff N i *
-                    concreteNBData.targetEntry concreteGeneratorFamily i := hred N
+                  optimalGramCoeff N i *
+                    concreteNBData.targetEntry concreteGeneratorFamily i :=
+              optimalGramCoeff_reduced_energy N
         _ = 1 - ∑ i : Fin N,
-                coeff N i *
+                optimalGramCoeff N i *
                   concreteNBData.targetEntry concreteGeneratorFamily i := by rw [hchi]
     rw [← hEq]
     exact hDN N
@@ -128,6 +152,8 @@ theorem concreteGramLogRate_iff_uniformLogDNBound :
   · intro h
     exact ⟨uniformLogDNBound_to_ConcreteGramLogRate h⟩
 
+#print axioms MCore.RH.R0.optimalGramCoeff_reduced_energy
+#print axioms MCore.RH.R0.optimalGramCoeff_normal
 #print axioms MCore.RH.R0.ConcreteGramLogRate.toUniformLogDNBound
 #print axioms MCore.RH.R0.uniformLogDNBound_to_ConcreteGramLogRate
 #print axioms MCore.RH.R0.concreteGramLogRate_iff_uniformLogDNBound
