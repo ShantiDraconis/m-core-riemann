@@ -1,95 +1,59 @@
+import MCore.RH.R0.ExplicitGramRate
 import MCore.RH.R0.FrontierExposure
-import MCore.RH.R0.GramExplicit
-import MCore.RH.R0.LinearIndependentReduction
-import MCore.RH.R0.ConcreteGramLogRate
 import MCore.RH.R0.CriticalLineWeightedErrorRate
 import MCore.RH.NB.OrthogonalWitnessObstruction
+import Lean
 
 namespace MCore.RH.R0
 
 open MCore.RH.NB
 open scoped BigOperators
+open Lean Elab Tactic
 
 set_option pp.universes true
 set_option pp.explicit true
 set_option pp.coercions true
 
-/--
-DISCOVERY FILE — intentionally does not compile until the material mathematics
-is genuinely supplied.  It is not imported by `MCore` and must never be used
-as a certificate.
+elab "rh_material_gap " name:str : tactic => do
+  let g ← getMainGoal
+  let fmt ← g.withContext do ppGoal g
+  let body := toString fmt
+  logInfo m!"[RH-MATERIAL-GAP:{name.getString}]\n{body}"
+  IO.FS.writeFile s!"/tmp/rh_material_gap_{name.getString}.txt" body
 
-Run it directly to make Lean expose the exact remaining goals.
+/--
+DISCOVERY FILE — intentionally RED until the material estimate is proved.
+The first goal is now the fully explicit inverse-Gram/autocorrelation inequality.
 -/
 
-noncomputable def discover_K : ℝ := 1
+/-- Stage H1.1: the exact all-N arithmetic inequality, with no DN/projection notation. -/
+theorem DISCOVER_explicit_gram_rate :
+    ExplicitGramRateTarget := by
+  unfold ExplicitGramRateTarget explicitGramResidual explicitOptimalCoeff
+  unfold explicitTargetVector explicitGramMatrix
+  rh_material_gap "EXPLICIT_GRAM_RATE"
+  exact ?_
 
-/-- Stage 1: force Lean to expose the exact all-N quantitative obligation. -/
-theorem DISCOVER_h_bound :
-    ∀ N : ℕ,
-      concreteNBData.DN concreteGeneratorFamily N ≤
-        logMajorant discover_K N := by
+/-- Stage H1.2: canonical DN producer closes mechanically from the explicit target. -/
+theorem DISCOVER_material_inhabitant :
+    ConcreteUniformLogDNBound := by
+  exact explicitGramRateTarget_iff_uniformLogDNBound.mp
+    DISCOVER_explicit_gram_rate
+
+/-- Stage H1.3: hard frontier closes mechanically. -/
+theorem DISCOVER_hard_frontier :
+    HardFrontierTarget := by
+  rcases DISCOVER_material_inhabitant with ⟨K, hK, hbound⟩
+  refine ⟨K + 1, by linarith, ?_⟩
   intro N
-  trace_state
-  exact ?_
+  have hlogpos : 0 < Real.log ((N : ℝ) + 2) := Real.log_pos (by positivity)
+  exact (hbound N).trans <| by
+    unfold logMajorant
+    exact div_le_div_of_nonneg_right (by linarith) hlogpos.le
 
-/-- Stage 2: once DISCOVER_h_bound is solved, this must close mechanically. -/
-theorem DISCOVER_material_inhabitant : ConcreteUniformLogDNBound := by
-  refine ⟨discover_K, by norm_num, ?_⟩
-  exact DISCOVER_h_bound
-
-/-- Stage 3a: expose the exact finite Gram system solved by the optimum. -/
-theorem DISCOVER_gram_system (N : ℕ) :
-    concreteGramMatrix N *ᵥ optimalGramCoeff N =
-      concreteTargetVector N := by
-  exact optimalGramCoeff_mulVec N
-
-/-- Stage 3b.1: expose the analytic L2-to-Mellin bridge needed for independence. -/
-theorem DISCOVER_moment_bridge (N : ℕ) :
-    ConcreteMomentBridge N := by
-  unfold ConcreteMomentBridge
-  intro c hzero s hs0 hs1
-  set_option pp.all true in
-    trace_state
-  exact ?_
-
-/-- Stage 3b.2: expose finite exponential uniqueness on the Mellin strip. -/
-theorem DISCOVER_moment_uniqueness (N : ℕ) :
-    ConcreteMomentUniqueness N := by
-  unfold ConcreteMomentUniqueness
-  intro c hmom i
-  set_option pp.all true in
-    trace_state
-  exact ?_
-
-/-- Stage 3b.3: positive definiteness then closes mechanically. -/
-theorem DISCOVER_gram_posDef (N : ℕ) :
-    (concreteGramMatrix N).PosDef := by
-  exact concreteGramMatrix_posDef_of_moments N
-    (DISCOVER_moment_bridge N)
-    (DISCOVER_moment_uniqueness N)
-
-/-- Stage 3c: quantitative Gram form of the same material producer. -/
-theorem DISCOVER_gram_rate : Nonempty ConcreteGramLogRate := by
-  refine ⟨{
-    K := discover_K
-    hK := by norm_num
-    coeff := optimalGramCoeff
-    normal := ?_
-    reduced_energy_le := ?_
-  }⟩
-  · intro N j
-    exact optimalGramCoeff_normal N j
-  · intro N
-    have hsystem :
-        concreteGramMatrix N *ᵥ optimalGramCoeff N =
-          concreteTargetVector N :=
-      optimalGramCoeff_mulVec N
-    trace_state
-    exact ?_
-
-/-- Stage 4: terminal closure becomes automatic once the material inhabitant exists. -/
-theorem DISCOVER_terminal : RiemannTerminalCertifies := by
+/-- Stage H1.4: terminal closure is automatic after the explicit material estimate. -/
+theorem DISCOVER_terminal :
+    RiemannTerminalCertifies := by
   exact material_gap_closes_terminal DISCOVER_material_inhabitant
 
 end MCore.RH.R0
