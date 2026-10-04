@@ -53,6 +53,8 @@ files=(
   lean/MCore/RH/Analytic/MellinPlancherelCoreReduction.lean
   lean/MCore/RH/Analytic/MellinLogIsometry.lean
   lean/MCore/RH/Analytic/FourierAeBridgeReduction.lean
+  lean/MCore/RH/Analytic/FourierL1L2AgreementReduction.lean
+  lean/MCore/RH/Analytic/ResidualLogPullbackL1.lean
   lean/MCore/RH/Analytic/FourierPointwiseBridgeReduction.lean
   lean/MCore/RH/Analytic/ResidualLogPullbackLp.lean
   lean/MCore/RH/Analytic/D3PinnedGap.lean
