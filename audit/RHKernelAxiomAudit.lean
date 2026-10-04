@@ -328,3 +328,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.rho_mellinConvergent
 
 #print axioms MCore.RH.R0.chi_mellinConvergent
+
+#print axioms MCore.RH.R0.residualMellinNormSq_explicit
+
+#print axioms MCore.RH.R0.residual_mellin_plancherel_explicit
