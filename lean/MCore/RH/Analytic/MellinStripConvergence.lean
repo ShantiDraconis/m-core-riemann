@@ -71,11 +71,9 @@ theorem chi_mellinConvergent
     MellinConvergent chiRepresentativeC s := by
   have hstd := (hasMellin_one_Ioc (s := s) hs0).1
   rw [MellinConvergent] at hstd ⊢
-  exact hstd.congr
-    ((chiRepresentativeC_ae_eq_Ioc.filter_mono
-      (Measure.restrict_mono' Ioc_subset_Ioi_self measurableSet_Ioi)).mono
-      (fun x hx => by
-        simp only [hx]))
+  apply hstd.congr
+  filter_upwards [chiRepresentativeC_ae_eq_Ioc] with x hx
+  simp only [hx]
 
 #print axioms MCore.RH.R0.fract_mellinConvergent_neg
 #print axioms MCore.RH.R0.rhoBase_mellinConvergent
