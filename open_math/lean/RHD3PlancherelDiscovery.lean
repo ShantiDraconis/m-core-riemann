@@ -1,4 +1,4 @@
-import MCore.RH.Analytic.MellinPlancherelReduction
+import MCore.RH.Analytic.D3SingleGap
 import Lean
 
 open Lean Elab Tactic
@@ -12,9 +12,14 @@ elab "d3_gap " name:str : tactic => do
   logInfo m!"[RH-D3-GAP:{name.getString}]\n{body}"
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
-theorem DISCOVER_D3_MELLIN_PLANCHEREL :
-    MellinPlancherelProducer := by
-  d3_gap "MELLIN_PLANCHEREL_L2"
+theorem DISCOVER_D3_FOURIER_PLANCHEREL :
+    FourierPlancherelForLogPullback := by
+  d3_gap "FOURIER_PLANCHEREL_LOG_PULLBACK"
   exact ?_
+
+theorem DISCOVER_D3_MELLIN_PLANCHEREL
+    (h : FourierPlancherelForLogPullback) :
+    MellinPlancherelProducer :=
+  mellinPlancherel_of_fourier_only h
 
 end MCore.RH.R0
