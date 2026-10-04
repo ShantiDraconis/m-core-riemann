@@ -16,3 +16,8 @@ rh-kernel:
 
 mcore:
 	lake build MCore
+
+
+.PHONY: rh-material-gate
+rh-material-gate:
+	bash audit/rh_material_gate.sh
