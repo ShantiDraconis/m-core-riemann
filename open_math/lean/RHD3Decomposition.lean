@@ -1,15 +1,9 @@
-import MCore.RH.Analytic.MellinPlancherelReduction
-import MCore.RH.Analytic.LogPullbackIsometry
-import MCore.RH.Analytic.FourierMellinCriticalLine
-import MCore.RH.Analytic.CriticalLogPullbackL2
-import MCore.RH.Analytic.FourierPlancherelPinnedGap
+import MCore.RH.Analytic.D3PlancherelReduction
 import Lean
 
 open Lean Elab Tactic
 
 namespace MCore.RH.R0
-
-open MeasureTheory Set Complex
 
 elab "d3_gap " name:str : tactic => do
   let g ← getMainGoal
@@ -18,45 +12,23 @@ elab "d3_gap " name:str : tactic => do
   logInfo m!"[RH-D3-GAP:{name.getString}]\n{body}"
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
-/-- Change x = exp(-u): ordinary L2(dx) becomes ordinary L2(du). -/
-def D3_LogPullbackIsometry : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    ‖concreteResidual c‖ ^ 2 =
-      ∫ u : ℝ, Complex.normSq (criticalLogPullback c u)
+/-- All finite Mellin algebra is already closed; this is the only D3 producer left. -/
+theorem DISCOVER_D3_PLANCHEREL : CriticalLineMellinPlancherel := by
+  unfold CriticalLineMellinPlancherel
+  d3_gap "CRITICAL_LINE_MELLIN_PLANCHEREL"
+  exact ?_
 
-/-- Fourier Plancherel in the exact normalization used by Mathlib. -/
-def D3_FourierPlancherel : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ u : ℝ, Complex.normSq (criticalLogPullback c u)) =
-      ∫ ξ : ℝ, Complex.normSq (𝓕 (criticalLogPullback c) ξ)
-
-/-- Mellin/Fourier identification plus t = 2*pi*xi. -/
-def D3_FourierToMellinLine : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ ξ : ℝ, Complex.normSq (𝓕 (criticalLogPullback c) ξ)) =
+/-- Once Plancherel is supplied, the full zeta/Dirichlet-polynomial residual identity is automatic. -/
+theorem DISCOVER_D3_ZETA_FORM
+    (hP : CriticalLineMellinPlancherel)
+    {N : ℕ} (c : Fin N → ℝ) :
+    residualEnergy c =
       (1 / (2 * Real.pi)) *
         ∫ t : ℝ,
           Complex.normSq
-            (mellin (residualRepresentativeC c) (criticalLinePoint t))
-
-theorem d3_components_to_plancherel
-    (hlog : D3_LogPullbackIsometry)
-    (hfourier : D3_FourierPlancherel)
-    (hmellin : D3_FourierToMellinLine) :
-    CriticalLineMellinPlancherel := by
-  intro N c
-  rw [hlog c, hfourier c, hmellin c]
-
-theorem DISCOVER_D3_LOG_PULLBACK : D3_LogPullbackIsometry := by
-  exact d3_logPullbackIsometry_realized
-
-theorem DISCOVER_D3_FOURIER_PLANCHEREL
-    (hLibrary : PinnedFourierPlancherel) :
-    D3_FourierPlancherel := by
-  exact d3_fourierPlancherel_of_pinned
-    hLibrary criticalLogPullbackIntegrable_realized criticalLogPullbackMemL2_realized
-
-theorem DISCOVER_D3_FOURIER_TO_MELLIN : D3_FourierToMellinLine := by
-  exact d3_fourierToMellinLine_realized
+            (1 + riemannZeta (criticalLinePoint t) *
+              concreteDirichletPolynomial c (criticalLinePoint t)) /
+            (1 / 4 + t ^ 2) := by
+  exact residualEnergy_eq_zeta_integral hP c
 
 end MCore.RH.R0
