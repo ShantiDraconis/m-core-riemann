@@ -3,7 +3,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-rm -f /tmp/rh_forced_*.txt /tmp/rh_a1_gap_*.txt /tmp/rh_e1_gap_*.txt /tmp/rh_d3_gap_*.txt /tmp/rh_geom_gap_*.txt /tmp/rh_clay_gap_*.txt 2>/dev/null || true
+rm -f /tmp/rh_forced_*.txt /tmp/rh_a1_gap_*.txt /tmp/rh_e1_gap_*.txt /tmp/rh_d3_gap_*.txt /tmp/rh_geom_gap_*.txt /tmp/rh_clay_gap_*.txt /tmp/rh_d3_gap_*.txt 2>/dev/null || true
 
 run_expected_red () {
   local label="$1"
