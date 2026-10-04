@@ -1,7 +1,7 @@
-import MCore.RH.Analytic.MellinRhoConvergence
-import MCore.RH.Analytic.MellinTargetConvergence
+import MCore.RH.Analytic.MellinStripConvergence
 import MCore.RH.Analytic.MellinRhoClosedForm
 import MCore.RH.Analytic.MellinTarget
+import Mathlib.Analysis.MellinTransform
 
 open scoped BigOperators
 
@@ -9,102 +9,113 @@ namespace MCore.RH.R0
 
 open Complex MeasureTheory
 
-noncomputable def complexDirichletPolynomial
+/-- Explicit finite Dirichlet polynomial attached to real coefficients. -/
+noncomputable def concreteDirichletPolynomial
     {N : ℕ} (c : Fin N → ℝ) (s : ℂ) : ℂ :=
-  ∑ i : Fin N, (c i : ℂ) * (((rhoIndex i : ℕ) : ℂ) ^ (-s))
+  ∑ i : Fin N,
+    (c i : ℂ) * ((((rhoIndex i : ℕ) : ℂ)) ^ (-s))
 
-noncomputable def residualRepresentativeC
+/-- Complex representative of the finite Beurling combination. -/
+noncomputable def complexFiniteCombination
     {N : ℕ} (c : Fin N → ℝ) (x : ℝ) : ℂ :=
-  chiRepresentativeC x -
-    ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x
+  ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x
 
-theorem mellinConvergent_finset_sum
-    {ι : Type*} [DecidableEq ι] (S : Finset ι)
-    (f : ι → ℝ → ℂ) (s : ℂ)
-    (h : ∀ i ∈ S, MellinConvergent (f i) s) :
-    MellinConvergent (fun x => ∑ i ∈ S, f i x) s := by
-  classical
-  induction S using Finset.induction_on with
-  | empty =>
-      simp [MellinConvergent]
-  | @insert a S ha ih =>
-      simp only [Finset.sum_insert ha]
-      exact (h a (Finset.mem_insert_self _ _)).add
-        (ih (fun i hi => h i (Finset.mem_insert_of_mem hi)))
+/-- Complex residual representative chi - sum c_i rho_i. -/
+noncomputable def complexResidual
+    {N : ℕ} (c : Fin N → ℝ) (x : ℝ) : ℂ :=
+  chiRepresentativeC x - complexFiniteCombination c x
 
-theorem mellin_finset_sum
-    {ι : Type*} [DecidableEq ι] (S : Finset ι)
-    (f : ι → ℝ → ℂ) (s : ℂ)
-    (h : ∀ i ∈ S, MellinConvergent (f i) s) :
-    mellin (fun x => ∑ i ∈ S, f i x) s =
-      ∑ i ∈ S, mellin (f i) s := by
-  classical
-  induction S using Finset.induction_on with
-  | empty =>
-      simp [mellin]
-  | @insert a S ha ih =>
-      simp only [Finset.sum_insert ha]
-      have haConv := h a (Finset.mem_insert_self _ _)
-      have hSConv := mellinConvergent_finset_sum S f s
-        (fun i hi => h i (Finset.mem_insert_of_mem hi))
-      rw [(hasMellin_add haConv hSConv).2]
-      rw [ih (fun i hi => h i (Finset.mem_insert_of_mem hi))]
-
-theorem generator_sum_mellinConvergent
-    {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
-    (hs0 : 0 < s.re) (hs1 : s.re < 1) :
-    MellinConvergent
-      (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s := by
-  classical
-  simpa only [Finset.sum_apply] using
-    mellinConvergent_finset_sum
-      (Finset.univ : Finset (Fin N))
-      (fun i x => (c i : ℂ) * rhoRepresentativeC i x)
+/-- Mellin transform of an arbitrary finite subset of the concrete generator family. -/
+theorem hasMellin_finset_rho
+    {N : ℕ} (S : Finset (Fin N)) (c : Fin N → ℝ)
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    HasMellin
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x)
       s
-      (by
-        intro i hi
-        exact (rhoRepresentativeC_mellinConvergent i hs0 hs1).const_smul (c i : ℂ))
-
-theorem mellin_generator_sum
-    {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
-    (hs0 : 0 < s.re) (hs1 : s.re < 1) :
-    mellin (fun x : ℝ =>
-      ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s =
-      - riemannZeta s / s * complexDirichletPolynomial c s := by
+      (∑ i ∈ S, (c i : ℂ) * mellin (rhoRepresentativeC i) s) := by
   classical
-  rw [mellin_finset_sum
-    (Finset.univ : Finset (Fin N))
-    (fun i x => (c i : ℂ) * rhoRepresentativeC i x)
-    s]
-  · simp_rw [mellin_const_smul, mellin_rho_realized _ s hs0 hs1]
-    simp [complexDirichletPolynomial]
-    ring
-  · intro i hi
-    exact (rhoRepresentativeC_mellinConvergent i hs0 hs1).const_smul (c i : ℂ)
+  induction S using Finset.induction_on with
+  | empty =>
+      constructor
+      · simp [MellinConvergent]
+      · simp [mellin]
+  | @insert a S ha ih =>
+      have hterm :
+          HasMellin
+            (fun x : ℝ => (c a : ℂ) * rhoRepresentativeC a x)
+            s
+            ((c a : ℂ) * mellin (rhoRepresentativeC a) s) := by
+        simpa [smul_eq_mul] using
+          (hasMellin_const_smul
+            (rhoRepresentativeC_mellinConvergent a s hs0 hs1)
+            (c a : ℂ))
+      have hadd := hasMellin_add hterm.1 ih.1
+      constructor
+      · simpa [Finset.sum_insert ha] using hadd.1
+      · have hval := hadd.2
+        rw [hterm.2, ih.2] at hval
+        simpa [Finset.sum_insert ha] using hval
 
-theorem residual_mellin_closed_form
-    {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
-    (hs0 : 0 < s.re) (hs1 : s.re < 1) :
-    mellin (residualRepresentativeC c) s =
-      (1 + riemannZeta s * complexDirichletPolynomial c s) / s := by
-  have hchiConv : MellinConvergent chiRepresentativeC s :=
-    chiRepresentativeC_mellinConvergent hs0 (by linarith)
-  have hsumConv :
-      MellinConvergent
-        (fun x : ℝ =>
-          ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s :=
-    generator_sum_mellinConvergent c s hs0 hs1
-  have hsub := hasMellin_sub hchiConv hsumConv
-  change mellin (residualRepresentativeC c) s = _
-  rw [hsub.2]
-  rw [mellin_chiRepresentativeC s hs0]
-  rw [mellin_generator_sum c s hs0 hs1]
+/-- Mellin transform of the full finite combination. -/
+theorem hasMellin_complexFiniteCombination
+    {N : ℕ} (c : Fin N → ℝ)
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    HasMellin
+      (complexFiniteCombination c)
+      s
+      (∑ i : Fin N, (c i : ℂ) * mellin (rhoRepresentativeC i) s) := by
+  simpa [complexFiniteCombination] using
+    hasMellin_finset_rho (Finset.univ : Finset (Fin N)) c s hs0 hs1
+
+/-- Closed Mellin formula for the finite generator combination. -/
+theorem mellin_complexFiniteCombination
+    {N : ℕ} (c : Fin N → ℝ)
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    mellin (complexFiniteCombination c) s =
+      -(riemannZeta s / s) * concreteDirichletPolynomial c s := by
+  have h := (hasMellin_complexFiniteCombination c s hs0 hs1).2
+  rw [h]
+  simp_rw [mellin_rho_realized _ s hs0 hs1]
+  unfold concreteDirichletPolynomial
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  ring
+
+/-- Mellin convergence of the finite combination. -/
+theorem complexFiniteCombination_mellinConvergent
+    {N : ℕ} (c : Fin N → ℝ)
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    MellinConvergent (complexFiniteCombination c) s :=
+  (hasMellin_complexFiniteCombination c s hs0 hs1).1
+
+/-- D3 algebraic core: exact Mellin transform of the residual. -/
+theorem mellin_complexResidual
+    {N : ℕ} (c : Fin N → ℝ)
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    mellin (complexResidual c) s =
+      (1 + riemannZeta s * concreteDirichletPolynomial c s) / s := by
+  have hsub := hasMellin_sub
+    (chiRepresentativeC_mellinConvergent s hs0 hs1)
+    (complexFiniteCombination_mellinConvergent c s hs0 hs1)
+  have hval := hsub.2
+  change mellin (complexResidual c) s = _
+  rw [hval, mellin_chiRepresentativeC s hs0,
+    mellin_complexFiniteCombination c s hs0 hs1]
   field_simp
   ring
 
-#print axioms MCore.RH.R0.mellinConvergent_finset_sum
-#print axioms MCore.RH.R0.mellin_finset_sum
-#print axioms MCore.RH.R0.generator_sum_mellinConvergent
-#print axioms MCore.RH.R0.residual_mellin_closed_form
+/-- Mellin convergence of the residual itself. -/
+theorem complexResidual_mellinConvergent
+    {N : ℕ} (c : Fin N → ℝ)
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    MellinConvergent (complexResidual c) s :=
+  (hasMellin_sub
+    (chiRepresentativeC_mellinConvergent s hs0 hs1)
+    (complexFiniteCombination_mellinConvergent c s hs0 hs1)).1
+
+#print axioms MCore.RH.R0.mellin_complexFiniteCombination
+#print axioms MCore.RH.R0.mellin_complexResidual
+#print axioms MCore.RH.R0.complexResidual_mellinConvergent
 
 end MCore.RH.R0
