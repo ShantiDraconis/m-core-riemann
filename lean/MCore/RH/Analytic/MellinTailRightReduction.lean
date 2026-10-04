@@ -8,9 +8,9 @@ open MeasureTheory Set Complex Filter Topology
 /-- The block series is the improper tail integral. -/
 def ComplexTailIntegralSeriesBridge : Prop :=
   ∀ s : ℂ, 1 < s.re →
-    (∫ t : ℝ in Ioi 1,
-      ((t : ℂ) ^ (-s - 1)) * (Int.fract t : ℂ)) =
-      ∑' n : ℕ, complexTailTerm (n + 1) s
+    HasSum (fun n : ℕ => complexTailTerm (n + 1) s)
+      (∫ t : ℝ in Ioi 1,
+        ((t : ℂ) ^ (-s - 1)) * (Int.fract t : ℂ))
 
 /-- The explicit block formula telescopes to the zeta expression on Re(s)>1. -/
 def ComplexTailSeriesClosedForm : Prop :=
@@ -30,7 +30,7 @@ theorem tailFormulaRight_of_series
     (hclosed : ComplexTailSeriesClosedForm) :
     TailFormulaRight := by
   intro s hs
-  rw [hbridge s hs]
+  rw [← (hbridge s hs).tsum_eq]
   exact hclosed s hs
 
 #print axioms MCore.RH.R0.tailFormulaRight_of_series
