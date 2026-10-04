@@ -1,71 +1,67 @@
 import MCore.RH.Analytic.MellinRhoClosedForm
 import MCore.RH.Analytic.MellinTarget
-import MCore.RH.R0.WeightedIntegrability
-import Mathlib.Analysis.MellinTransform
 
 namespace MCore.RH.R0
 
 open MeasureTheory Set Complex
 
-/-- rho_n is Mellin-convergent throughout the critical strip 0 < Re(s) < 1. -/
-theorem rhoRepresentativeC_mellinConvergent
+/-- The raw fractional-part Mellin integral converges at -s on the critical strip. -/
+theorem fract_mellinConvergent_neg
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    MellinConvergent fractRepresentativeC (-s) := by
+  rw [MellinConvergent]
+  have hnear := fractional_mellin_nearZero_integrable s hs1
+  have htail := fractional_mellin_tail_integrable s hs0
+  rw [← Ioc_union_Ioi_eq_Ioi zero_le_one]
+  apply IntegrableOn.union
+  · simpa [fractRepresentativeC, smul_eq_mul, neg_sub] using hnear
+  · simpa [fractRepresentativeC, smul_eq_mul, neg_sub] using htail
+
+/-- Mellin convergence of the base concrete generator on 0<Re(s)<1. -/
+theorem rhoBase_mellinConvergent
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    MellinConvergent (rhoRepresentativeC 0) s := by
+  have hfrac := fract_mellinConvergent_neg s hs0 hs1
+  have hinv :
+      MellinConvergent (fun t : ℝ => fractRepresentativeC (t ^ (-1 : ℝ))) s := by
+    rw [MellinConvergent.comp_rpow (a := (-1 : ℝ)) (by norm_num)]
+    simpa using hfrac
+  rw [MellinConvergent] at hinv ⊢
+  refine integrableOn_congr_fun ?_ measurableSet_Ioi |>.mpr hinv
+  intro t ht
+  have ht0 : 0 < t := ht
+  simp [rhoRepresentativeC, rhoRepresentative, rhoBase, rhoIndex,
+    fractRepresentativeC, Real.rpow_neg_one, ht0.ne']
+
+/-- Mellin convergence of every concrete generator on the open critical strip. -/
+theorem rho_mellinConvergent
     (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent (rhoRepresentativeC n) s := by
-  rw [MellinConvergent]
-  rw [mellin_convergent_iff_norm Subset.rfl measurableSet_Ioi]
-  · have hreal :
-        IntegrableOn
-          (fun t : ℝ => rhoRepresentative n t * t ^ (s.re - 1))
-          (Ioi 0) :=
-      rho_weighted_integrableOn_Ioi n s.re hs0 hs1
-    apply hreal.congr_fun
-    · intro t ht
-      have ht0 : 0 < t := ht
-      rw [rhoRepresentativeC]
-      rw [norm_real, Real.norm_eq_abs, abs_of_nonneg (rhoRepresentative_nonneg n t)]
-      ring
-    · exact measurableSet_Ioi
-  · exact ((rhoRepresentative_measurable_public n).ofReal).aestronglyMeasurable.restrict
+  rw [rhoRepresentativeC_eq_dilate n]
+  exact (MellinConvergent.comp_mul_left
+    (f := rhoRepresentativeC 0) (s := s)
+    (by exact_mod_cast rhoIndex_pos n)).mpr
+      (rhoBase_mellinConvergent s hs0 hs1)
 
-/-- chi is Mellin-convergent for Re(s)>0; only this half is needed for D3. -/
-theorem chiRepresentativeC_mellinConvergent
+/-- Mellin convergence of the frozen target for Re(s)>0. -/
+theorem chi_mellinConvergent
     (s : ℂ) (hs0 : 0 < s.re) :
     MellinConvergent chiRepresentativeC s := by
-  rw [MellinConvergent]
-  rw [mellin_convergent_iff_norm Subset.rfl measurableSet_Ioi]
-  · have hpow :
-        IntegrableOn (fun t : ℝ => t ^ (s.re - 1)) (Ioc 0 1) := by
-      rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one]
-      exact intervalIntegral.intervalIntegrable_rpow' (by linarith)
-    have hzero :
-        IntegrableOn (fun _t : ℝ => (0 : ℝ)) (Ioi 1) := integrableOn_zero
-    have hunion := hpow.union hzero
-    have hset : Ioc (0 : ℝ) 1 ∪ Ioi 1 = Ioi 0 := by
-      ext t
-      simp
-      constructor <;> intro h
-      · rcases h with h | h <;> linarith
-      · by_cases ht : t ≤ 1
-        · exact Or.inl ⟨h, ht⟩
-        · exact Or.inr (lt_of_not_ge ht)
-    rw [← hset]
-    apply hunion.congr_fun
-    · intro t ht
-      rcases ht with ht | ht
-      · have ht0 : 0 < t := ht.1
-        have ht1 : t ≤ 1 := ht.2
-        by_cases h1 : t = 1
-        · subst t
-          simp [chiRepresentativeC, chiRepresentative]
-        · have hlt : t < 1 := lt_of_le_of_ne ht1 h1
-          simp [chiRepresentativeC, chiRepresentative, ht0, hlt]
-      · have ht1 : 1 < t := ht
-        have ht0 : 0 < t := zero_lt_one.trans ht1
-        simp [chiRepresentativeC, chiRepresentative, ht0, not_lt_of_ge ht1.le]
-    · exact measurableSet_union measurableSet_Ioc measurableSet_Ioi
-  · exact ((measurableSet_Ioo.indicator measurable_const).ofReal).aestronglyMeasurable.restrict
+  have hstd := (hasMellin_one_Ioc (s := s) hs0).1
+  rw [MellinConvergent] at hstd ⊢
+  refine integrableOn_congr_fun ?_ measurableSet_Ioi |>.mpr hstd
+  intro t ht
+  have ht0 : 0 < t := ht
+  by_cases h1 : t < 1
+  · simp [chiRepresentativeC, chiRepresentative, ht0, h1]
+  · have hge : 1 ≤ t := le_of_not_gt h1
+    by_cases heq : t = 1
+    · subst t; simp [chiRepresentativeC, chiRepresentative]
+    · have hgt : 1 < t := lt_of_le_of_ne hge (Ne.symm heq)
+      simp [chiRepresentativeC, chiRepresentative, ht0, h1, hgt]
 
-#print axioms MCore.RH.R0.rhoRepresentativeC_mellinConvergent
-#print axioms MCore.RH.R0.chiRepresentativeC_mellinConvergent
+#print axioms MCore.RH.R0.fract_mellinConvergent_neg
+#print axioms MCore.RH.R0.rho_mellinConvergent
+#print axioms MCore.RH.R0.chi_mellinConvergent
 
 end MCore.RH.R0
