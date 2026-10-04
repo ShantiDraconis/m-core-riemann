@@ -1,6 +1,8 @@
 import MCore.RH.Analytic.MellinPlancherelReduction
 import MCore.RH.Analytic.LogPullbackIsometry
 import MCore.RH.Analytic.FourierMellinCriticalLine
+import MCore.RH.Analytic.CriticalLogPullbackL2
+import MCore.RH.Analytic.FourierPlancherelPinnedGap
 import Lean
 
 open Lean Elab Tactic
@@ -48,10 +50,11 @@ theorem d3_components_to_plancherel
 theorem DISCOVER_D3_LOG_PULLBACK : D3_LogPullbackIsometry := by
   exact d3_logPullbackIsometry_realized
 
-theorem DISCOVER_D3_FOURIER_PLANCHEREL : D3_FourierPlancherel := by
-  unfold D3_FourierPlancherel
-  d3_gap "FOURIER_L2_PLANCHEREL"
-  exact ?_
+theorem DISCOVER_D3_FOURIER_PLANCHEREL
+    (hLibrary : PinnedFourierPlancherel) :
+    D3_FourierPlancherel := by
+  exact d3_fourierPlancherel_of_pinned
+    hLibrary criticalLogPullbackIntegrable_realized criticalLogPullbackMemL2_realized
 
 theorem DISCOVER_D3_FOURIER_TO_MELLIN : D3_FourierToMellinLine := by
   exact d3_fourierToMellinLine_realized
