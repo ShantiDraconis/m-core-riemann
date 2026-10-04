@@ -1,3 +1,5 @@
+import MCore.RH.Analytic.MellinTailContinuationReduction
+import MCore.RH.Analytic.RegularizedZeta
 import MCore.RH.Analytic.MellinTailSeriesLimit
 import MCore.RH.Analytic.MellinTailPartial
 import MCore.RH.Analytic.MellinTailRightReduction
@@ -94,3 +96,10 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.complexTailSeriesClosedForm_realized
 #print axioms MCore.RH.R0.riemannZeta_eq_floor_integral
 #print axioms MCore.RH.R0.tailFormulaRight_realized
+#print axioms MCore.RH.R0.regularizedZeta_analyticAt_one
+#print axioms MCore.RH.R0.continuedFractionalTail_analyticAt
+#print axioms MCore.RH.R0.fractionalTail_eq_continued
+#print axioms MCore.RH.R0.fractionalTailKernel_locallyIntegrable
+#print axioms MCore.RH.R0.fractionalTailKernel_mellin_differentiableAt
+#print axioms MCore.RH.R0.tailMellinAnalytic_realized
+#print axioms MCore.RH.R0.tailAnalyticContinuation_realized
