@@ -1,94 +1,84 @@
+import MCore.RH.Analytic.CriticalFrequencyScaling
 import MCore.RH.Analytic.ResidualMellin
-import MCore.RH.NB.CoefficientRealization
 
 namespace MCore.RH.R0
 
 open MeasureTheory Set Complex
-open MCore.RH.NB
-open scoped BigOperators
 
-/-- Standard critical-line parameterization. -/
-noncomputable def criticalLinePoint (t : ℝ) : ℂ :=
-  ((1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I
+/-- Integral-form Plancherel for functions for which the classical Fourier integral is defined. -/
+def FourierIntegralPlancherel : Prop :=
+  ∀ g : ℝ → ℂ,
+    Integrable g volume →
+    MemLp g 2 volume →
+    (∫ y : ℝ, ‖𝓕 g y‖ ^ 2) = ∫ u : ℝ, ‖g u‖ ^ 2
 
-@[simp] theorem criticalLinePoint_re (t : ℝ) :
-    (criticalLinePoint t).re = 1 / 2 := by
-  simp [criticalLinePoint]
+/-- Mellin--Plancherel at the critical line, reduced to Fourier Plancherel. -/
+theorem critical_mellin_plancherel_of_fourier
+    (hFourier : FourierIntegralPlancherel)
+    (f : ℝ → ℂ)
+    (hL1 : Integrable (criticalLogTransport f) volume)
+    (hL2 : MemLp (criticalLogTransport f) 2 volume) :
+    (1 / (2 * Real.pi)) *
+      (∫ t : ℝ, ‖mellin f ((1 / 2 : ℝ) + t * I)‖ ^ 2) =
+      ∫ x : ℝ in Ioi 0, ‖f x‖ ^ 2 := by
+  calc
+    (1 / (2 * Real.pi)) *
+        (∫ t : ℝ, ‖mellin f ((1 / 2 : ℝ) + t * I)‖ ^ 2)
+        = (1 / (2 * Real.pi)) *
+            (∫ t : ℝ,
+              ‖𝓕 (criticalLogTransport f) (t / (2 * Real.pi))‖ ^ 2) := by
+              congr 1
+              apply integral_congr_ae
+              filter_upwards with t
+              rw [mellin_criticalLine_eq_fourier]
+    _ = ∫ y : ℝ, ‖𝓕 (criticalLogTransport f) y‖ ^ 2 := by
+          exact criticalLine_frequency_scale f
+    _ = ∫ u : ℝ, ‖criticalLogTransport f u‖ ^ 2 := by
+          exact hFourier (criticalLogTransport f) hL1 hL2
+    _ = ∫ x : ℝ in Ioi 0, ‖f x‖ ^ 2 := by
+          exact criticalLogTransport_integral_norm_sq f
 
-@[simp] theorem criticalLinePoint_im (t : ℝ) :
-    (criticalLinePoint t).im = t := by
-  simp [criticalLinePoint]
-
-theorem criticalLinePoint_normSq (t : ℝ) :
-    Complex.normSq (criticalLinePoint t) = 1 / 4 + t ^ 2 := by
-  simp [criticalLinePoint, Complex.normSq_apply]
-  ring
-
-/-- Pointwise residual Mellin formula on the critical line. -/
-theorem mellin_residual_criticalLine
+/-- Critical-line residual formula in the exact scalar denominator form. -/
+theorem residual_mellin_norm_sq
     {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    mellin (residualRepresentativeC c) (criticalLinePoint t) =
-      (1 + riemannZeta (criticalLinePoint t) *
-        dirichletPolynomialC c (criticalLinePoint t)) /
-        criticalLinePoint t := by
-  exact mellin_residualRepresentativeC c (criticalLinePoint t)
-    (by norm_num [criticalLinePoint])
-    (by norm_num [criticalLinePoint])
-
-/-- The denominator on the critical line is exactly 1/4+t^2. -/
-theorem normSq_mellin_residual_criticalLine
-    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    Complex.normSq
-      (mellin (residualRepresentativeC c) (criticalLinePoint t)) =
+    ‖mellin (complexResidual c) ((1 / 2 : ℝ) + t * I)‖ ^ 2 =
       Complex.normSq
-        (1 + riemannZeta (criticalLinePoint t) *
-          dirichletPolynomialC c (criticalLinePoint t)) /
-        (1 / 4 + t ^ 2) := by
-  rw [mellin_residual_criticalLine c t]
-  rw [Complex.normSq_div]
-  rw [criticalLinePoint_normSq]
+        (1 + riemannZeta ((1 / 2 : ℝ) + t * I) *
+          concreteDirichletPolynomial c ((1 / 2 : ℝ) + t * I)) /
+        ((1 / 4 : ℝ) + t ^ 2) := by
+  have hs0 : 0 < (((1 / 2 : ℝ) + t * I : ℂ).re) := by norm_num
+  have hs1 : (((1 / 2 : ℝ) + t * I : ℂ).re) < 1 := by norm_num
+  rw [mellin_complexResidual c _ hs0 hs1]
+  rw [norm_div, sq_div, Complex.sq_norm]
+  have hden :
+      ‖((1 / 2 : ℝ) + t * I : ℂ)‖ ^ 2 = (1 / 4 : ℝ) + t ^ 2 := by
+    rw [Complex.sq_norm]
+    simp [Complex.normSq, pow_two]
+    ring
+  rw [hden]
 
-/-- The R0 finite combination is definitionally the NB coefficient approximant. -/
-theorem concreteFiniteCombination_eq_coefficientApproximantAt
-    {N : ℕ} (c : Fin N → ℝ) :
-    concreteFiniteCombination c =
-      concreteNBData.coefficientApproximantAt concreteGeneratorFamily N c := by
-  rfl
-
-/--
-The sole remaining D3 producer: Mellin-Plancherel for the finite residual.
-Everything else in the explicit critical-line integral is already fixed.
--/
-def ResidualMellinPlancherelBridge : Prop :=
-  ∀ (N : ℕ) (c : Fin N → ℝ),
-    ‖concreteNBData.chi - concreteFiniteCombination c‖ ^ 2 =
+/-- D3 at integral level: only Fourier Plancherel remains as an operator input. -/
+theorem residual_mellin_plancherel_integral
+    (hFourier : FourierIntegralPlancherel)
+    {N : ℕ} (c : Fin N → ℝ)
+    (hL1 : Integrable (criticalLogTransport (complexResidual c)) volume)
+    (hL2 : MemLp (criticalLogTransport (complexResidual c)) 2 volume) :
+    (∫ x : ℝ in Ioi 0, ‖complexResidual c x‖ ^ 2) =
       (1 / (2 * Real.pi)) *
         ∫ t : ℝ,
           Complex.normSq
-            (mellin (residualRepresentativeC c) (criticalLinePoint t))
-
-/-- D3 follows mechanically once the sole Plancherel bridge is inhabited. -/
-theorem residual_mellin_plancherel_explicit
-    (h : ResidualMellinPlancherelBridge)
-    (N : ℕ) (c : Fin N → ℝ) :
-    ‖concreteNBData.chi -
-        concreteNBData.coefficientApproximantAt concreteGeneratorFamily N c‖ ^ 2 =
-      (1 / (2 * Real.pi)) *
-        ∫ t : ℝ,
-          Complex.normSq
-            (1 + riemannZeta (criticalLinePoint t) *
-              dirichletPolynomialC c (criticalLinePoint t)) /
-            (1 / 4 + t ^ 2) := by
-  rw [← concreteFiniteCombination_eq_coefficientApproximantAt c]
-  rw [h N c]
+            (1 + riemannZeta ((1 / 2 : ℝ) + t * I) *
+              concreteDirichletPolynomial c ((1 / 2 : ℝ) + t * I)) /
+            ((1 / 4 : ℝ) + t ^ 2) := by
+  rw [← critical_mellin_plancherel_of_fourier hFourier
+    (complexResidual c) hL1 hL2]
   congr 1
   apply integral_congr_ae
   filter_upwards with t
-  exact normSq_mellin_residual_criticalLine c t
+  exact residual_mellin_norm_sq c t
 
-#print axioms MCore.RH.R0.mellin_residual_criticalLine
-#print axioms MCore.RH.R0.normSq_mellin_residual_criticalLine
-#print axioms MCore.RH.R0.concreteFiniteCombination_eq_coefficientApproximantAt
-#print axioms MCore.RH.R0.residual_mellin_plancherel_explicit
+#print axioms MCore.RH.R0.critical_mellin_plancherel_of_fourier
+#print axioms MCore.RH.R0.residual_mellin_norm_sq
+#print axioms MCore.RH.R0.residual_mellin_plancherel_integral
 
 end MCore.RH.R0
