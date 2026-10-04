@@ -39,6 +39,13 @@ files=(
   lean/MCore/RH/Analytic/CriticalLineResidual.lean
   lean/MCore/RH/Analytic/MellinPlancherelBridge.lean
   lean/MCore/RH/Analytic/MellinResidual.lean
+  lean/MCore/RH/Analytic/D3FromFourierPlancherel.lean
+  lean/MCore/RH/Analytic/FourierIntegralPlancherelReduction.lean
+  lean/MCore/RH/Analytic/L2NormIntegral.lean
+  lean/MCore/RH/Analytic/LogPullbackL1.lean
+  lean/MCore/RH/Analytic/ResidualL2.lean
+  lean/MCore/RH/Analytic/LogPullbackL2.lean
+  lean/MCore/RH/Analytic/D3PlancherelReduction.lean
   lean/MCore/RH/Analytic/FourierL1L2Bridge.lean
   lean/MCore/RH/Analytic/ResidualLogIsometry.lean
   lean/MCore/RH/Analytic/ResidualL2Integral.lean
