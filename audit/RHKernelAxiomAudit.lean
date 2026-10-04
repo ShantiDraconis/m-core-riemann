@@ -273,3 +273,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.logResidualL1L2Producer_realized
 
 #print axioms MCore.RH.R0.fourierIntegralLpCompatibility_of_generic
+
+#print axioms MCore.RH.R0.mellin_concreteResidualC
+
+#print axioms MCore.RH.R0.mellin_residual_on_critical_line
+
+#print axioms MCore.RH.R0.criticalLine_normSq
