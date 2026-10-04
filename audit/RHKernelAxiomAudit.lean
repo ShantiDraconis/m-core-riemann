@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.D3PlancherelReduction
 import MCore.RH.Analytic.CriticalLogPullbackL2
 import MCore.RH.Analytic.FourierPlancherelPinnedGap
 import MCore.RH.Analytic.FourierMellinCriticalLine
@@ -360,3 +361,5 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.d3_fourierPlancherel_of_pinned
 
 #print axioms MCore.RH.R0.residual_mellinConvergent
+
+#print axioms MCore.RH.R0.residualEnergy_eq_zeta_integral
