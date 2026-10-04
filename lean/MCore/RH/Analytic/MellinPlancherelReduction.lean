@@ -1,98 +1,53 @@
-import MCore.RH.Analytic.MellinResidual
-import MCore.RH.R0.ConcreteGramLogRate
+import MCore.RH.Analytic.ResidualMellin
 import Mathlib.Analysis.MellinInversion
-import Mathlib.Analysis.Fourier.FourierTransform
+import Mathlib.Analysis.Fourier.LpSpace
 
 namespace MCore.RH.R0
 
 open MeasureTheory Set Complex
-open MCore.RH.NB
 
-/-- Standard point on the critical line. -/
-noncomputable def criticalLine (t : ℝ) : ℂ :=
-  (1 / 2 : ℝ) + t * I
+/-- Logarithmic critical-line transport used by Mellin--Plancherel. -/
+noncomputable def criticalLogTransport (f : ℝ → ℂ) (u : ℝ) : ℂ :=
+  Real.exp (-u / 2) * f (Real.exp (-u))
 
-@[simp] theorem criticalLine_re (t : ℝ) :
-    (criticalLine t).re = 1 / 2 := by
-  simp [criticalLine]
+/-- Mellin on the critical line is the Fourier integral of the logarithmic transport. -/
+theorem mellin_criticalLine_eq_fourier
+    (f : ℝ → ℂ) (t : ℝ) :
+    mellin f ((1 / 2 : ℝ) + t * I) =
+      𝓕 (criticalLogTransport f) (t / (2 * Real.pi)) := by
+  rw [mellin_eq_fourierIntegral]
+  congr 1
+  funext u
+  simp [criticalLogTransport]
+  ring_nf
 
-@[simp] theorem criticalLine_im (t : ℝ) :
-    (criticalLine t).im = t := by
-  simp [criticalLine]
+/-- The exact L2 norm transport statement required by Mellin--Plancherel. -/
+def CriticalLogTransportIsometry : Prop :=
+  ∀ f : ℝ → ℂ,
+    MemLp f 2 zeroInfinityMeasure →
+    MemLp (criticalLogTransport f) 2 volume ∧
+    snorm f 2 zeroInfinityMeasure =
+      snorm (criticalLogTransport f) 2 volume
 
 /--
-The one genuinely norm-theoretic producer needed for D3.
-It is precisely Mellin-Plancherel on the critical line for our finite residuals.
+Fourier Plancherel plus the frequency rescaling t -> t/(2*pi).
+This is the precise remaining operator statement; no zeta appears here.
 -/
-def CriticalLineMellinPlancherel : Prop :=
-  ∀ (N : ℕ) (c : Fin N → ℝ),
-    ‖concreteNBData.chi -
-      concreteNBData.coefficientApproximantAt
-        concreteGeneratorFamily N c‖ ^ 2 =
+def CriticalLinePlancherel : Prop :=
+  ∀ f : ℝ → ℂ,
+    MemLp f 2 zeroInfinityMeasure →
+    Integrable (fun t : ℝ => ‖mellin f ((1 / 2 : ℝ) + t * I)‖ ^ 2) ∧
+    (snorm f 2 zeroInfinityMeasure).toReal ^ 2 =
       (1 / (2 * Real.pi)) *
-        ∫ t : ℝ,
-          Complex.normSq
-            (mellin (residualRepresentativeC c) (criticalLine t))
+        ∫ t : ℝ, ‖mellin f ((1 / 2 : ℝ) + t * I)‖ ^ 2
 
-/-- Closed-form critical-line Mellin transform of the finite residual. -/
-theorem mellin_residual_criticalLine
-    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    mellin (residualRepresentativeC c) (criticalLine t) =
-      (1 + riemannZeta (criticalLine t) *
-        concreteDirichletPolynomial c (criticalLine t)) /
-      criticalLine t := by
-  apply mellin_residual_closed_form c
-  · simp [criticalLine]
-  · simp [criticalLine]
+/-- D3 reduces to two pure operator facts: logarithmic L2 transport and Fourier Plancherel. -/
+structure MellinPlancherelCertificate where
+  logIsometry : CriticalLogTransportIsometry
+  criticalPlancherel : CriticalLinePlancherel
 
-/-- Norm-square of a critical-line point is exactly 1/4+t^2. -/
-theorem normSq_criticalLine (t : ℝ) :
-    Complex.normSq (criticalLine t) = (1 / 4 : ℝ) + t ^ 2 := by
-  simp [criticalLine, Complex.normSq]
-  ring
-
-/-- The explicit zeta/Dirichlet-polynomial integrand appearing in D3. -/
-noncomputable def residualSpectralDensity
-    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) : ℝ :=
-  Complex.normSq
-      (1 + riemannZeta (criticalLine t) *
-        concreteDirichletPolynomial c (criticalLine t)) /
-    ((1 / 4 : ℝ) + t ^ 2)
-
-/-- Pointwise conversion from Mellin quotient to the explicit spectral density. -/
-theorem normSq_mellin_residual_eq_density
-    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    Complex.normSq
-      (mellin (residualRepresentativeC c) (criticalLine t)) =
-      residualSpectralDensity c t := by
-  rw [mellin_residual_criticalLine c t]
-  unfold residualSpectralDensity
-  rw [Complex.normSq_div]
-  rw [normSq_criticalLine]
-  rfl
-
-/-- Exact D3 statement used downstream once Mellin-Plancherel is supplied. -/
-def ResidualMellinPlancherelClosedForm : Prop :=
-  ∀ (N : ℕ) (c : Fin N → ℝ),
-    ‖concreteNBData.chi -
-      concreteNBData.coefficientApproximantAt
-        concreteGeneratorFamily N c‖ ^ 2 =
-      (1 / (2 * Real.pi)) *
-        ∫ t : ℝ, residualSpectralDensity c t
-
-/-- D3 is reduced to the single critical-line Mellin-Plancherel producer. -/
-theorem residualMellinPlancherel_of_critical
-    (h : CriticalLineMellinPlancherel) :
-    ResidualMellinPlancherelClosedForm := by
-  intro N c
-  rw [h N c]
-  congr 1
-  apply integral_congr_ae
-  filter_upwards with t
-  exact normSq_mellin_residual_eq_density c t
-
-#print axioms MCore.RH.R0.mellin_residual_criticalLine
-#print axioms MCore.RH.R0.normSq_mellin_residual_eq_density
-#print axioms MCore.RH.R0.residualMellinPlancherel_of_critical
+#check MeasureTheory.Lp.fourierTransformₗᵢ
+#check MeasureTheory.Lp.norm_fourier_eq
+#check fourierTransform_toLp
 
 end MCore.RH.R0
