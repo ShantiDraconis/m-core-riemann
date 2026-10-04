@@ -1,3 +1,5 @@
+import MCore.RH.R0.ConcreteZeroObstruction
+import MCore.RH.NB.OrthogonalWitnessObstruction
 import MCore.RH.Analytic.MellinConcrete
 import MCore.RH.R0.RHKernelEntry
 
@@ -23,3 +25,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.rh_kernel_entry_MaterialProducer
 #print axioms MCore.RH.R0.rhoRepresentativeC_eq_dilate
 #print axioms MCore.RH.R0.mellin_rhoRepresentativeC_dilate
+#print axioms MCore.RH.NB.NBHilbertData.orthogonal_witness_lower_bound_mul
+#print axioms MCore.RH.NB.NBHilbertData.orthogonalWitnessDelta_le_DN
+#print axioms MCore.RH.NB.NBHilbertData.not_DNToZero_of_orthogonal_witness
+#print axioms MCore.RH.R0.no_ConcreteUniformLogDNBound_of_orthogonal_witness
