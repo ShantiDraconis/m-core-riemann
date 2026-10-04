@@ -26,6 +26,8 @@ files=(
   lean/MCore/RH/Analytic/MellinTarget.lean
   lean/MCore/RH/Analytic/MellinRhoReduction.lean
   lean/MCore/RH/Analytic/MellinTailPartial.lean
+  lean/MCore/RH/Analytic/MellinTailRight.lean
+  lean/MCore/RH/Analytic/MellinTailSeriesLimit.lean
   lean/MCore/RH/Analytic/MellinTailRightReduction.lean
   lean/MCore/RH/Analytic/MellinTailBlocks.lean
   lean/MCore/RH/Analytic/MellinNearZero.lean
