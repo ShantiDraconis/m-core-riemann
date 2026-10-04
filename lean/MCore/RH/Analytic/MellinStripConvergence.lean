@@ -54,39 +54,48 @@ theorem chiRepresentativeC_isBigO_atTop_negOne :
 /-- Local integrability of rho_n on the positive half-line. -/
 theorem rhoRepresentativeC_locallyIntegrable (n : ℕ) :
     LocallyIntegrableOn (rhoRepresentativeC n) (Ioi 0) := by
-  exact (rhoRepresentative_measurable_public n).ofReal.locallyIntegrableOn_of_bound
-    (C := 1) (by
-      filter_upwards with x
-      rw [rhoRepresentativeC, norm_real]
-      exact abs_le.mpr ⟨by linarith [rhoRepresentative_nonneg n x],
-        rhoRepresentative_le_one n x⟩)
+  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm
+    ((rhoRepresentative_measurable_public n).ofReal.aestronglyMeasurable) ?_
+  filter_upwards with x
+  rw [enorm_le_iff_norm_le, rhoRepresentativeC, norm_real]
+  exact abs_le.mpr ⟨by linarith [rhoRepresentative_nonneg n x],
+    rhoRepresentative_le_one n x⟩
 
 /-- Local integrability of chi on the positive half-line. -/
 theorem chiRepresentativeC_locallyIntegrable :
     LocallyIntegrableOn chiRepresentativeC (Ioi 0) := by
-  exact chi_memLp_two.locallyIntegrableOn
+  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm
+    ?_ ?_
+  · unfold chiRepresentativeC chiRepresentative
+    exact (measurableSet_Ioo.indicator measurable_const).aestronglyMeasurable
+  · filter_upwards with x
+    rw [enorm_le_iff_norm_le]
+    unfold chiRepresentativeC chiRepresentative
+    by_cases hx : x ∈ Ioo (0 : ℝ) 1 <;> simp [hx]
 
 /-- Mellin convergence of every rho_n on the open strip 0<Re(s)<1. -/
 theorem rhoRepresentativeC_mellinConvergent
     (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent (rhoRepresentativeC n) s := by
   exact mellinConvergent_of_isBigO_rpow
-    (a := 0) (b := 1)
+    (a := 1) (b := 0)
     (rhoRepresentativeC_locallyIntegrable n)
-    (rhoRepresentativeC_isBigO_nhdsGT_zero n)
     (rhoRepresentativeC_isBigO_atTop_negOne n)
-    hs0 hs1
+    hs1
+    (rhoRepresentativeC_isBigO_nhdsGT_zero n)
+    hs0
 
 /-- Mellin convergence of chi on the same strip. -/
 theorem chiRepresentativeC_mellinConvergent
     (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent chiRepresentativeC s := by
   exact mellinConvergent_of_isBigO_rpow
-    (a := 0) (b := 1)
+    (a := 1) (b := 0)
     chiRepresentativeC_locallyIntegrable
-    chiRepresentativeC_isBigO_nhdsGT_zero
     chiRepresentativeC_isBigO_atTop_negOne
-    hs0 hs1
+    hs1
+    chiRepresentativeC_isBigO_nhdsGT_zero
+    hs0
 
 #print axioms MCore.RH.R0.rhoRepresentativeC_mellinConvergent
 #print axioms MCore.RH.R0.chiRepresentativeC_mellinConvergent
