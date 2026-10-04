@@ -324,3 +324,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residualLogL2Isometry_realized
 
 #print axioms MCore.RH.R0.d3_of_fourierCompatibility
+
+#print axioms MCore.RH.R0.rho_mellinConvergent
+
+#print axioms MCore.RH.R0.chi_mellinConvergent
