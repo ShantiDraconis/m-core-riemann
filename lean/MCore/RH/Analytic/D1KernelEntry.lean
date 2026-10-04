@@ -1,5 +1,6 @@
 import MCore.RH.Analytic.MellinTailRight
 import MCore.RH.Analytic.MellinTailContinuation
+import MCore.RH.Analytic.MellinRhoClosedForm
 
 namespace MCore.RH.R0
 
@@ -21,6 +22,13 @@ theorem d1_kernel_entry_continuation :
         1 / (s - 1) - riemannZeta s / s :=
   tailAnalyticContinuation_realized
 
+/-- Full D1 closed form for every concrete generator. -/
+theorem d1_kernel_entry_rho_family
+    (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    mellin (rhoRepresentativeC n) s =
+      - (((rhoIndex n : ℕ) : ℂ) ^ (-s)) * riemannZeta s / s :=
+  mellin_rho_realized n s hs0 hs1
+
 /--
 The Mellin analyticity producer itself, exposed for focused axiom auditing.
 -/
@@ -28,6 +36,7 @@ theorem d1_kernel_entry_mellin :
     TailMellinAnalytic :=
   tailMellinAnalytic_realized
 
+#print axioms MCore.RH.R0.d1_kernel_entry_rho_family
 #print axioms MCore.RH.R0.d1_kernel_entry_right
 #print axioms MCore.RH.R0.d1_kernel_entry_continuation
 #print axioms MCore.RH.R0.d1_kernel_entry_mellin
