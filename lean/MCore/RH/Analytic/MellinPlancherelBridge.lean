@@ -44,6 +44,25 @@ def CriticalLineFrequencyScaling : Prop :=
       (2 * Real.pi) *
         ∫ y : ℝ, Complex.normSq (𝓕 (residualLogTransform c) y)
 
+/-- The frequency rescaling t = 2*pi*y is purely a Haar-measure change of variables. -/
+theorem criticalLineFrequencyScaling_realized :
+    CriticalLineFrequencyScaling := by
+  intro N c
+  let F : ℝ → ℝ := fun y =>
+    Complex.normSq (𝓕 (residualLogTransform c) y)
+  have h2pi : 0 < (2 * Real.pi : ℝ) := by positivity
+  have hchange := Measure.integral_comp_mul_left F ((2 * Real.pi)⁻¹)
+  change
+    (∫ t : ℝ, F (t / (2 * Real.pi))) =
+      (2 * Real.pi) * ∫ y : ℝ, F y
+  convert hchange using 1
+  · congr 1
+    funext t
+    simp [F, div_eq_mul_inv]
+  · rw [abs_of_pos]
+    · field_simp
+    · positivity
+
 /--
 The original critical-line Mellin-Plancherel statement follows from exactly:
 log-coordinate L2 isometry + Fourier Plancherel + frequency rescaling.
@@ -71,6 +90,7 @@ theorem criticalLineMellinPlancherel_of_three_bridges
   ring
 
 #print axioms MCore.RH.R0.residual_mellin_eq_fourierIntegral
+#print axioms MCore.RH.R0.criticalLineFrequencyScaling_realized
 #print axioms MCore.RH.R0.criticalLineMellinPlancherel_of_three_bridges
 
 end MCore.RH.R0
