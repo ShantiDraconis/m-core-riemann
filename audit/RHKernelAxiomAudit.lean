@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.D1KernelEntry
 import MCore.RH.Analytic.MellinTailContinuation
 import MCore.RH.Analytic.MellinRhoClosedForm
 import MCore.RH.Analytic.MellinTailContinuationReduction
@@ -106,3 +107,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.tailAnalyticContinuation_realized
 #print axioms MCore.RH.R0.fractionalZetaMellinIdentity_realized
 #print axioms MCore.RH.R0.mellin_rho_base_realized
+
+#print axioms MCore.RH.R0.d1_kernel_entry_right
+
+#print axioms MCore.RH.R0.d1_kernel_entry_continuation
+
+#print axioms MCore.RH.R0.d1_kernel_entry_mellin
