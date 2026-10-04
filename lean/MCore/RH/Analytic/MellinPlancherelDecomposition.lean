@@ -1,6 +1,6 @@
 import MCore.RH.Analytic.MellinPlancherelReduction
-import Mathlib.Analysis.Fourier.LpSpace
 import Mathlib.Analysis.MellinInversion
+import Mathlib.Analysis.Fourier.FourierTransform
 
 namespace MCore.RH.R0
 
