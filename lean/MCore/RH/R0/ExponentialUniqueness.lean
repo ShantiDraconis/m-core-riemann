@@ -86,13 +86,15 @@ theorem concreteMomentUniqueness_vandermonde (N : ℕ) :
   -- mismatches, not analytic mathematics.
   let V : Matrix (Fin N) (Fin N) ℝ := Matrix.vandermonde q
   have hdet : V.det ≠ 0 := by
-    simp [V, Matrix.det_vandermonde, hq]
+    simpa [V] using
+      (Matrix.det_vandermonde_ne_zero_iff.mpr hq)
   have hsystem : V *ᵥ (fun k => c k * q k) = 0 := by
     funext j
     simpa [V, Matrix.mulVec, dotProduct, mul_assoc, mul_left_comm, mul_comm] using hsample j
+  have hVunit : IsUnit V := by
+    exact Matrix.isUnit_iff_det.mpr (isUnit_iff_ne_zero.mpr hdet)
   have hz : (fun k => c k * q k) = 0 := by
-    exact (Matrix.mulVec_injective_of_isUnit_det
-      (Matrix.isUnit_det_of_ne_zero hdet)) hsystem
+    exact (Matrix.mulVec_injective_of_isUnit hVunit) (by simpa using hsystem)
   have hi := congr_fun hz i
   simp only [Pi.zero_apply] at hi
   exact (mul_eq_zero.mp hi).resolve_right (hq0 i)
