@@ -31,6 +31,7 @@ files=(
   lean/MCore/RH/Analytic/MellinTailRight.lean
   lean/MCore/RH/Analytic/MellinTailContinuation.lean
   lean/MCore/RH/Analytic/D1KernelEntry.lean
+  lean/MCore/RH/Analytic/MellinResidual.lean
   lean/MCore/RH/Analytic/ResidualMellin.lean
   lean/MCore/RH/Analytic/D3PinnedGap.lean
   lean/MCore/RH/Analytic/E1EvaluationReduction.lean
@@ -101,6 +102,7 @@ lake env lean lean/MCore/RH/R0/GramExplicit.lean
 lake env lean lean/MCore/RH/R0/LinearIndependentReduction.lean
 lake env lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
 lake env lean lean/MCore/RH/Analytic/D1KernelEntry.lean
+lake env lean lean/MCore/RH/Analytic/MellinResidual.lean
 lake env lean lean/MCore/RH/Analytic/ResidualMellin.lean
 lake env lean lean/MCore/RH/Analytic/D3PinnedGap.lean
 lake env lean lean/MCore/RH/Analytic/E1EvaluationReduction.lean
