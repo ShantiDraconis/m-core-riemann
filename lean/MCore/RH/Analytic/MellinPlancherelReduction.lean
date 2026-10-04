@@ -12,6 +12,12 @@ open MeasureTheory Set Complex
 noncomputable def criticalLinePoint (t : ℝ) : ℂ :=
   ((1 / 2 : ℝ) : ℂ) + Complex.I * (t : ℂ)
 
+/-- Logarithmic pullback at the critical exponent Re(s)=1/2. -/
+noncomputable def criticalLogPullback
+    {N : ℕ} (c : Fin N → ℝ) (u : ℝ) : ℂ :=
+  (Real.exp (-u / 2) : ℂ) *
+    residualRepresentativeC c (Real.exp (-u))
+
 /-- Residual vector in the frozen real L2 carrier. -/
 noncomputable def concreteResidual
     {N : ℕ} (c : Fin N → ℝ) : concreteNBData.H :=
