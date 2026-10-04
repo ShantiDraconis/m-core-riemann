@@ -2,6 +2,7 @@ import MCore.RH.Analytic.MellinPlancherelDecomposition
 import MCore.RH.Analytic.MellinFrequencyRescale
 import MCore.RH.Analytic.MellinLogPullback
 import MCore.RH.Analytic.MellinResidualNormBridge
+import MCore.RH.Analytic.D3GaussianKernel
 import Mathlib.Analysis.Fourier.Inversion
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Lean
@@ -38,13 +39,9 @@ def D3_LogPullbackMemL2 : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
     MemLp (criticalLogPullback c) 2 volume
 
-/-- Frequency Gaussian for the analyst Fourier convention exp(-2*pi*i*x*xi). -/
-noncomputable def d3GaussianMultiplier (ε t : ℝ) : ℝ :=
-  Real.exp (-Real.pi * ε * t ^ 2)
-
-/-- Normalized heat kernel whose Fourier transform is d3GaussianMultiplier. -/
-noncomputable def d3HeatKernel (ε x : ℝ) : ℝ :=
-  ε⁻¹ ^ (1 / 2 : ℝ) * Real.exp (-Real.pi * x ^ 2 / ε)
+/-- Reuse the canonical Gaussian multiplier/kernel from D3GaussianKernel.lean. -/
+abbrev d3GaussianMultiplier := d3GaussianMultiplierReal
+abbrev d3HeatKernel := d3HeatKernelReal
 
 /-- Heat regularization K_ε * f. -/
 noncomputable def d3HeatRegularization
