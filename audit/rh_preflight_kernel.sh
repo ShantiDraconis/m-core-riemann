@@ -34,6 +34,7 @@ files=(
   lean/MCore/RH/Analytic/MellinTailRight.lean
   lean/MCore/RH/Analytic/MellinTailContinuation.lean
   lean/MCore/RH/Analytic/D1KernelEntry.lean
+  lean/MCore/RH/Analytic/MellinPlancherelBridge.lean
   lean/MCore/RH/Analytic/MellinResidual.lean
   lean/MCore/RH/Analytic/ResidualNormBridge.lean
   lean/MCore/RH/Analytic/MellinPlancherelFourierReduction.lean
