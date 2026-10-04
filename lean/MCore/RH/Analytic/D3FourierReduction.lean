@@ -1,85 +1,32 @@
-import MCore.RH.Analytic.D3Reduction
-import Mathlib.Analysis.MellinInversion
-import Mathlib.Analysis.Fourier.FourierTransform
+import MCore.RH.Analytic.FourierPlancherelBridge
+import MCore.RH.Analytic.LogResidualIsometry
 
 namespace MCore.RH.R0
 
-open MeasureTheory Complex Real
-open scoped FourierTransform
-
-/-- Logarithmic lift that turns Mellin on Re(s)=1/2 into Fourier. -/
-noncomputable def residualLogLift
-    {N : ℕ} (c : Fin N → ℝ) (u : ℝ) : ℂ :=
-  Real.exp (-(1 / 2 : ℝ) * u) *
-    residualRepresentativeC c (Real.exp (-u))
-
-/-- Pointwise Mellin/Fourier identification on the critical line. -/
-theorem mellin_residual_eq_fourier_logLift
-    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    mellin (residualRepresentativeC c) (criticalLinePoint t) =
-      𝓕 (residualLogLift c) (t / (2 * Real.pi)) := by
-  simpa [criticalLinePoint, residualLogLift, smul_eq_mul,
-    mul_comm, mul_left_comm, mul_assoc] using
-    (mellin_eq_fourierIntegral
-      (residualRepresentativeC c)
-      (s := criticalLinePoint t))
+/--
+All metric content of D3 is closed once the single Fourier representation
+compatibility is supplied. The logarithmic coordinate change is already realized,
+and Mathlib supplies the L2 Fourier isometry.
+-/
+theorem mellinPlancherelFrequencyBridge_of_fourierCompatibility
+    (hcompat : FourierIntegralLpCompatibility) :
+    MellinPlancherelFrequencyBridge := by
+  exact ⟨logResidualIsometry_realized,
+    classicalFourierPlancherel_of_compatibility hcompat⟩
 
 /--
-Physical/logarithmic L² change of variables.
-This is a pure one-dimensional Jacobian statement.
+The exact remaining representation statement. This is deliberately not wrapped
+in a broader Plancherel assumption.
 -/
-def ResidualLogLiftIsometry : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ x : ℝ in Set.Ioi 0, ‖residualRepresentativeC c x‖ ^ 2) =
-      ∫ u : ℝ, ‖residualLogLift c u‖ ^ 2
+def D3FourierRepresentationGap : Prop :=
+  FourierIntegralLpCompatibility
 
-/--
-Plancherel for exactly the logarithmic lifts arising from finite NB residuals.
-The pinned Mathlib has Fourier inversion but not the later bundled L² isometry API.
--/
-def ResidualFourierPlancherel : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ u : ℝ, ‖residualLogLift c u‖ ^ 2) =
-      ∫ ξ : ℝ, ‖𝓕 (residualLogLift c) ξ‖ ^ 2
+theorem d3_fourier_gap_suffices
+    (h : D3FourierRepresentationGap) :
+    MellinPlancherelFrequencyBridge :=
+  mellinPlancherelFrequencyBridge_of_fourierCompatibility h
 
-/--
-The remaining frequency rescaling t = 2πξ, separated from Plancherel itself.
--/
-def ResidualCriticalFrequencyScaling : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ ξ : ℝ, ‖𝓕 (residualLogLift c) ξ‖ ^ 2) =
-      (1 / (2 * Real.pi)) *
-        ∫ t : ℝ,
-          ‖𝓕 (residualLogLift c) (t / (2 * Real.pi))‖ ^ 2
-
-/-- The frequency rescaling t = 2πξ is completely mechanical. -/
-theorem residualCriticalFrequencyScaling_realized :
-    ResidualCriticalFrequencyScaling := by
-  intro N c
-  let H : ℝ → ℝ := fun ξ => ‖𝓕 (residualLogLift c) ξ‖ ^ 2
-  have hscale := Measure.integral_comp_div H (2 * Real.pi)
-  have h2pi : 0 < 2 * Real.pi := by positivity
-  rw [abs_of_pos h2pi] at hscale
-  change (∫ ξ : ℝ, H ξ) =
-    (1 / (2 * Real.pi)) * ∫ t : ℝ, H (t / (2 * Real.pi))
-  rw [hscale]
-  field_simp [ne_of_gt h2pi]
-
-/-- The three classical functional-analytic pieces imply the D3 producer. -/
-theorem residualMellinPlancherel_of_fourier
-    (hlog : ResidualLogLiftIsometry)
-    (hfourier : ResidualFourierPlancherel)
-    (hscale : ResidualCriticalFrequencyScaling) :
-    ResidualMellinPlancherel := by
-  intro N c
-  rw [hlog c, hfourier c, hscale c]
-  congr 1
-  apply integral_congr_ae
-  exact Eventually.of_forall (fun t => by
-    rw [← mellin_residual_eq_fourier_logLift c t])
-
-#print axioms MCore.RH.R0.mellin_residual_eq_fourier_logLift
-#print axioms MCore.RH.R0.residualCriticalFrequencyScaling_realized
-#print axioms MCore.RH.R0.residualMellinPlancherel_of_fourier
+#print axioms MCore.RH.R0.mellinPlancherelFrequencyBridge_of_fourierCompatibility
+#print axioms MCore.RH.R0.d3_fourier_gap_suffices
 
 end MCore.RH.R0
