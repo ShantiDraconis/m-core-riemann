@@ -1,3 +1,4 @@
+import MCore.RH.R0.VasyuninResidueClasses
 import MCore.RH.R0.VasyuninIntegrability
 import MCore.RH.R0.VasyuninUnitBlocksReduction
 import MCore.RH.R0.VasyuninCoprimeBasics
@@ -374,3 +375,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.rationalAutocorrelation_unitBlock_hasSum
 
 #print axioms MCore.RH.R0.rationalAutocorrelationIntegrable_realized
+
+#print axioms MCore.RH.R0.vasyuninUnitBlockCore_summable
+
+#print axioms MCore.RH.R0.fractionalAutocorrelation_eq_sum_residue_classes
