@@ -92,8 +92,10 @@ theorem fractionalTailKernel_mellin_differentiableAt
 /-- Material producer for D1.2: the fractional tail is analytic throughout Re(s)>0. -/
 theorem tailMellinAnalytic_realized : TailMellinAnalytic := by
   intro s hs
+  have hspos : 0 < s.re := by
+    simpa [positiveHalfPlane] using hs
   have hneg : (-s).re < 0 := by
-    simpa only [neg_re, neg_lt_zero] using hs
+    simpa only [neg_re, neg_lt_zero] using hspos
   have hdiff :
       DifferentiableAt ℂ (fun z : ℂ => mellin fractionalTailKernel (-z)) s := by
     exact (fractionalTailKernel_mellin_differentiableAt hneg).comp s
