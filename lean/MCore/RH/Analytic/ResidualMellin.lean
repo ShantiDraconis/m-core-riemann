@@ -23,29 +23,72 @@ noncomputable def residualRepresentativeC
     {N : ℕ} (c : Fin N → ℝ) (x : ℝ) : ℂ :=
   chiRepresentativeC x - finiteRhoCombinationC c x
 
+private theorem finiteRhoCombinationC_mellinConvergent_finset
+    {N : ℕ} (c : Fin N → ℝ) (S : Finset (Fin N)) (s : ℂ)
+    (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    MellinConvergent
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := by
+  induction S using Finset.induction_on with
+  | empty =>
+      simp [MellinConvergent]
+  | @insert a S ha ih =>
+      have hca :
+          MellinConvergent
+            (fun x : ℝ => (c a : ℂ) * rhoRepresentativeC a x) s := by
+        simpa [smul_eq_mul] using
+          (rhoRepresentativeC_mellinConvergent a s hs0 hs1).const_smul (c a : ℂ)
+      simpa [Finset.sum_insert ha] using (hasMellin_add hca ih).1
+
 /-- Finite rho combinations are Mellin-convergent throughout 0 < Re(s) < 1. -/
 theorem finiteRhoCombinationC_mellinConvergent
     {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent (finiteRhoCombinationC c) s := by
-  classical
-  have hsum :
-      ∀ S : Finset (Fin N),
-        MellinConvergent
-          (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := by
-    intro S
-    induction S using Finset.induction_on with
-    | empty =>
-        simp [MellinConvergent]
-    | @insert a S ha ih =>
-        have hca :
-            MellinConvergent
-              (fun x : ℝ => (c a : ℂ) * rhoRepresentativeC a x) s := by
-          simpa [smul_eq_mul] using
-            (rhoRepresentativeC_mellinConvergent a s hs0 hs1).const_smul (c a : ℂ)
-        have hadd := hasMellin_add hca ih
-        simpa [Finset.sum_insert ha, finiteRhoCombinationC] using hadd.1
-  simpa [finiteRhoCombinationC] using hsum Finset.univ
+  simpa [finiteRhoCombinationC] using
+    finiteRhoCombinationC_mellinConvergent_finset c Finset.univ s hs0 hs1
+
+private theorem mellin_finiteRhoCombinationC_finset
+    {N : ℕ} (c : Fin N → ℝ) (S : Finset (Fin N)) (s : ℂ)
+    (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    mellin
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s =
+      ∑ i ∈ S, (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
+  induction S using Finset.induction_on with
+  | empty =>
+      simp [mellin]
+  | @insert a S ha ih =>
+      have hca :
+          MellinConvergent
+            (fun x : ℝ => (c a : ℂ) * rhoRepresentativeC a x) s := by
+        simpa [smul_eq_mul] using
+          (rhoRepresentativeC_mellinConvergent a s hs0 hs1).const_smul (c a : ℂ)
+      have hrest :=
+        finiteRhoCombinationC_mellinConvergent_finset c S s hs0 hs1
+      have hadd := hasMellin_add hca hrest
+      calc
+        mellin
+            (fun x : ℝ =>
+              ∑ i ∈ insert a S, (c i : ℂ) * rhoRepresentativeC i x) s
+            =
+            mellin
+              (fun x : ℝ =>
+                (c a : ℂ) * rhoRepresentativeC a x +
+                  ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := by
+              congr 1
+              funext x
+              simp [Finset.sum_insert ha]
+        _ =
+            mellin (fun x : ℝ => (c a : ℂ) * rhoRepresentativeC a x) s +
+              mellin
+                (fun x : ℝ =>
+                  ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := hadd.2
+        _ =
+            (c a : ℂ) * mellin (rhoRepresentativeC a) s +
+              ∑ i ∈ S, (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
+              rw [mellin_const_smul]
+              simpa using ih
+        _ = ∑ i ∈ insert a S, (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
+              simp [Finset.sum_insert ha]
 
 /-- Mellin transform of the finite rho combination. -/
 theorem mellin_finiteRhoCombinationC
@@ -53,56 +96,12 @@ theorem mellin_finiteRhoCombinationC
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     mellin (finiteRhoCombinationC c) s =
       - riemannZeta s / s * concreteDirichletPolynomial c s := by
-  classical
-  have hsum :
-      ∀ S : Finset (Fin N),
-        mellin
-          (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s =
-        ∑ i ∈ S, (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
-    intro S
-    induction S using Finset.induction_on with
-    | empty =>
-        simp [mellin]
-    | @insert a S ha ih =>
-        have hca := rhoRepresentativeC_mellinConvergent a s hs0 hs1
-        have hrest :
-            MellinConvergent
-              (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := by
-          have h :=
-            finiteRhoCombinationC_mellinConvergent
-              (N := S.card)
-              (fun i => 0) s hs0 hs1
-          -- Rebuild directly from the induction hypothesis's finite terms.
-          induction S using Finset.induction_on with
-          | empty => simp [MellinConvergent]
-          | @insert b T hb ihT =>
-              have hcb :
-                  MellinConvergent
-                    (fun x : ℝ => (c b : ℂ) * rhoRepresentativeC b x) s := by
-                simpa [smul_eq_mul] using
-                  (rhoRepresentativeC_mellinConvergent b s hs0 hs1).const_smul (c b : ℂ)
-              exact (by
-                simpa [Finset.sum_insert hb] using
-                  (hasMellin_add hcb ihT).1)
-        have hleft := hasMellin_add
-          (by simpa [smul_eq_mul] using hca.const_smul (c a : ℂ))
-          hrest
-        rw [Finset.sum_insert ha]
-        rw [show
-          (fun x : ℝ =>
-            ∑ i ∈ insert a S, (c i : ℂ) * rhoRepresentativeC i x) =
-          (fun x : ℝ =>
-            (c a : ℂ) * rhoRepresentativeC a x +
-              ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) by
-              funext x
-              simp [Finset.sum_insert ha]]
-        rw [hleft.2, mellin_const_smul, ih]
   rw [show mellin (finiteRhoCombinationC c) s =
       ∑ i : Fin N, (c i : ℂ) * mellin (rhoRepresentativeC i) s by
-        simpa [finiteRhoCombinationC] using hsum Finset.univ]
+        simpa [finiteRhoCombinationC] using
+          mellin_finiteRhoCombinationC_finset c Finset.univ s hs0 hs1]
   simp_rw [mellin_rho_realized _ s hs0 hs1]
   unfold concreteDirichletPolynomial
-  ring_nf
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i hi
