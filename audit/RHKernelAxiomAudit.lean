@@ -1,3 +1,5 @@
+import MCore.RH.Analytic.FourierL1L2AgreementReduction
+import MCore.RH.Analytic.ResidualLogPullbackL1
 import MCore.RH.Analytic.FourierAeBridgeReduction
 import MCore.RH.Analytic.FourierPointwiseBridgeReduction
 import MCore.RH.Analytic.ResidualLogPullbackLp
@@ -305,3 +307,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.pointwiseFourier_memLp_of_aeBridge
 
 #print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_aeBridge
+
+#print axioms MCore.RH.R0.residualLogPullback_integrable
+
+#print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_L1L2
