@@ -21,6 +21,10 @@ files=(
   lean/MCore/RH/R0/FrontierExposure.lean
   lean/MCore/RH/R0/GramExplicit.lean
   lean/MCore/RH/R0/LinearIndependentReduction.lean
+  lean/MCore/RH/R0/ExponentialUniqueness.lean
+  lean/MCore/RH/R0/WeightedIntegrability.lean
+  lean/MCore/RH/R0/LpToAE.lean
+  lean/MCore/RH/R0/RhoBasicFacts.lean
   lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
   lean/MCore/RH/R0/ConcreteVanishingProducer.lean
   lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
