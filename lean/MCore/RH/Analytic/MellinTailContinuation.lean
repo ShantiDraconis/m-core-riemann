@@ -74,13 +74,18 @@ theorem fractionalTailComplex_eq_mellin (s : ℂ) :
 theorem fractionalTailKernel_mellin_differentiableAt
     {z : ℂ} (hz : z.re < 0) :
     DifferentiableAt ℂ (mellin fractionalTailKernel) z := by
+  let b : ℝ := z.re - 1
   exact mellin_differentiableAt_of_isBigO_rpow
     fractionalTailKernel_locallyIntegrable
-    (a := (0 : ℝ)) (b := (0 : ℝ))
+    (a := (0 : ℝ)) (b := b)
     (by simpa only [neg_zero, Real.rpow_zero] using fractionalTailKernel_isBigO_atTop)
     hz
-    (by simpa only [neg_zero, Real.rpow_zero] using fractionalTailKernel_isBigO_nhdsGT)
-    (by simpa using zero_lt_one)
+    (by
+      exact (Asymptotics.isBigO_zero _ _).congr_left
+        fractionalTailKernel_eventually_zero_nhdsGT.symm)
+    (by
+      dsimp [b]
+      linarith)
 
 /-- Material producer for D1.2: the fractional tail is analytic throughout Re(s)>0. -/
 theorem tailMellinAnalytic_realized : TailMellinAnalytic := by
@@ -91,7 +96,12 @@ theorem tailMellinAnalytic_realized : TailMellinAnalytic := by
       DifferentiableAt ℂ (fun z : ℂ => mellin fractionalTailKernel (-z)) s := by
     exact (fractionalTailKernel_mellin_differentiableAt hneg).comp s
       (differentiableAt_neg s)
-  rw [← fractionalTailComplex_eq_mellin s] at hdiff
+  have hfun :
+      (fun z : ℂ => mellin fractionalTailKernel (-z)) =
+        fractionalTailComplex := by
+    funext z
+    exact (fractionalTailComplex_eq_mellin z).symm
+  rw [hfun] at hdiff
   exact hdiff.analyticAt
 
 /-- D1.2 is fully realized from the concrete Mellin producer. -/
