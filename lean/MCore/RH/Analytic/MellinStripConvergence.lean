@@ -89,17 +89,14 @@ theorem rhoRepresentativeC_mellinConvergent
     (rhoRepresentativeC_isBigO_zero n)
     hs0
 
-/-- chi Mellin-converges throughout the positive half-plane, in particular the critical strip. -/
+/-- chi Mellin-converges throughout the same open strip 0 < Re(s) < 1. -/
 theorem chiRepresentativeC_mellinConvergent
-    (s : ℂ) (hs0 : 0 < s.re) :
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent chiRepresentativeC s := by
   exact mellinConvergent_of_isBigO_rpow
     chiRepresentativeC_locallyIntegrableOn
     chiRepresentativeC_isBigO_top
-    (show s.re < 1 from by
-      by_cases h : s.re < 1
-      · exact h
-      · exact lt_of_lt_of_le (by linarith : s.re < s.re + 1) (by linarith))
+    hs1
     chiRepresentativeC_isBigO_zero
     hs0
 
