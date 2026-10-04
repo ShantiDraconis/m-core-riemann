@@ -1,6 +1,7 @@
 import MCore.RH.Analytic.MellinRhoReduction
 import MCore.RH.Analytic.MellinTailRightReduction
 import MCore.RH.Analytic.MellinTailPartial
+import MCore.RH.Analytic.MellinRhoClosedForm
 import Lean
 
 open Lean Elab Tactic
@@ -51,17 +52,14 @@ theorem DISCOVER_D1_TAIL_RIGHT : D1_TailFormulaRight := by
   exact tailFormulaRight_realized
 
 theorem DISCOVER_D1_ANALYTIC_CONTINUATION : D1_TailAnalyticContinuation := by
-  unfold D1_TailAnalyticContinuation
-  d1_gap "TAIL_ANALYTIC_CONTINUATION"
-  exact ?_
+  intro s hs hs1
+  exact tailAnalyticContinuation_realized s hs hs1
 
 theorem DISCOVER_D1_NEAR_ZERO : D1_NearZeroIdentity := by
   intro s hs
   exact d1_nearZero_identity s hs
 
 theorem DISCOVER_D1_FRACTIONAL_ZETA : FractionalZetaMellinIdentity := by
-  unfold FractionalZetaMellinIdentity
-  d1_gap "FRACTIONAL_ZETA_MELLIN_IDENTITY"
-  exact ?_
+  exact fractionalZetaMellinIdentity_realized
 
 end MCore.RH.R0
