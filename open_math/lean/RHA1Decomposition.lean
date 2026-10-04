@@ -1,6 +1,9 @@
 import MCore.RH.R0.LinearIndependentReduction
 import MCore.RH.R0.LpToAE
 import MCore.RH.R0.WeightedIntegrability
+import MCore.RH.R0.BaseMellinPositive
+import MCore.RH.R0.WeightedScaling
+import MCore.RH.R0.WeightedIntegralLinearity
 import MCore.RH.Analytic.MellinConcrete
 import Lean
 
@@ -75,20 +78,17 @@ theorem DISCOVER_A1_WEIGHTED_INTEGRABLE : A1_WeightedIntegrability := by
 theorem DISCOVER_A1_LINEARITY (N : ℕ) : A1_WeightedIntegralLinearity N := by
   unfold A1_WeightedIntegralLinearity
   intro c s hs0 hs1
-  a1_gap "WEIGHTED_INTEGRAL_LINEARITY"
-  exact ?_
+  exact weighted_integral_finset_linearity c s hs0 hs1
 
 theorem DISCOVER_A1_REAL_SCALING : A1_RealMellinScaling := by
   unfold A1_RealMellinScaling
   intro n s hs0 hs1
-  a1_gap "REAL_MELLIN_SCALING"
-  exact ?_
+  exact A1_RealMellinScaling_realized n s hs0 hs1
 
 theorem DISCOVER_A1_BASE_POSITIVE : A1_BaseMellinPositive := by
   unfold A1_BaseMellinPositive
   intro s hs0 hs1
-  a1_gap "BASE_MELLIN_POSITIVE"
-  exact ?_
+  exact A1_BaseMellinPositive_realized s hs0 hs1
 
 /-- Once A1.0--A1.4 are proved, the original ConcreteMomentBridge follows. -/
 theorem A1_components_to_ConcreteMomentBridge
