@@ -1,3 +1,4 @@
+import MCore.RH.R0.VasyuninFiniteGram
 import MCore.RH.R0.ExplicitGramRate
 import MCore.RH.Analytic.E1EvaluationReduction
 import MCore.RH.Analytic.OffLineZeroReflection
@@ -187,3 +188,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.concreteDN_eq_explicitGramResidual
 
 #print axioms MCore.RH.R0.explicitGramRateTarget_iff_uniformLogDNBound
+
+#print axioms MCore.RH.R0.explicitGramResidual_eq_vasyunin
+
+#print axioms MCore.RH.R0.finiteVasyuninRateTarget_iff_explicitGramRate
