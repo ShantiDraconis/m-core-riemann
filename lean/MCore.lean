@@ -43,3 +43,5 @@ import MCore.RH.R0.VasyuninStructural
 import MCore.RH.R0.VasyuninGCD
 
 import MCore.RH.Analytic.FourierLpCompatibility
+
+import MCore.RH.R0.VasyuninRateReduction
