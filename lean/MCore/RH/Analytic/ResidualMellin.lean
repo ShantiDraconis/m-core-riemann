@@ -41,19 +41,29 @@ theorem mellin_rhoCombinationC
   unfold mellin rhoCombinationC
   simp only [smul_eq_mul, mul_sum]
   rw [integral_finset_sum]
-  · simp_rw [← integral_const_mul]
-    simp_rw [show
-      (∫ t : ℝ in Ioi 0,
-        (c ?i : ℂ) * ((t : ℂ) ^ (s - 1) * rhoRepresentativeC ?i t)) =
-      (c ?i : ℂ) * mellin (rhoRepresentativeC ?i) s by
-        rfl]
-    simp_rw [mellin_rho_realized _ s hs0 hs1]
-    unfold dirichletPolynomialC
-    ring_nf
-    rw [Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro i hi
-    ring
+  · calc
+      (∑ i : Fin N,
+          ∫ t : ℝ in Ioi 0,
+            (t : ℂ) ^ (s - 1) * ((c i : ℂ) * rhoRepresentativeC i t))
+          =
+        ∑ i : Fin N,
+          (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [← integral_const_mul]
+            rfl
+      _ = ∑ i : Fin N,
+          (c i : ℂ) *
+            (- (((rhoIndex i : ℕ) : ℂ) ^ (-s)) * riemannZeta s / s) := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [mellin_rho_realized i s hs0 hs1]
+      _ = - riemannZeta s / s * dirichletPolynomialC c s := by
+            unfold dirichletPolynomialC
+            rw [Finset.mul_sum]
+            apply Finset.sum_congr rfl
+            intro i hi
+            ring
   · intro i hi
     have hconv := rhoRepresentativeC_mellinConvergent i s hs0 hs1
     unfold MellinConvergent at hconv
