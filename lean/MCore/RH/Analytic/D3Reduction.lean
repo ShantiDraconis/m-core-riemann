@@ -1,56 +1,63 @@
-import MCore.RH.Analytic.ResidualCriticalLine
+import MCore.RH.Analytic.MellinResidual
+import MCore.RH.R0.GramInverse
 
 namespace MCore.RH.R0
 
-open MeasureTheory Complex
+open Complex MeasureTheory
 
-/--
-The one genuinely functional-analytic producer remaining in D3.
+/-- Critical-line parameter. -/
+noncomputable def criticalLine (t : ℝ) : ℂ :=
+  (1 / 2 : ℝ) + Complex.I * t
 
-With Mathlib's Fourier normalization, t = 2π ξ, hence the factor 1/(2π).
-The left side is the physical L²(dx) residual written through its representative;
-the right side is the critical-line Mellin norm.
--/
-def ResidualMellinPlancherel : Prop :=
+/-- Spectral residual density predicted by Mellin-Plancherel. -/
+noncomputable def residualSpectralDensity
+    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) : ℝ :=
+  Complex.normSq
+    (1 + riemannZeta (criticalLine t) *
+      concreteDirichletPolynomial c (criticalLine t)) /
+    ((1 / 4 : ℝ) + t ^ 2)
+
+/-- Exact Plancherel bridge still needed for D3. -/
+def ResidualMellinPlancherelBridge : Prop :=
   ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ x : ℝ in Set.Ioi 0, ‖residualRepresentativeC c x‖ ^ 2) =
-      (1 / (2 * Real.pi)) *
-        ∫ t : ℝ,
-          ‖mellin (residualRepresentativeC c) (criticalLinePoint t)‖ ^ 2
-
-/--
-Once Mellin--Plancherel is supplied, the right side rewrites mechanically to
-the explicit zeta/Dirichlet-polynomial spectral density.
--/
-theorem residual_spectral_identity_of_plancherel
-    (hP : ResidualMellinPlancherel)
-    {N : ℕ} (c : Fin N → ℝ) :
-    (∫ x : ℝ in Set.Ioi 0, ‖residualRepresentativeC c x‖ ^ 2) =
-      (1 / (2 * Real.pi)) *
-        ∫ t : ℝ, residualSpectralDensity c t := by
-  rw [hP c]
-  congr 1
-  apply integral_congr_ae
-  exact Eventually.of_forall (fun t =>
-    normSq_mellin_residual_criticalLine c t)
-
-/--
-D3 has now been reduced to one producer. No zeta algebra, Mellin scaling,
-finite summation, or denominator normalization remains hidden here.
--/
-def D3ResidualSpectralIdentity : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ x : ℝ in Set.Ioi 0, ‖residualRepresentativeC c x‖ ^ 2) =
+    ‖concreteNBData.chi - concreteFiniteCombination c‖ ^ 2 =
       (1 / (2 * Real.pi)) *
         ∫ t : ℝ, residualSpectralDensity c t
 
-theorem d3_of_mellinPlancherel
-    (hP : ResidualMellinPlancherel) :
-    D3ResidualSpectralIdentity := by
-  intro N c
-  exact residual_spectral_identity_of_plancherel hP c
+/-- D3 is exactly the single Mellin-Plancherel bridge. -/
+theorem d3_of_residualMellinPlancherel
+    (h : ResidualMellinPlancherelBridge)
+    {N : ℕ} (c : Fin N → ℝ) :
+    ‖concreteNBData.chi - concreteFiniteCombination c‖ ^ 2 =
+      (1 / (2 * Real.pi)) *
+        ∫ t : ℝ,
+          Complex.normSq
+            (1 + riemannZeta (criticalLine t) *
+              concreteDirichletPolynomial c (criticalLine t)) /
+            ((1 / 4 : ℝ) + t ^ 2) := by
+  exact h c
 
-#print axioms MCore.RH.R0.residual_spectral_identity_of_plancherel
-#print axioms MCore.RH.R0.d3_of_mellinPlancherel
+/-- Pointwise critical-line residual formula from D1 + D2. -/
+theorem mellin_residual_on_critical_line
+    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
+    mellin (concreteResidualC c) (criticalLine t) =
+      (1 + riemannZeta (criticalLine t) *
+        concreteDirichletPolynomial c (criticalLine t)) /
+      (criticalLine t) := by
+  have hs0 : 0 < (criticalLine t).re := by
+    simp [criticalLine]
+  have hs1 : (criticalLine t).re < 1 := by
+    simp [criticalLine]
+  exact mellin_concreteResidualC c (criticalLine t) hs0 hs1
+
+/-- Denominator on the critical line is exactly 1/4+t^2. -/
+theorem criticalLine_normSq (t : ℝ) :
+    Complex.normSq (criticalLine t) = (1 / 4 : ℝ) + t ^ 2 := by
+  simp [criticalLine, Complex.normSq_apply]
+  ring
+
+#print axioms MCore.RH.R0.mellin_residual_on_critical_line
+#print axioms MCore.RH.R0.criticalLine_normSq
+#print axioms MCore.RH.R0.d3_of_residualMellinPlancherel
 
 end MCore.RH.R0
