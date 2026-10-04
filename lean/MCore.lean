@@ -47,3 +47,5 @@ import MCore.RH.Analytic.FourierLpCompatibility
 import MCore.RH.R0.VasyuninRateReduction
 
 import MCore.RH.Analytic.ResidualMellin
+
+import MCore.RH.Analytic.MellinPlancherelCoreReduction
