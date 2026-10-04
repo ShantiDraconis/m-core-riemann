@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.MellinResidualAlgebra
+import MCore.RH.Analytic.MellinTargetConvergence
+import MCore.RH.Analytic.MellinRhoConvergence
 import MCore.RH.Analytic.D1KernelEntry
 import MCore.RH.Analytic.MellinTailContinuation
 import MCore.RH.Analytic.MellinRhoClosedForm
@@ -117,3 +120,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.mellin_rho_realized
 
 #print axioms MCore.RH.R0.d1_kernel_entry_rho_family
+
+#print axioms MCore.RH.R0.rhoRepresentativeC_mellinConvergent
+
+#print axioms MCore.RH.R0.chiRepresentativeC_mellinConvergent
+
+#print axioms MCore.RH.R0.residual_mellin_closed_form
