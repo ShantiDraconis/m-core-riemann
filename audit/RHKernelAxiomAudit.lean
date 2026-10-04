@@ -1,3 +1,5 @@
+import MCore.RH.Analytic.CriticalLogPullbackL2
+import MCore.RH.Analytic.FourierPlancherelPinnedGap
 import MCore.RH.Analytic.FourierMellinCriticalLine
 import MCore.RH.Analytic.LogPullbackIsometry
 import MCore.RH.Analytic.FourierL1L2Bridge
@@ -346,3 +348,13 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.fourier_integral_eq_mellin_line
 
 #print axioms MCore.RH.R0.d3_fourierToMellinLine_realized
+
+#print axioms MCore.RH.R0.criticalLogPullback_integrable
+
+#print axioms MCore.RH.R0.criticalLogPullbackIntegrable_realized
+
+#print axioms MCore.RH.R0.criticalLogPullback_memLp_two
+
+#print axioms MCore.RH.R0.criticalLogPullbackMemL2_realized
+
+#print axioms MCore.RH.R0.d3_fourierPlancherel_of_pinned
