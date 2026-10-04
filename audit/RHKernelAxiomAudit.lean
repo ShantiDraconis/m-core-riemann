@@ -1,3 +1,6 @@
+import MCore.RH.R0.VasyuninIntegrability
+import MCore.RH.R0.VasyuninUnitBlocksReduction
+import MCore.RH.R0.VasyuninCoprimeBasics
 import MCore.RH.Analytic.D3PlancherelReduction
 import MCore.RH.Analytic.CriticalLogPullbackL2
 import MCore.RH.Analytic.FourierPlancherelPinnedGap
@@ -363,3 +366,11 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residual_mellinConvergent
 
 #print axioms MCore.RH.R0.residualEnergy_eq_zeta_integral
+
+#print axioms MCore.RH.R0.reduced_indices_of_coprime
+
+#print axioms MCore.RH.R0.rationalAutocorrelation_finite_blocks
+
+#print axioms MCore.RH.R0.rationalAutocorrelation_unitBlock_hasSum
+
+#print axioms MCore.RH.R0.rationalAutocorrelationIntegrable_realized
