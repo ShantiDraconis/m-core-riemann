@@ -56,3 +56,5 @@ import MCore.RH.Analytic.FourierCompatibilityRealization
 
 import MCore.RH.Analytic.MellinStripConvergence
 import MCore.RH.Analytic.ResidualMellinAlgebra
+
+import MCore.RH.Analytic.CriticalLineResidual
