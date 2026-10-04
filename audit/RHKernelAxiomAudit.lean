@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.D3SingleGap
+import MCore.RH.Analytic.MellinPlancherelEasyLaws
+import MCore.RH.Analytic.MellinPlancherelDecomposition
 import MCore.RH.Analytic.MellinPlancherelReduction
 import MCore.RH.Analytic.MellinCriticalDensity
 import MCore.RH.Analytic.CriticalLineBasic
@@ -135,3 +138,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residual_mellin_critical_sq
 
 #print axioms MCore.RH.R0.d3_reduced_to_mellin_plancherel
+
+#print axioms MCore.RH.R0.logPullbackIsometry_realized
+
+#print axioms MCore.RH.R0.criticalFrequencyScaling_realized
+
+#print axioms MCore.RH.R0.mellinPlancherel_of_fourier_only
