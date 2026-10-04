@@ -44,3 +44,9 @@ rh-geometry-discovery:
 
 rh-force-all:
 	bash audit/rh_force_all_proofs.sh
+
+
+.PHONY: rh-vasyunin-frontier
+
+rh-vasyunin-frontier:
+	bash audit/rh_vasyunin_frontier.sh
