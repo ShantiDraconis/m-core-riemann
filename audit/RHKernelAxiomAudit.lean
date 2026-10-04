@@ -1,3 +1,4 @@
+import MCore.RH.R0.FrontierExposure
 import MCore.RH.R0.HardFrontierReduction
 import MCore.RH.R0.ConcreteGramLogRate
 import MCore.RH.R0.ConcreteZeroObstruction
@@ -40,3 +41,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.hard_frontier_of_ConcreteGramLogRate
 #print axioms MCore.RH.R0.hard_frontier_of_CriticalLineWeightedErrorRate
 #print axioms MCore.RH.R0.no_HardFrontierTarget_of_orthogonal_witness
+#print axioms MCore.RH.R0.coefficient_gap_iff_material_gap
+#print axioms MCore.RH.R0.gram_gap_iff_material_gap
+#print axioms MCore.RH.R0.material_gap_closes_terminal
+#print axioms MCore.RH.R0.orthogonal_witness_blocks_material_gap
