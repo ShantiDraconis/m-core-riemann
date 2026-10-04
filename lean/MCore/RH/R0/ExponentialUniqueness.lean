@@ -81,20 +81,15 @@ theorem concreteMomentUniqueness_vandermonde (N : ℕ) :
   have hq : Function.Injective q := by
     simpa [q] using vandermondeBase_injective N
   have hq0 : ∀ k, q k ≠ 0 := fun k => ne_of_gt (vandermondeBase_pos N k)
-  -- The remaining step is finite matrix algebra using det_vandermonde.
-  -- It is intentionally expressed directly so the kernel exposes only API
-  -- mismatches, not analytic mathematics.
-  let V : Matrix (Fin N) (Fin N) ℝ := Matrix.vandermonde q
-  have hdet : V.det ≠ 0 := by
-    simpa [V] using
-      (Matrix.det_vandermonde_ne_zero_iff.mpr hq)
-  have hsystem : V *ᵥ (fun k => c k * q k) = 0 := by
-    funext j
-    simpa [V, Matrix.mulVec, dotProduct, mul_assoc, mul_left_comm, mul_comm] using hsample j
-  have hVunit : IsUnit V := by
-    exact Matrix.isUnit_iff_det.mpr (isUnit_iff_ne_zero.mpr hdet)
+  -- Reduce q_k^(j+1) = q_k * q_k^j and use Mathlib's
+  -- finite Vandermonde kernel theorem directly.
+  have hsystem :
+      ∀ j : Fin N,
+        ∑ k : Fin N, (c k * q k) * q k ^ (j : ℕ) = 0 := by
+    intro j
+    simpa [pow_succ, mul_assoc, mul_left_comm, mul_comm] using hsample j
   have hz : (fun k => c k * q k) = 0 := by
-    exact (Matrix.mulVec_injective_of_isUnit hVunit) (by simpa using hsystem)
+    exact Matrix.eq_zero_of_forall_pow_sum_mul_pow_eq_zero hq hsystem
   have hi := congr_fun hz i
   simp only [Pi.zero_apply] at hi
   exact (mul_eq_zero.mp hi).resolve_right (hq0 i)
