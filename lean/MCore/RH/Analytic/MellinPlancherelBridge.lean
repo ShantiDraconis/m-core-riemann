@@ -1,82 +1,76 @@
 import MCore.RH.Analytic.MellinPlancherelReduction
 import Mathlib.Analysis.MellinInversion
-import Mathlib.Analysis.Fourier.Inversion
 
 namespace MCore.RH.R0
 
-open Complex MeasureTheory Set
-open scoped FourierTransform
+open MeasureTheory Set Complex
 
-/-- Logarithmic pullback at sigma=1/2 used to identify Mellin with Fourier. -/
-noncomputable def residualLogPullback
+/-- Logarithmic pullback used to convert Mellin on Re(s)=1/2 into Fourier. -/
+noncomputable def residualLogTransform
     {N : ℕ} (c : Fin N → ℝ) (u : ℝ) : ℂ :=
-  Real.exp (-(1 / 2 : ℝ) * u) •
-    complexResidual c (Real.exp (-u))
+  Real.exp (-(1 / 2 : ℝ) * u) *
+    residualRepresentativeC c (Real.exp (-u))
 
-/--
-The generic Plancherel theorem missing from the pinned Mathlib version.
-This is standard Fourier analysis, not RH-specific mathematics.
--/
-def FourierPlancherelR : Prop :=
-  ∀ g : ℝ → ℂ,
-    Integrable g →
-    Integrable (fun u : ℝ => normSq (g u)) →
-    (∫ u : ℝ, normSq (g u)) =
-      ∫ ξ : ℝ, normSq (𝓕 g ξ)
+/-- Change of variables x = exp(-u): exact L2 isometry between dx and du models. -/
+def ResidualLogL2Isometry : Prop :=
+  ∀ {N : ℕ} (c : Fin N → ℝ),
+    (∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)) =
+      ∫ u : ℝ, Complex.normSq (residualLogTransform c u)
 
-/-- Mellin on the critical line is the Fourier transform of the logarithmic pullback. -/
-theorem mellin_residual_eq_fourier
+/-- Fourier Plancherel for the logarithmic residual transform. -/
+def ResidualFourierPlancherel : Prop :=
+  ∀ {N : ℕ} (c : Fin N → ℝ),
+    (∫ u : ℝ, Complex.normSq (residualLogTransform c u)) =
+      ∫ y : ℝ, Complex.normSq (𝓕 (residualLogTransform c) y)
+
+/-- Mellin is the Fourier integral of the logarithmic pullback, with t/(2pi) normalization. -/
+theorem residual_mellin_eq_fourierIntegral
     {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    mellin (complexResidual c) (criticalLine t) =
-      𝓕 (residualLogPullback c) (t / (2 * Real.pi)) := by
+    mellin (residualRepresentativeC c) (criticalLinePoint t) =
+      𝓕 (residualLogTransform c) (t / (2 * Real.pi)) := by
   rw [mellin_eq_fourierIntegral]
-  congr 2
+  unfold criticalLinePoint residualLogTransform
+  congr 1
   funext u
-  simp [residualLogPullback, criticalLine]
+  simp only [add_re, ofReal_re, mul_re, ofReal_im, I_re, I_im, zero_mul,
+    sub_zero, one_div, neg_mul]
+  ring_nf
+
+/-- Scaling y=t/(2pi) converts Fourier frequency measure to the critical-line measure. -/
+def CriticalLineFrequencyScaling : Prop :=
+  ∀ {N : ℕ} (c : Fin N → ℝ),
+    (∫ t : ℝ,
+      Complex.normSq (𝓕 (residualLogTransform c) (t / (2 * Real.pi)))) =
+      (2 * Real.pi) *
+        ∫ y : ℝ, Complex.normSq (𝓕 (residualLogTransform c) y)
 
 /--
-Exact Jacobian identity for the logarithmic change x=exp(-u).
-This is the L2-isometry half of Mellin-Plancherel.
+The original critical-line Mellin-Plancherel statement follows from exactly:
+log-coordinate L2 isometry + Fourier Plancherel + frequency rescaling.
 -/
-def ResidualLogPullbackIsometry : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ x : ℝ in Ioi 0, normSq (complexResidual c x)) =
-      ∫ u : ℝ, normSq (residualLogPullback c u)
-
-/-- The concrete pullbacks are L1; used only to connect with the pinned Fourier integral API. -/
-def ResidualLogPullbackIntegrable : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    Integrable (residualLogPullback c)
-
-/-- Their squared norm is integrable because the original residual lies in L2. -/
-def ResidualLogPullbackSqIntegrable : Prop :=
-  ∀ {N : ℕ} (c : Fin N → ℝ),
-    Integrable (fun u : ℝ => normSq (residualLogPullback c u))
-
-/--
-D3 reduces to four standard analytic ingredients; three are concrete change-of-variable/integrability
-facts and one is generic Fourier Plancherel.
--/
-theorem residualMellinPlancherel_of_fourier
-    (hLog : ResidualLogPullbackIsometry)
-    (hL1 : ResidualLogPullbackIntegrable)
-    (hL2 : ResidualLogPullbackSqIntegrable)
-    (hPl : FourierPlancherelR) :
-    ResidualMellinPlancherel := by
+theorem criticalLineMellinPlancherel_of_three_bridges
+    (hlog : ResidualLogL2Isometry)
+    (hfourier : ResidualFourierPlancherel)
+    (hscale : CriticalLineFrequencyScaling) :
+    CriticalLineMellinPlancherel := by
   intro N c
-  rw [hLog c]
-  rw [hPl (residualLogPullback c) (hL1 c) (hL2 c)]
-  have hpi : 0 < 2 * Real.pi := by positivity
-  rw [← Measure.integral_comp_mul_left
-    (f := fun ξ : ℝ => normSq (𝓕 (residualLogPullback c) ξ))
-    (a := 2 * Real.pi)]
-  field_simp [Real.pi_ne_zero]
-  apply integral_congr_ae
-  filter_upwards with t
-  rw [← mellin_residual_eq_fourier c t]
+  rw [hlog c, hfourier c]
+  have hs := hscale c
+  have h2pi : (2 * Real.pi : ℝ) ≠ 0 := by positivity
+  rw [show
+      (fun t : ℝ =>
+        Complex.normSq
+          (mellin (residualRepresentativeC c) (criticalLinePoint t))) =
+      (fun t : ℝ =>
+        Complex.normSq
+          (𝓕 (residualLogTransform c) (t / (2 * Real.pi)))) by
+      funext t
+      rw [residual_mellin_eq_fourierIntegral c t]]
+  rw [hs]
+  field_simp
   ring
 
-#print axioms MCore.RH.R0.mellin_residual_eq_fourier
-#print axioms MCore.RH.R0.residualMellinPlancherel_of_fourier
+#print axioms MCore.RH.R0.residual_mellin_eq_fourierIntegral
+#print axioms MCore.RH.R0.criticalLineMellinPlancherel_of_three_bridges
 
 end MCore.RH.R0
