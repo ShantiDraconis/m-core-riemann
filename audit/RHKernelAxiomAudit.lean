@@ -1,3 +1,7 @@
+import MCore.RH.R0.GramInverse
+import MCore.RH.R0.BaseMellinPositive
+import MCore.RH.R0.WeightedScaling
+import MCore.RH.R0.WeightedIntegralLinearity
 import MCore.RH.R0.ExponentialUniqueness
 import MCore.RH.R0.WeightedIntegrability
 import MCore.RH.R0.LpToAE
@@ -61,3 +65,8 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.concreteFiniteCombination_eq_zero_ae
 #print axioms MCore.RH.R0.rho_weighted_integrableOn_Ioi
 #print axioms MCore.RH.R0.concreteMomentUniqueness_vandermonde
+#print axioms MCore.RH.R0.weighted_integral_finset_linearity
+#print axioms MCore.RH.R0.rho_weighted_integral_scaling
+#print axioms MCore.RH.R0.base_weighted_integral_pos
+#print axioms MCore.RH.R0.concreteMomentBridge_realized
+#print axioms MCore.RH.R0.optimalGramCoeff_eq_inv_mulVec_target
