@@ -1,6 +1,4 @@
-import MCore.RH.Analytic.D3FourierReduction
-import MCore.RH.Analytic.FourierCompatibilityReduction
-import MCore.RH.Analytic.FourierCompatibilityRealization
+import MCore.RH.Analytic.D3Reduction
 import Lean
 
 open Lean Elab Tactic
@@ -14,15 +12,19 @@ elab "d3_gap " name:str : tactic => do
   logInfo m!"[RH-D3-GAP:{name.getString}]\n{body}"
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
-/-- The only remaining theorem in D3 is now generic, not RH-specific. -/
-theorem DISCOVER_D3_GENERIC_L1_L2_FOURIER : L1L2FourierCompatibility := by
-  unfold L1L2FourierCompatibility
-  d3_gap "GENERIC_L1_L2_FOURIER_COMPATIBILITY"
-  exact ?_
+/-- The algebraic Mellin identity on the critical line is already source-ready. -/
+theorem DISCOVER_D3_POINTWISE
+    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
+    mellin (concreteResidualC c) (criticalLine t) =
+      (1 + riemannZeta (criticalLine t) *
+        concreteDirichletPolynomial c (criticalLine t)) /
+      (criticalLine t) := by
+  exact mellin_residual_on_critical_line c t
 
-theorem DISCOVER_D3_FOURIER_REPRESENTATION
-    (h : L1L2FourierCompatibility) :
-    D3FourierRepresentationGap := by
-  exact fourierIntegralLpCompatibility_of_generic h
+/-- The only remaining D3 producer. -/
+theorem DISCOVER_D3_PLANCHEREL :
+    ResidualMellinPlancherelBridge := by
+  d3_gap "RESIDUAL_MELLIN_PLANCHEREL_BRIDGE"
+  exact ?_
 
 end MCore.RH.R0
