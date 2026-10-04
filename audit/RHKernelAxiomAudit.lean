@@ -1,3 +1,8 @@
+import MCore.RH.Analytic.D3PinnedGap
+import MCore.RH.Analytic.D3LogLiftIsometry
+import MCore.RH.Analytic.D3FourierReduction
+import MCore.RH.Analytic.D3Reduction
+import MCore.RH.Analytic.ResidualCriticalLine
 import MCore.RH.Analytic.ResidualMellin
 import MCore.RH.Analytic.MellinStripConvergence
 import MCore.RH.Analytic.D3SingleGap
@@ -148,3 +153,13 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.mellinPlancherel_of_fourier_only
 
 #print axioms MCore.RH.R0.mellin_residual_closed_form
+
+#print axioms MCore.RH.R0.mellin_residual_criticalLine
+
+#print axioms MCore.RH.R0.normSq_mellin_residual_criticalLine
+
+#print axioms MCore.RH.R0.mellin_residual_eq_fourier_logLift
+
+#print axioms MCore.RH.R0.residualCriticalFrequencyScaling_realized
+
+#print axioms MCore.RH.R0.residualLogLiftIsometry_realized
