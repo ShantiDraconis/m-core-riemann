@@ -29,7 +29,7 @@ theorem residualCriticalDensity_eq_fourier_scaled
     simp [criticalLine]
   rw [him] at hF
   rw [← hM, hF]
-  exact Complex.normSq_eq_abs _ |>.trans (by simp [Complex.abs])
+  exact Complex.normSq_eq_norm_sq _
 
 /-- The 2*pi frequency rescaling converts critical-line integration to Fourier integration. -/
 theorem criticalDensity_integral_scaling
