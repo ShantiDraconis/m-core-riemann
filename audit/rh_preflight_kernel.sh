@@ -18,6 +18,7 @@ files=(
   lean/MCore/RH/R0/ConcreteZeroObstruction.lean
   lean/MCore/RH/R0/ConcreteGramLogRate.lean
   lean/MCore/RH/R0/HardFrontierReduction.lean
+  lean/MCore/RH/R0/FrontierExposure.lean
   lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
   lean/MCore/RH/R0/ConcreteVanishingProducer.lean
   lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
@@ -44,6 +45,7 @@ lake env lean lean/MCore/RH/Analytic/MellinConcrete.lean
 lake env lean lean/MCore/RH/R0/ConcreteZeroObstruction.lean
 lake env lean lean/MCore/RH/R0/ConcreteGramLogRate.lean
 lake env lean lean/MCore/RH/R0/HardFrontierReduction.lean
+lake env lean lean/MCore/RH/R0/FrontierExposure.lean
 lake env lean lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
 lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
 lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
@@ -79,3 +81,5 @@ if [[ "$STRICT" -eq 1 ]]; then
 fi
 
 echo "[RH] STATUS=GREEN_PREFIX_OPEN_MATH"
+
+echo "[RH] MATERIAL_GATE_COMMAND=bash audit/rh_material_gate.sh"
