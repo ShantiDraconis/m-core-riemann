@@ -78,7 +78,16 @@ theorem residualCriticalLinePlancherel_of_log_fourier
   filter_upwards with t
   rw [← mellin_residual_critical_eq_fourier c t]
 
+/-- D3 Plancherel producer now needs only the two genuine L2 bridges. -/
+theorem residualCriticalLinePlancherel_of_two_bridges
+    (hlog : ResidualLogPullbackIsometry)
+    (hfourier : ResidualFourierPlancherel) :
+    ResidualCriticalLinePlancherel :=
+  residualCriticalLinePlancherel_of_log_fourier
+    hlog hfourier residualFrequencyScaling_realized
+
 #print axioms MCore.RH.R0.mellin_residual_critical_eq_fourier
+#print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_two_bridges
 #print axioms MCore.RH.R0.residualFrequencyScaling_realized
 #print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_log_fourier
 
