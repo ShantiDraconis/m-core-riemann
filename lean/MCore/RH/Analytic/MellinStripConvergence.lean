@@ -27,7 +27,7 @@ theorem rhoRepresentativeC_isBigO_zero
   refine IsBigO.of_bound 1 ?_
   filter_upwards [self_mem_nhdsWithin] with x hx
   have hx0 : 0 < x := hx
-  rw [norm_rhoRepresentativeC, Real.norm_eq_abs,
+  rw [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (rhoRepresentative_nonneg n x)]
   have hr := rhoRepresentative_le_one n x
   simpa [Real.rpow_zero] using hr
@@ -44,7 +44,7 @@ theorem rhoRepresentativeC_isBigO_atTop
   refine IsBigO.of_bound (1 / a) ?_
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
   have hx0 : 0 < x := zero_lt_one.trans hx
-  rw [norm_rhoRepresentativeC, Real.norm_eq_abs,
+  rw [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (rhoRepresentative_nonneg n x),
     rhoRepresentative_tail n hx]
   have hrpow : x ^ (-1 : ℝ) = x⁻¹ := by
