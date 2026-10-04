@@ -26,21 +26,18 @@ theorem fractional_mellin_nearZero_integrable
       (fun t : ℝ => ((t : ℂ) ^ (-s - 1)) * (Int.fract t : ℂ))
       (Ioc 0 1) := by
   rw [← intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one]
-  apply intervalIntegrable_congr
+  rw [intervalIntegrable_congr_uIoo
+    (g := fun t : ℝ => (t : ℂ) ^ (-s)) ?_]
+  · exact intervalIntegral.intervalIntegrable_cpow'
+      (by simp only [neg_re]; linarith)
   · intro t ht
-    rw [uIcc_of_le zero_le_one] at ht
-    by_cases h0 : t = 0
-    · subst t; simp
-    by_cases h1 : t = 1
-    · subst t; simp
-    have ht0 : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm h0)
-    have ht1 : t < 1 := lt_of_le_of_ne ht.2 h1
+    rw [uIoo_of_le zero_le_one] at ht
+    have ht0 : 0 < t := ht.1
+    have ht1 : t < 1 := ht.2
     rw [Int.fract_eq_self.2 ⟨ht0.le, ht1⟩]
     push_cast
     rw [← cpow_add ht0.ne']
     ring_nf
-  · exact intervalIntegral.intervalIntegrable_cpow'
-      (by simp only [neg_re]; linarith)
 
 /-- Split the Mellin transform of fract at t=1. -/
 theorem mellin_fract_split
