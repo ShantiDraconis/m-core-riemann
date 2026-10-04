@@ -50,6 +50,9 @@ theorem concreteResidual_norm_sq_eq_integral
       ∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x) := by
   rw [← real_inner_self_eq_norm_sq]
   rw [MeasureTheory.L2.inner_def]
+  change
+    (∫ x : ℝ in Ioi 0, @inner ℝ ℝ _ _ (concreteResidual c x) (concreteResidual c x)) =
+      ∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)
   apply integral_congr_ae
   filter_upwards [concreteResidual_coeFn_ae c] with x hx
   rw [hx]
@@ -64,12 +67,9 @@ theorem rexp_neg_deriv :
         (Real.exp ∘ Neg.neg)
         (-Real.exp (-u))
         Set.univ u :=
-  fun u _ => by
-    simpa using
-      HasDerivAt.scomp u
-        (Real.hasDerivAt_exp (-u))
-        (hasDerivAt_neg u)
-        |>.hasDerivWithinAt
+  fun u _ =>
+    mul_neg_one (Real.exp (-u)) ▸
+      ((Real.hasDerivAt_exp (-u)).comp u (hasDerivAt_neg u)).hasDerivWithinAt
 
 /-- Image of u -> exp(-u). -/
 theorem rexp_neg_image :
