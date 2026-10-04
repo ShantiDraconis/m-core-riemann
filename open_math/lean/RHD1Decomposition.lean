@@ -1,5 +1,6 @@
 import MCore.RH.Analytic.MellinRhoReduction
 import MCore.RH.Analytic.MellinTailRightReduction
+import MCore.RH.Analytic.MellinTailPartial
 import Lean
 
 open Lean Elab Tactic
@@ -43,7 +44,7 @@ theorem DISCOVER_D1_TAIL_SERIES_BRIDGE : ComplexTailIntegralSeriesBridge := by
 
 theorem DISCOVER_D1_TAIL_SERIES_CLOSED_FORM : ComplexTailSeriesClosedForm := by
   unfold ComplexTailSeriesClosedForm
-  d1_gap "TAIL_SERIES_CLOSED_FORM"
+  d1_gap "TAIL_SERIES_LIMIT_FROM_PARTIAL_FORMULA"
   exact ?_
 
 theorem DISCOVER_D1_TAIL_RIGHT
