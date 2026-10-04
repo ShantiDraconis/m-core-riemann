@@ -69,12 +69,14 @@ theorem mellin_rhoLinearCombinationC
             ((c i : ℂ) * rhoRepresentativeC i t) by
       funext t; simp [Finset.smul_sum]]
   rw [integral_finsetSum Finset.univ (fun i _ => hterm i)]
+  rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i hi
-  rw [← mellin]
-  rw [mellin_const_smul]
+  have hsmul :=
+    mellin_const_smul (rhoRepresentativeC i) s (c i : ℂ)
+  simp only [smul_eq_mul] at hsmul
+  rw [← hsmul]
   rw [mellin_rho_realized i s hs0 hs1]
-  simp [smul_eq_mul]
   ring
 
 /-- The residual itself is Mellin-convergent on the strip. -/
