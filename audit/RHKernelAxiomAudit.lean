@@ -245,3 +245,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.mellin_complexResidual
 
 #print axioms MCore.RH.R0.residual_plancherel_explicit
+
+#print axioms MCore.RH.R0.mellin_rhoCombinationC
+
+#print axioms MCore.RH.R0.mellin_residualRepresentativeC
