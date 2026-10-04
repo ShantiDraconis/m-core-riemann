@@ -1,3 +1,4 @@
+import MCore.RH.R0.GramExplicit
 import MCore.RH.R0.FrontierExposure
 import MCore.RH.R0.HardFrontierReduction
 import MCore.RH.R0.ConcreteGramLogRate
@@ -45,3 +46,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.gram_gap_iff_material_gap
 #print axioms MCore.RH.R0.material_gap_closes_terminal
 #print axioms MCore.RH.R0.orthogonal_witness_blocks_material_gap
+#print axioms MCore.RH.R0.concreteGramMatrix_posSemidef
+#print axioms MCore.RH.R0.concreteGramMatrix_posDef_iff_linearIndependent
+#print axioms MCore.RH.R0.concrete_normal_equations_iff_mulVec
+#print axioms MCore.RH.R0.optimalGramCoeff_mulVec
