@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.FourierCompatibilityRealization
+import MCore.RH.Analytic.FourierCompatibilityReduction
+import MCore.RH.Analytic.LogResidualMembership
 import MCore.RH.Analytic.FourierPlancherelBridge
 import MCore.RH.Analytic.LogResidualIsometry
 import MCore.RH.Analytic.ResidualPlancherelReduction
@@ -262,3 +265,11 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.classicalFourierPlancherel_of_compatibility
 
 #print axioms MCore.RH.R0.d3_fourier_gap_suffices
+
+#print axioms MCore.RH.R0.logResidualC_integrable
+
+#print axioms MCore.RH.R0.logResidualC_memLp_two
+
+#print axioms MCore.RH.R0.logResidualL1L2Producer_realized
+
+#print axioms MCore.RH.R0.fourierIntegralLpCompatibility_of_generic
