@@ -13,6 +13,7 @@ echo "[RH] PREKERNEL"
 echo "[RH] STRICT=$STRICT"
 
 files=(
+  lean/MCore/RH/NB/LogMajorantTendsto.lean
   lean/MCore/RH/R0/ConcreteVanishingProducer.lean
   lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
   lean/MCore/RH/R0/HardFrontier.lean
@@ -33,6 +34,7 @@ fi
 
 echo "[RH] SOURCE_HYGIENE=PASS"
 
+lake env lean lean/MCore/RH/NB/LogMajorantTendsto.lean
 lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
 lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
 lake env lean lean/MCore/RH/R0/HardFrontier.lean
