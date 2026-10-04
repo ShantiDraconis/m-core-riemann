@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.LogPullbackIsometry
 import MCore.RH.Analytic.FourierL1L2Bridge
 import MCore.RH.Analytic.ResidualLogIsometry
 import MCore.RH.Analytic.ResidualL2Integral
@@ -332,3 +333,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residualMellinNormSq_explicit
 
 #print axioms MCore.RH.R0.residual_mellin_plancherel_explicit
+
+#print axioms MCore.RH.R0.concreteResidual_norm_sq_eq_integral
+
+#print axioms MCore.RH.R0.residual_integral_eq_logPullback
+
+#print axioms MCore.RH.R0.d3_logPullbackIsometry_realized
