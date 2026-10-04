@@ -16,21 +16,32 @@ noncomputable def residualRepresentativeC
     {N : ℕ} (c : Fin N → ℝ) (x : ℝ) : ℂ :=
   chiRepresentativeC x - ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x
 
-/-- Mellin convergence of a finite generator combination on the critical strip. -/
+/-- Finite-subset Mellin convergence, preserving the concrete generator indices. -/
+theorem generatorCombination_finset_mellinConvergent
+    {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
+    (hs0 : 0 < s.re) (hs1 : s.re < 1)
+    (S : Finset (Fin N)) :
+    MellinConvergent
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s := by
+  classical
+  induction S using Finset.induction_on with
+  | empty =>
+      simp [MellinConvergent]
+  | @insert a S ha ih =>
+      rw [Finset.sum_insert ha]
+      exact
+        (hasMellin_add
+          ((rhoRepresentativeC_mellinConvergent a s hs0 hs1).const_smul (c a : ℂ))
+          ih).1
+
+/-- Mellin convergence of the full finite generator combination. -/
 theorem generatorCombination_mellinConvergent
     {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent
       (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s := by
-  classical
-  induction N with
-  | zero =>
-      simpa using (MellinConvergent.zero (s := s) (E := ℂ))
-  | succ N ih =>
-      rw [Fin.sum_univ_succ]
-      exact (rhoRepresentativeC_mellinConvergent 0 s hs0 hs1).const_smul (c 0 : ℂ)
-        |>.add (by
-          simpa using ih (fun i : Fin N => c i.succ))
+  simpa using
+    generatorCombination_finset_mellinConvergent c s hs0 hs1 Finset.univ
 
 /-- Mellin convergence of the full finite residual. -/
 theorem residualRepresentativeC_mellinConvergent
@@ -38,44 +49,43 @@ theorem residualRepresentativeC_mellinConvergent
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent (residualRepresentativeC c) s := by
   unfold residualRepresentativeC
-  exact (chiRepresentativeC_mellinConvergent s hs0).sub
-    (generatorCombination_mellinConvergent c s hs0 hs1)
+  exact (hasMellin_sub
+    (chiRepresentativeC_mellinConvergent s hs0)
+    (generatorCombination_mellinConvergent c s hs0 hs1)).1
 
-/-- Exact Mellin transform of the finite generator combination. -/
+/-- Mellin transform of an arbitrary finite subset of generators. -/
+theorem mellin_generatorCombination_finset
+    {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
+    (hs0 : 0 < s.re) (hs1 : s.re < 1)
+    (S : Finset (Fin N)) :
+    mellin
+      (fun x : ℝ => ∑ i ∈ S, (c i : ℂ) * rhoRepresentativeC i x) s =
+      ∑ i ∈ S, (c i : ℂ) * mellin (rhoRepresentativeC i) s := by
+  classical
+  induction S using Finset.induction_on with
+  | empty =>
+      simp
+  | @insert a S ha ih =>
+      rw [Finset.sum_insert ha, Finset.sum_insert ha]
+      have hadd :=
+        (hasMellin_add
+          ((rhoRepresentativeC_mellinConvergent a s hs0 hs1).const_smul (c a : ℂ))
+          (generatorCombination_finset_mellinConvergent c s hs0 hs1 S)).2
+      rw [hadd]
+      rw [mellin_const_smul]
+      rw [ih]
+
+/-- Exact Mellin transform of the full finite generator combination. -/
 theorem mellin_generatorCombination
     {N : ℕ} (c : Fin N → ℝ) (s : ℂ)
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     mellin
       (fun x : ℝ => ∑ i : Fin N, (c i : ℂ) * rhoRepresentativeC i x) s =
       - riemannZeta s / s * residualDirichletPolynomial c s := by
-  classical
-  induction N with
-  | zero =>
-      simp [residualDirichletPolynomial]
-  | succ N ih =>
-      rw [Fin.sum_univ_succ]
-      have h0 := mellin_const_smul (rhoRepresentativeC 0) s (c 0 : ℂ)
-      have hscomb :
-          mellin
-            (fun x : ℝ =>
-              (c 0 : ℂ) * rhoRepresentativeC 0 x +
-                ∑ i : Fin N, (c i.succ : ℂ) * rhoRepresentativeC i.succ x) s =
-          mellin (fun x : ℝ => (c 0 : ℂ) * rhoRepresentativeC 0 x) s +
-          mellin
-            (fun x : ℝ =>
-              ∑ i : Fin N, (c i.succ : ℂ) * rhoRepresentativeC i.succ x) s :=
-        (hasMellin_add
-          ((rhoRepresentativeC_mellinConvergent 0 s hs0 hs1).const_smul (c 0 : ℂ))
-          (by
-            simpa using
-              generatorCombination_mellinConvergent
-                (fun i : Fin N => c i.succ) s hs0 hs1)).2
-      rw [hscomb]
-      rw [h0]
-      rw [mellin_rho_realized 0 s hs0 hs1]
-      rw [ih (fun i : Fin N => c i.succ)]
-      simp [residualDirichletPolynomial, Fin.sum_univ_succ]
-      ring
+  rw [mellin_generatorCombination_finset c s hs0 hs1 Finset.univ]
+  simp_rw [mellin_rho_realized _ s hs0 hs1]
+  unfold residualDirichletPolynomial
+  ring
 
 /-- D3 algebraic layer: Mellin transform of the residual is exactly (1 + zeta*P_c)/s. -/
 theorem mellin_residual_closed_form
@@ -93,6 +103,8 @@ theorem mellin_residual_closed_form
   rw [mellin_generatorCombination c s hs0 hs1]
   ring
 
+#print axioms MCore.RH.R0.generatorCombination_mellinConvergent
+#print axioms MCore.RH.R0.mellin_generatorCombination
 #print axioms MCore.RH.R0.mellin_residual_closed_form
 
 end MCore.RH.R0
