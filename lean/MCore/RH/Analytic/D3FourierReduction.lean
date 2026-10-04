@@ -52,6 +52,19 @@ def ResidualCriticalFrequencyScaling : Prop :=
         ∫ t : ℝ,
           ‖𝓕 (residualLogLift c) (t / (2 * Real.pi))‖ ^ 2
 
+/-- The frequency rescaling t = 2πξ is completely mechanical. -/
+theorem residualCriticalFrequencyScaling_realized :
+    ResidualCriticalFrequencyScaling := by
+  intro N c
+  let H : ℝ → ℝ := fun ξ => ‖𝓕 (residualLogLift c) ξ‖ ^ 2
+  have hscale := Measure.integral_comp_div H (2 * Real.pi)
+  have h2pi : 0 < 2 * Real.pi := by positivity
+  rw [abs_of_pos h2pi] at hscale
+  change (∫ ξ : ℝ, H ξ) =
+    (1 / (2 * Real.pi)) * ∫ t : ℝ, H (t / (2 * Real.pi))
+  rw [hscale]
+  field_simp [ne_of_gt h2pi]
+
 /-- The three classical functional-analytic pieces imply the D3 producer. -/
 theorem residualMellinPlancherel_of_fourier
     (hlog : ResidualLogLiftIsometry)
@@ -66,6 +79,7 @@ theorem residualMellinPlancherel_of_fourier
   rw [← mellin_residual_eq_fourier_logLift c t]
 
 #print axioms MCore.RH.R0.mellin_residual_eq_fourier_logLift
+#print axioms MCore.RH.R0.residualCriticalFrequencyScaling_realized
 #print axioms MCore.RH.R0.residualMellinPlancherel_of_fourier
 
 end MCore.RH.R0
