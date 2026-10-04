@@ -1,4 +1,5 @@
 import MCore.RH.R0.FrontierExposure
+import MCore.RH.R0.GramExplicit
 import MCore.RH.R0.ConcreteGramLogRate
 import MCore.RH.R0.CriticalLineWeightedErrorRate
 import MCore.RH.NB.OrthogonalWitnessObstruction
@@ -36,7 +37,20 @@ theorem DISCOVER_material_inhabitant : ConcreteUniformLogDNBound := by
   refine ⟨discover_K, by norm_num, ?_⟩
   exact DISCOVER_h_bound
 
-/-- Stage 3: quantitative Gram form of the same open producer. -/
+/-- Stage 3a: expose the exact finite Gram system solved by the optimum. -/
+theorem DISCOVER_gram_system (N : ℕ) :
+    concreteGramMatrix N *ᵥ optimalGramCoeff N =
+      concreteTargetVector N := by
+  exact optimalGramCoeff_mulVec N
+
+/-- Stage 3b: force the next algebraic question: is the finite Gram matrix positive definite? -/
+theorem DISCOVER_gram_posDef (N : ℕ) :
+    (concreteGramMatrix N).PosDef := by
+  rw [concreteGramMatrix_posDef_iff_linearIndependent]
+  trace_state
+  exact ?_
+
+/-- Stage 3c: quantitative Gram form of the same material producer. -/
 theorem DISCOVER_gram_rate : Nonempty ConcreteGramLogRate := by
   refine ⟨{
     K := discover_K
@@ -48,6 +62,10 @@ theorem DISCOVER_gram_rate : Nonempty ConcreteGramLogRate := by
   · intro N j
     exact optimalGramCoeff_normal N j
   · intro N
+    have hsystem :
+        concreteGramMatrix N *ᵥ optimalGramCoeff N =
+          concreteTargetVector N :=
+      optimalGramCoeff_mulVec N
     trace_state
     exact ?_
 
