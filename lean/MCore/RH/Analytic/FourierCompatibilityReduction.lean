@@ -1,4 +1,3 @@
-import MCore.RH.Analytic.LogResidualMembership
 import MCore.RH.Analytic.MellinPlancherelDecomposition
 import MCore.RH.Analytic.ResidualMellin
 
@@ -34,14 +33,6 @@ theorem fourierIntegralLpCompatibility_of_L1L2
   rcases hmem N c with ⟨d⟩
   exact ⟨d.memL2, hcompat (logResidualC c) d.integrable d.memL2⟩
 
-/-- The residual-specific Fourier wrapper now depends only on the generic L1∩L2 theorem. -/
-theorem fourierIntegralLpCompatibility_of_generic
-    (hcompat : L1L2FourierCompatibility) :
-    FourierIntegralLpCompatibility :=
-  fourierIntegralLpCompatibility_of_L1L2
-    logResidualL1L2Producer_realized hcompat
-
 #print axioms MCore.RH.R0.fourierIntegralLpCompatibility_of_L1L2
-#print axioms MCore.RH.R0.fourierIntegralLpCompatibility_of_generic
 
 end MCore.RH.R0
