@@ -48,17 +48,24 @@ theorem regularizedZeta_analyticAt_one :
 theorem regularizedZeta_analyticAt
     {s : ℂ} (hs : s ≠ 1) :
     AnalyticAt ℂ regularizedZeta s := by
-  have hdiff :
-      DifferentiableAt ℂ
-        (fun z : ℂ => riemannZeta z - 1 / (z - 1)) s := by
-    exact (differentiableAt_riemannZeta hs).sub
-      ((differentiableAt_const _).div
-        (differentiableAt_id.sub_const _)
-        (sub_ne_zero.mpr hs))
-  apply DifferentiableAt.analyticAt
-  apply hdiff.congr_of_eventuallyEq
-  filter_upwards [eventually_ne_nhds hs] with t ht
-  simp [regularizedZeta, ht]
+  let U : Set ℂ := {1}ᶜ
+  apply DifferentiableOn.analyticAt (s := U)
+  · intro z hz
+    have hz1 : z ≠ 1 := by
+      simpa [U] using hz
+    have hbase :
+        DifferentiableAt ℂ
+          (fun w : ℂ => riemannZeta w - 1 / (w - 1)) z := by
+      exact (differentiableAt_riemannZeta hz1).sub
+        ((differentiableAt_const _).div
+          (differentiableAt_id.sub_const _)
+          (sub_ne_zero.mpr hz1))
+    have hreg : DifferentiableAt ℂ regularizedZeta z := by
+      apply hbase.congr_of_eventuallyEq
+      filter_upwards [eventually_ne_nhds hz1] with t ht
+      simp [regularizedZeta, ht]
+    exact hreg.differentiableWithinAt
+  · exact isOpen_compl_singleton.mem_nhds hs
 
 /-- The pole-removed zeta is analytic everywhere. -/
 theorem regularizedZeta_analytic :
