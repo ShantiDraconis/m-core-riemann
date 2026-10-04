@@ -2,6 +2,8 @@ import MCore.RH.Analytic.MellinPlancherelDecomposition
 import MCore.RH.Analytic.MellinFrequencyRescale
 import MCore.RH.Analytic.MellinLogPullback
 import MCore.RH.Analytic.MellinResidualNormBridge
+import Mathlib.Analysis.Fourier.Inversion
+import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Lean
 
 namespace MCore.RH.R0
@@ -18,11 +20,12 @@ elab "d3_gap " name:str : tactic => do
   IO.FS.writeFile s!"/tmp/rh_d3_gap_{name.getString}.txt" body
 
 /-!
-D3.2 decomposition for the pinned Mathlib revision.
+Pinned-Mathlib D3.2 decomposition.
 
-The pinned dependency has Fourier integrals and inversion, but no L2 Fourier
-extension / Plancherel API. We therefore expose the minimal standard-analysis
-obligations needed for the *specific* criticalLogPullback family.
+The pinned revision has Fourier integrals, Gaussian transforms and inversion,
+but no packaged L2 Fourier extension.  We therefore use the standard
+non-circular Gaussian regularization proof of Plancherel for the specific
+criticalLogPullback family.
 -/
 
 /-- D3.2.0: the logarithmic pullback is L1. -/
@@ -35,86 +38,94 @@ def D3_LogPullbackMemL2 : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
     MemLp (criticalLogPullback c) 2 volume
 
-/-- Gaussian regularization in frequency. -/
-noncomputable def d3GaussianMultiplier (ε t : ℝ) : ℂ :=
-  Complex.exp (-(ε : ℂ) * (t : ℂ) ^ 2)
+/-- Frequency Gaussian for the analyst Fourier convention exp(-2*pi*i*x*xi). -/
+noncomputable def d3GaussianMultiplier (ε t : ℝ) : ℝ :=
+  Real.exp (-Real.pi * ε * t ^ 2)
 
-/-- D3.2.2: the Gaussian-regularized Fourier square is integrable. -/
-def D3_RegularizedFourierIntegrable : Prop :=
-  ∀ (N : ℕ) (c : Fin N → ℝ) (ε : ℝ), 0 < ε →
-    Integrable
-      (fun t : ℝ =>
-        Complex.normSq
-          (d3GaussianMultiplier ε t * 𝓕 (criticalLogPullback c) t))
+/-- Normalized heat kernel whose Fourier transform is d3GaussianMultiplier. -/
+noncomputable def d3HeatKernel (ε x : ℝ) : ℝ :=
+  ε⁻¹ ^ (1 / 2 : ℝ) * Real.exp (-Real.pi * x ^ 2 / ε)
+
+/-- Heat regularization K_ε * f. -/
+noncomputable def d3HeatRegularization
+    {N : ℕ} (c : Fin N → ℝ) (ε u : ℝ) : ℂ :=
+  ∫ v : ℝ, (d3HeatKernel ε (u - v) : ℂ) * criticalLogPullback c v
 
 /--
-D3.2.3: regularized Plancherel identity.  This is the finite-epsilon
-identity obtainable from Fubini + the explicit Fourier transform of a Gaussian.
+D3.2.2: Gaussian/Fourier convolution identity.  This is a direct Fourier
+integral computation and does not invoke L2 Plancherel.
 -/
-def D3_RegularizedPlancherel : Prop :=
+def D3_GaussianConvolutionIdentity : Prop :=
+  ∀ (N : ℕ) (c : Fin N → ℝ) (ε : ℝ), 0 < ε →
+    ∀ u : ℝ,
+      𝓕 (d3HeatRegularization c ε) u =
+        (d3GaussianMultiplier ε u : ℂ) * 𝓕 (criticalLogPullback c) u
+
+/--
+D3.2.3: regularized energy identity obtained from the pinned bilinear Fourier
+identity (not from Plancherel).
+-/
+def D3_RegularizedEnergyIdentity : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ) (ε : ℝ), 0 < ε →
     (∫ t : ℝ,
-      Complex.normSq
-        (d3GaussianMultiplier ε t * 𝓕 (criticalLogPullback c) t)) =
-    ∫ u : ℝ,
-      Complex.normSq
-        (∫ v : ℝ,
-          Real.exp (-(Real.pi ^ 2 / ε) * (u - v) ^ 2) •
-            criticalLogPullback c v)
+      d3GaussianMultiplier ε t *
+        Complex.normSq (𝓕 (criticalLogPullback c) t)) =
+    Complex.re
+      (∫ u : ℝ,
+        criticalLogPullback c u *
+          conj (d3HeatRegularization c ε u))
 
 /--
-D3.2.4: Gaussian approximate identity converges in L2 back to the pullback.
+D3.2.4: heat regularization converges to f in the L2 pairing needed on the
+spatial side.
 -/
-def D3_GaussianApproximationL2 : Prop :=
+def D3_HeatPairingLimit : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
     Tendsto
       (fun ε : ℝ =>
-        ∫ u : ℝ,
-          Complex.normSq
-            (∫ v : ℝ,
-              Real.exp (-(Real.pi ^ 2 / ε) * (u - v) ^ 2) •
-                criticalLogPullback c v))
+        Complex.re
+          (∫ u : ℝ,
+            criticalLogPullback c u *
+              conj (d3HeatRegularization c ε u)))
       (𝓝[>] 0)
       (𝓝 (∫ u : ℝ, Complex.normSq (criticalLogPullback c u)))
 
 /--
-D3.2.5: remove the Gaussian multiplier on the Fourier side.
+D3.2.5: remove the frequency Gaussian. Since 0<=m_ε<=1 and m_ε↑1 as
+ε↓0, this is the monotone/dominated convergence step.
 -/
 def D3_RemoveGaussianFrequency : Prop :=
   ∀ (N : ℕ) (c : Fin N → ℝ),
     Tendsto
       (fun ε : ℝ =>
         ∫ t : ℝ,
-          Complex.normSq
-            (d3GaussianMultiplier ε t * 𝓕 (criticalLogPullback c) t))
+          d3GaussianMultiplier ε t *
+            Complex.normSq (𝓕 (criticalLogPullback c) t))
       (𝓝[>] 0)
       (𝓝 (∫ t : ℝ, Complex.normSq (𝓕 (criticalLogPullback c) t)))
 
-/-- The two limiting statements plus the regularized identity give D3.2. -/
+/-- The two limits and the regularized identity imply the required Fourier Plancherel bridge. -/
 theorem d3_fourierPlancherel_of_regularized
-    (hreg : D3_RegularizedPlancherel)
-    (hspace : D3_GaussianApproximationL2)
+    (hreg : D3_RegularizedEnergyIdentity)
+    (hspace : D3_HeatPairingLimit)
     (hfreq : D3_RemoveGaussianFrequency) :
     D3_FourierPlancherelBridge := by
   intro N c
-  have heq :
-      ∀ ε : ℝ, 0 < ε →
-        (∫ t : ℝ,
-          Complex.normSq
-            (d3GaussianMultiplier ε t * 𝓕 (criticalLogPullback c) t)) =
-        ∫ u : ℝ,
-          Complex.normSq
-            (∫ v : ℝ,
-              Real.exp (-(Real.pi ^ 2 / ε) * (u - v) ^ 2) •
-                criticalLogPullback c v) :=
-    hreg N c
-  exact tendsto_nhds_unique
-    (hfreq N c)
-    ((hspace N c).congr'
-      (filter_mono (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ))
-        (by intro s hs; exact hs)
-      |>.filter_mono
-        (Eventually.of_forall fun ε hε => (heq ε hε).symm)))
+  let F : ℝ → ℝ := fun ε =>
+    ∫ t : ℝ,
+      d3GaussianMultiplier ε t *
+        Complex.normSq (𝓕 (criticalLogPullback c) t)
+  let G : ℝ → ℝ := fun ε =>
+    Complex.re
+      (∫ u : ℝ,
+        criticalLogPullback c u *
+          conj (d3HeatRegularization c ε u))
+  have hFG : F =ᶠ[𝓝[>] (0 : ℝ)] G := by
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    exact hreg N c ε hε
+  have hF := hfreq N c
+  have hG := hspace N c
+  exact tendsto_nhds_unique hF (hG.congr' hFG.symm)
 
 theorem DISCOVER_D3_LOG_L1 : D3_LogPullbackIntegrable := by
   unfold D3_LogPullbackIntegrable
@@ -126,17 +137,26 @@ theorem DISCOVER_D3_LOG_L2 : D3_LogPullbackMemL2 := by
   d3_gap "LOG_PULLBACK_L2"
   exact ?_
 
-theorem DISCOVER_D3_REGULARIZED_PLANCHEREL : D3_RegularizedPlancherel := by
-  unfold D3_RegularizedPlancherel
-  d3_gap "REGULARIZED_PLANCHEREL"
+theorem DISCOVER_D3_GAUSSIAN_CONVOLUTION :
+    D3_GaussianConvolutionIdentity := by
+  unfold D3_GaussianConvolutionIdentity
+  d3_gap "GAUSSIAN_CONVOLUTION"
   exact ?_
 
-theorem DISCOVER_D3_GAUSSIAN_L2_LIMIT : D3_GaussianApproximationL2 := by
-  unfold D3_GaussianApproximationL2
-  d3_gap "GAUSSIAN_L2_LIMIT"
+theorem DISCOVER_D3_REGULARIZED_ENERGY :
+    D3_RegularizedEnergyIdentity := by
+  unfold D3_RegularizedEnergyIdentity
+  d3_gap "REGULARIZED_ENERGY_IDENTITY"
   exact ?_
 
-theorem DISCOVER_D3_REMOVE_GAUSSIAN_FREQ : D3_RemoveGaussianFrequency := by
+theorem DISCOVER_D3_HEAT_PAIRING_LIMIT :
+    D3_HeatPairingLimit := by
+  unfold D3_HeatPairingLimit
+  d3_gap "HEAT_PAIRING_LIMIT"
+  exact ?_
+
+theorem DISCOVER_D3_REMOVE_GAUSSIAN_FREQ :
+    D3_RemoveGaussianFrequency := by
   unfold D3_RemoveGaussianFrequency
   d3_gap "REMOVE_GAUSSIAN_FREQUENCY"
   exact ?_
