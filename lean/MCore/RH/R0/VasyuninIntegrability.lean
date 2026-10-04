@@ -63,7 +63,7 @@ theorem rationalAutocorrelationIntegrable_realized :
         (Ioc 0 δ) := by
     have hconst :
         IntegrableOn (fun _ : ℝ => (h : ℝ) / (k : ℝ)) (Ioc 0 δ) := by
-      exact integrableOn_const.2 (measure_Ioc_lt_top)
+      exact integrableOn_const measure_Ioc_lt_top.ne
     refine hconst.congr_fun ?_ measurableSet_Ioc
     intro t ht
     exact (rationalAutocorrelationIntegrand_near_zero h k hh hk ht.1 ht.2).symm
@@ -74,9 +74,13 @@ theorem rationalAutocorrelationIntegrable_realized :
       AEStronglyMeasurable
         (rationalAutocorrelationIntegrand h k)
         (volume.restrict (Ioi δ)) := by
-    unfold rationalAutocorrelationIntegrand
-    exact ((((measurable_const.div measurable_const).mul measurable_id).fract.mul
-      measurable_id.fract).div (measurable_id.pow_const 2)).aestronglyMeasurable.restrict
+    have hratio : Measurable (fun t : ℝ => ((h : ℝ) / (k : ℝ)) * t) :=
+      measurable_const.mul measurable_id
+    have hnum : Measurable (fun t : ℝ =>
+        Int.fract (((h : ℝ) / (k : ℝ)) * t) * Int.fract t) :=
+      hratio.fract.mul measurable_id.fract
+    have hden : Measurable (fun t : ℝ => t ^ 2) := measurable_id.pow_const 2
+    exact (hnum.div hden).aestronglyMeasurable.restrict
   have htail :
       IntegrableOn
         (rationalAutocorrelationIntegrand h k)
