@@ -22,6 +22,11 @@ files=(
   lean/MCore/RH/R0/GramExplicit.lean
   lean/MCore/RH/R0/LinearIndependentReduction.lean
   lean/MCore/RH/R0/ExponentialUniqueness.lean
+  lean/MCore/RH/R0/GramInverse.lean
+  lean/MCore/RH/R0/LinearIndependent.lean
+  lean/MCore/RH/R0/BaseMellinPositive.lean
+  lean/MCore/RH/R0/WeightedScaling.lean
+  lean/MCore/RH/R0/WeightedIntegralLinearity.lean
   lean/MCore/RH/R0/WeightedIntegrability.lean
   lean/MCore/RH/R0/LpToAE.lean
   lean/MCore/RH/R0/RhoBasicFacts.lean
