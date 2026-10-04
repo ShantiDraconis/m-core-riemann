@@ -61,3 +61,5 @@ import MCore.RH.Analytic.CriticalLineResidual
 
 import MCore.RH.Analytic.MellinResidual
 import MCore.RH.Analytic.MellinPlancherelReduction
+
+import MCore.Frontier.R01Concrete
