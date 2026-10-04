@@ -74,13 +74,28 @@ theorem tailFormulaRight_realized : TailFormulaRight := by
       ring
     · exact integrableOn_Ioi_cpow_of_lt
         (by simp only [neg_re]; linarith) zero_lt_one
-    · exact integrableOn_Ioi_cpow_of_lt
-        (by simp only [sub_re, neg_re, one_re]; linarith) zero_lt_one
-        |>.mul_bounded
+    · have hpow :
+          IntegrableOn
+            (fun t : ℝ => (t : ℂ) ^ (-s - 1))
+            (Ioi 1) :=
+        integrableOn_Ioi_cpow_of_lt
+          (by simp only [sub_re, neg_re, one_re]; linarith)
+          zero_lt_one
+      apply Integrable.mono' hpow.norm
+      · exact AEStronglyMeasurable.mul
+          hpow.aestronglyMeasurable
           ((measurable_id.fract).ofReal.aestronglyMeasurable.restrict)
-          (by filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
-              exact norm_le_one_iff.mpr ⟨by simp, by
-                simpa using (Int.fract_lt_one t).le⟩)
+      · filter_upwards [self_mem_ae_restrict measurableSet_Ioi] with t ht
+        rw [norm_mul]
+        have hfract : ‖(Int.fract t : ℂ)‖ ≤ 1 := by
+          rw [Complex.norm_real, Real.norm_eq_abs,
+            abs_of_nonneg (Int.fract_nonneg t)]
+          exact (Int.fract_lt_one t).le
+        calc
+          ‖(t : ℂ) ^ (-s - 1)‖ * ‖(Int.fract t : ℂ)‖
+              ≤ ‖(t : ℂ) ^ (-s - 1)‖ * 1 :=
+            mul_le_mul_of_nonneg_left hfract (norm_nonneg _)
+          _ = ‖(t : ℂ) ^ (-s - 1)‖ := by ring
   have hpowint :
       (∫ t : ℝ in Ioi 1, (t : ℂ) ^ (-s)) = 1 / (s - 1) := by
     rw [integral_Ioi_cpow_of_lt
