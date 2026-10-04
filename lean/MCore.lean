@@ -24,4 +24,4 @@ import MCore.RH.R0.ConcreteLogMajorantProducer
 import MCore.RH.R0.HardFrontier
 import MCore.RH.R0.FinalKernelComposition
 
-import MCore.RH.Analytic.MellinTailContinuation
+import MCore.RH.Analytic.D1KernelEntry
