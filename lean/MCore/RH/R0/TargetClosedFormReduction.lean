@@ -45,9 +45,38 @@ theorem target_closed_form_of_transform_tail
 def TargetElementaryIntervalIdentity : Prop :=
   ∀ a : ℝ, 1 ≤ a →
     (1 / a) *
-      (∫ t : ℝ in Ioc (1 / a) 1, Int.fract t / (t ^ 2)) =
+      (∫ t : ℝ in Ioo (1 / a) 1, Int.fract t / (t ^ 2)) =
       Real.log a / a
 
+
+/-- The elementary lower interval contributes exactly log(a)/a. -/
+theorem target_elementary_interval_identity_realized :
+    TargetElementaryIntervalIdentity := by
+  intro a ha
+  have ha0 : 0 < a := lt_of_lt_of_le zero_lt_one ha
+  have hdiv0 : 0 < 1 / a := one_div_pos.mpr ha0
+  have hcongr :
+      (∫ t : ℝ in Ioo (1 / a) 1, Int.fract t / (t ^ 2)) =
+        ∫ t : ℝ in Ioo (1 / a) 1, t⁻¹ := by
+    apply setIntegral_congr_fun measurableSet_Ioo
+    intro t ht
+    have ht0 : 0 < t := hdiv0.trans ht.1
+    have ht1 : t < 1 := ht.2
+    rw [Int.fract_eq_self.2 ⟨ht0.le, ht1⟩]
+    field_simp
+  rw [hcongr]
+  rw [MeasureTheory.integral_Ioo_eq_integral_Ioc]
+  have hint :
+      (∫ t : ℝ in Ioc (1 / a) 1, t⁻¹) =
+        Real.log a := by
+    rw [← intervalIntegral.integral_of_le (le_of_lt hdiv0)]
+    rw [intervalIntegral.integral_inv_of_pos hdiv0 zero_lt_one]
+    rw [one_div_div]
+    simp [ha0.ne']
+  rw [hint]
+  ring
+
+#print axioms MCore.RH.R0.target_elementary_interval_identity_realized
 #print axioms MCore.RH.R0.target_closed_form_of_transform_tail
 
 end MCore.RH.R0
