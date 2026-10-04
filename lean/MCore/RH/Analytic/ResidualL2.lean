@@ -52,22 +52,62 @@ theorem residual_normSq_integrable
   rw [memLp_two_iff_integrable_sq_norm h.aestronglyMeasurable] at h
   simpa [zeroInfinityMeasure] using h
 
+/-- Literal measurability of the complex residual. -/
+theorem residualRepresentativeC_measurable
+    {N : ℕ} (c : Fin N → ℝ) :
+    Measurable (residualRepresentativeC c) := by
+  classical
+  unfold residualRepresentativeC rhoCombinationC chiRepresentativeC rhoRepresentativeC
+  apply Measurable.sub
+  · exact chiRepresentative_measurable.ofReal
+  · exact Finset.measurable_sum _ (fun i _ =>
+      Measurable.mul measurable_const
+        ((rhoRepresentative_measurable_public i).ofReal))
+
+/-- The logarithmic pullback is measurable on the real line. -/
+theorem residual_logPullback_measurable
+    {N : ℕ} (c : Fin N → ℝ) :
+    Measurable (logPullback (residualRepresentativeC c)) := by
+  unfold logPullback
+  apply Measurable.smul
+  · exact (Real.measurable_exp.comp (measurable_id.neg.div_const 2))
+  · exact (residualRepresentativeC_measurable c).comp
+      (Real.measurable_exp.comp measurable_id.neg)
+
+/-- Square norm of the logarithmic pullback is integrable. -/
+theorem residual_logPullback_normSq_integrable
+    {N : ℕ} (c : Fin N → ℝ) :
+    Integrable
+      (fun u : ℝ => ‖logPullback (residualRepresentativeC c) u‖ ^ 2)
+      volume := by
+  let g : ℝ → ℝ := fun x => ‖residualRepresentativeC c x‖ ^ 2
+  have hg : IntegrableOn g (Ioi 0) := by
+    simpa [g] using residual_normSq_integrable c
+  have hexp :
+      Integrable (fun u : ℝ => Real.exp u * g (Real.exp u)) volume := by
+    simpa [smul_eq_mul] using (integrable_comp_exp g).2 hg
+  have hneg :
+      Integrable
+        ((fun u : ℝ => Real.exp u * g (Real.exp u)) ∘ fun u : ℝ => -u)
+        volume :=
+    (Measure.measurePreserving_neg (volume : Measure ℝ)).integrable_comp_of_integrable hexp
+  apply Integrable.congr hneg
+  exact Eventually.of_forall (fun u => by
+    unfold Function.comp g logPullback
+    simp only [neg_neg, Real.norm_eq_abs, norm_smul]
+    rw [abs_of_pos (Real.exp_pos _)]
+    rw [show - (u / 2) = (-u) / 2 by ring]
+    rw [sq, mul_assoc, ← Real.exp_add]
+    congr 1
+    ring)
+
 /-- The logarithmic pullback of the residual is L2 on the full real line. -/
 theorem residual_logPullback_memLp_two
     {N : ℕ} (c : Fin N → ℝ) :
     MemLp (logPullback (residualRepresentativeC c)) 2 volume := by
-  have hmeas :
-      AEStronglyMeasurable (logPullback (residualRepresentativeC c)) volume := by
-    exact (continuous_const.smul
-      (((residualRepresentativeC_memLp_two c).aestronglyMeasurable.comp_quasiMeasurePreserving
-        (Real.quasiMeasurePreserving_exp.comp
-          (MeasureTheory.quasiMeasurePreserving_neg volume)))))
-  rw [memLp_two_iff_integrable_sq_norm hmeas]
-  have hres := residual_normSq_integrable c
-  have hEq := residual_logPullback_normSq_integral c
-  exact Integrable.of_integral_norm_lt_top (by
-    rw [hEq]
-    exact hres.integral_norm_lt_top)
+  rw [memLp_two_iff_integrable_sq_norm
+    (residual_logPullback_measurable c).aestronglyMeasurable]
+  exact residual_logPullback_normSq_integrable c
 
 #print axioms MCore.RH.R0.residualRepresentativeC_memLp_two
 #print axioms MCore.RH.R0.residual_logPullback_memLp_two
