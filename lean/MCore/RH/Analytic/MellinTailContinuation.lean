@@ -84,24 +84,30 @@ theorem fractionalTailKernel_mellin_differentiableAt
       dsimp [b]
       linarith)
 
+/-- Pointwise differentiability of the fractional tail on Re(s)>0. -/
+theorem fractionalTailComplex_differentiableAt
+    {s : ℂ} (hs : 0 < s.re) :
+    DifferentiableAt ℂ fractionalTailComplex s := by
+  have hneg : (-s).re < 0 := by
+    simpa only [neg_re, neg_lt_zero] using hs
+  have hdiff :
+      DifferentiableAt ℂ (fun z : ℂ => mellin fractionalTailKernel (-z)) s := by
+    exact (fractionalTailKernel_mellin_differentiableAt hneg).comp s
+      differentiableAt_id.neg
+  apply hdiff.congr_of_eventuallyEq
+  exact Eventually.of_forall (fun z => (fractionalTailComplex_eq_mellin z).symm)
+
 /-- Material producer for D1.2: the fractional tail is analytic throughout Re(s)>0. -/
 theorem tailMellinAnalytic_realized : TailMellinAnalytic := by
   intro s hs
   have hspos : 0 < s.re := by
     simpa [positiveHalfPlane] using hs
-  have hneg : (-s).re < 0 := by
-    simpa only [neg_re, neg_lt_zero] using hspos
-  have hdiff :
-      DifferentiableAt ℂ (fun z : ℂ => mellin fractionalTailKernel (-z)) s := by
-    exact (fractionalTailKernel_mellin_differentiableAt hneg).comp s
-      differentiableAt_id.neg
-  have hfun :
-      (fun z : ℂ => mellin fractionalTailKernel (-z)) =
-        fractionalTailComplex := by
-    funext z
-    exact (fractionalTailComplex_eq_mellin z).symm
-  rw [hfun] at hdiff
-  exact hdiff.analyticAt
+  apply DifferentiableOn.analyticAt (s := positiveHalfPlane)
+  · intro z hz
+    have hzpos : 0 < z.re := by
+      simpa [positiveHalfPlane] using hz
+    exact (fractionalTailComplex_differentiableAt hzpos).differentiableWithinAt
+  · exact (isOpen_lt continuous_const continuous_re).mem_nhds hspos
 
 /-- D1.2 is fully realized from the concrete Mellin producer. -/
 theorem tailAnalyticContinuation_realized :
