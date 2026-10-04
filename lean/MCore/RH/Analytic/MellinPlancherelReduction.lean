@@ -44,7 +44,7 @@ theorem mellin_residual_criticalLine
 /-- Norm-square of a critical-line point. -/
 theorem criticalLinePoint_normSq (t : ℝ) :
     Complex.normSq (criticalLinePoint t) = (1 / 4 : ℝ) + t ^ 2 := by
-  simp [criticalLinePoint, Complex.normSq_apply]
+  simp [criticalLinePoint, mul_comm, Complex.normSq_add_mul_I]
   ring
 
 /-- Pointwise explicit D3 integrand. -/
