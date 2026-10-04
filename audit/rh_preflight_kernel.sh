@@ -23,6 +23,7 @@ files=(
   lean/MCore/RH/R0/LinearIndependentReduction.lean
   lean/MCore/RH/R0/ExponentialUniqueness.lean
   lean/MCore/RH/R0/GramInverse.lean
+  lean/MCore/RH/R0/ExplicitGramRate.lean
   lean/MCore/RH/Analytic/MellinTarget.lean
   lean/MCore/RH/Analytic/MellinRhoReduction.lean
   lean/MCore/RH/Analytic/MellinTailPartial.lean
