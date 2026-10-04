@@ -41,3 +41,5 @@ import MCore.RH.Analytic.MellinPlancherelFourierReduction
 import MCore.RH.R0.VasyuninStructural
 
 import MCore.RH.R0.VasyuninGCD
+
+import MCore.RH.Analytic.FourierLpCompatibility
