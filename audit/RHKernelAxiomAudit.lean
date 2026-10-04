@@ -1,3 +1,4 @@
+import MCore.RH.R0.ConcreteGramLogRate
 import MCore.RH.R0.ConcreteZeroObstruction
 import MCore.RH.NB.OrthogonalWitnessObstruction
 import MCore.RH.Analytic.MellinConcrete
@@ -29,3 +30,8 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.NB.NBHilbertData.orthogonalWitnessDelta_le_DN
 #print axioms MCore.RH.NB.NBHilbertData.not_DNToZero_of_orthogonal_witness
 #print axioms MCore.RH.R0.no_ConcreteUniformLogDNBound_of_orthogonal_witness
+#print axioms MCore.RH.R0.optimalGramCoeff_reduced_energy
+#print axioms MCore.RH.R0.optimalGramCoeff_normal
+#print axioms MCore.RH.R0.ConcreteGramLogRate.toUniformLogDNBound
+#print axioms MCore.RH.R0.uniformLogDNBound_to_ConcreteGramLogRate
+#print axioms MCore.RH.R0.concreteGramLogRate_iff_uniformLogDNBound
