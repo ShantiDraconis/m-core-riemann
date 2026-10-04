@@ -30,7 +30,7 @@ The first goal is now the fully explicit inverse-Gram/autocorrelation inequality
 theorem DISCOVER_explicit_gram_rate :
     ExplicitGramRateTarget := by
   unfold ExplicitGramRateTarget explicitGramResidual explicitOptimalCoeff
-  unfold explicitTargetVector explicitGramMatrix
+  unfold explicitTargetVector explicitGramMatrix fractionalAutocorrelation rhoIndex logMajorant
   rh_material_gap "EXPLICIT_GRAM_RATE"
   exact ?_
 
