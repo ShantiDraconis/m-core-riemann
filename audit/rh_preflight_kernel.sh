@@ -15,6 +15,8 @@ echo "[RH] STRICT=$STRICT"
 files=(
   lean/MCore/RH/NB/LogMajorantTendsto.lean
   lean/MCore/RH/Analytic/MellinConcrete.lean
+  lean/MCore/RH/R0/ConcreteZeroObstruction.lean
+  lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
   lean/MCore/RH/R0/ConcreteVanishingProducer.lean
   lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
   lean/MCore/RH/R0/HardFrontier.lean
@@ -37,6 +39,8 @@ echo "[RH] SOURCE_HYGIENE=PASS"
 
 lake env lean lean/MCore/RH/NB/LogMajorantTendsto.lean
 lake env lean lean/MCore/RH/Analytic/MellinConcrete.lean
+lake env lean lean/MCore/RH/R0/ConcreteZeroObstruction.lean
+lake env lean lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
 lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
 lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
 lake env lean lean/MCore/RH/R0/HardFrontier.lean
