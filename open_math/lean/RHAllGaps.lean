@@ -3,9 +3,18 @@ import MCore.RH.R0.GramExplicit
 import MCore.RH.R0.HardFrontierReduction
 import MCore.RH.R0.ConcreteZeroObstruction
 import MCore.RH.Analytic.MellinConcrete
-import «open_math».lean.DumpGaps
+import Lean
 
 open scoped BigOperators
+
+open Lean Elab Tactic
+
+elab "dump_gap " name:str : tactic => do
+  let g ← getMainGoal
+  let fmt ← g.withContext do ppGoal g
+  let body := toString fmt
+  logInfo m!"[RH-GAP:{name.getString}]\\n{body}"
+  IO.FS.writeFile s!"/tmp/rh_gap_{name.getString}.txt" body
 
 namespace MCore.RH.R0
 
@@ -117,7 +126,7 @@ theorem GAP_C5_GRAM_CLOSED_FORM :
 /-- D1. Base generator Mellin identity on the convergence strip. -/
 theorem GAP_D1_MELLIN_RHO_BASE_ZETA (s : ℂ)
     (hs0 : 0 < s.re) (hs1 : s.re < 1) :
-    mellin rhoRepresentativeC 0 s =
+    mellin (rhoRepresentativeC 0) s =
       - riemannZeta s / s := by
   dump_gap "D1_MELLIN_RHO_BASE_ZETA"
   exact ?_
