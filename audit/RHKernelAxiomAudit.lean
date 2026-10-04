@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.MellinPlancherelBridges
 import MCore.RH.Analytic.CriticalLineResidual
 import MCore.RH.Analytic.ResidualMellinAlgebra
 import MCore.RH.Analytic.FourierCompatibilityRealization
@@ -289,3 +290,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.normSq_mellin_concreteResidualC_criticalLine
 
 #print axioms MCore.RH.R0.d3_residual_identity_of_plancherel
+
+#print axioms MCore.RH.R0.mellin_residual_critical_eq_fourier
+
+#print axioms MCore.RH.R0.residualFrequencyScaling_realized
+
+#print axioms MCore.RH.R0.residualLogPullbackIsometry_realized
