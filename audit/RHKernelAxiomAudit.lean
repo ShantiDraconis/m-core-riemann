@@ -379,3 +379,5 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.vasyuninUnitBlockCore_summable
 
 #print axioms MCore.RH.R0.fractionalAutocorrelation_eq_sum_residue_classes
+
+#print axioms MCore.RH.R0.residual_mellin_critical_line
