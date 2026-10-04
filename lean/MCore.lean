@@ -53,3 +53,6 @@ import MCore.RH.Analytic.MellinPlancherelCoreReduction
 import MCore.RH.Analytic.D3FourierReduction
 
 import MCore.RH.Analytic.FourierCompatibilityRealization
+
+import MCore.RH.Analytic.MellinStripConvergence
+import MCore.RH.Analytic.ResidualMellinAlgebra
