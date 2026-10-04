@@ -29,3 +29,5 @@ import MCore.RH.Analytic.D1KernelEntry
 import MCore.RH.Analytic.D3PinnedGap
 
 import MCore.RH.Analytic.E1EvaluationReduction
+
+import MCore.RH.R0.ExplicitGramRate
