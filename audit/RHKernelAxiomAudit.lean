@@ -1,3 +1,5 @@
+import MCore.RH.Analytic.MellinPlancherelFourierReduction
+import MCore.RH.Analytic.MellinFourierBridge
 import MCore.RH.Analytic.ResidualNormBridge
 import MCore.RH.Analytic.MellinCriticalLine
 import MCore.RH.R0.VasyuninFiniteGram
@@ -198,3 +200,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.explicitResidualMellinPlancherel_of_bridges
 
 #print axioms MCore.RH.R0.residualRepresentativeNormBridge_realized
+
+#print axioms MCore.RH.R0.mellin_residual_eq_fourierIntegral_logPullback
+
+#print axioms MCore.RH.R0.residualMellinPlancherel_of_fourier_bridges
