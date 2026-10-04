@@ -26,10 +26,10 @@ theorem fractionalTailKernel_norm_le_one (t : ℝ) :
 /-- The cutoff fractional-part kernel is locally integrable on (0,∞). -/
 theorem fractionalTailKernel_locallyIntegrable :
     LocallyIntegrableOn fractionalTailKernel (Ioi 0) := by
-  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm
+  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono
     fractionalTailKernel_aestronglyMeasurable ?_
   filter_upwards with t
-  simpa only [enorm_le_enorm_iff] using fractionalTailKernel_norm_le_one t
+  simpa using fractionalTailKernel_norm_le_one t
 
 /-- At infinity the cutoff fractional-part kernel is O(1). -/
 theorem fractionalTailKernel_isBigO_atTop :
@@ -95,7 +95,7 @@ theorem tailMellinAnalytic_realized : TailMellinAnalytic := by
   have hdiff :
       DifferentiableAt ℂ (fun z : ℂ => mellin fractionalTailKernel (-z)) s := by
     exact (fractionalTailKernel_mellin_differentiableAt hneg).comp s
-      (differentiableAt_neg s)
+      differentiableAt_id.neg
   have hfun :
       (fun z : ℂ => mellin fractionalTailKernel (-z)) =
         fractionalTailComplex := by
