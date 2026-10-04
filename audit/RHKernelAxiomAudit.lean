@@ -1,3 +1,4 @@
+import MCore.RH.R0.VasyuninStructural
 import MCore.RH.Analytic.MellinPlancherelFourierReduction
 import MCore.RH.Analytic.MellinFourierBridge
 import MCore.RH.Analytic.ResidualNormBridge
@@ -204,3 +205,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.mellin_residual_eq_fourierIntegral_logPullback
 
 #print axioms MCore.RH.R0.residualMellinPlancherel_of_fourier_bridges
+
+#print axioms MCore.RH.R0.vasyuninGramEntry_diag
+
+#print axioms MCore.RH.R0.vasyuninGramEntry_symm
+
+#print axioms MCore.RH.R0.vasyuninGramMatrix_symm
