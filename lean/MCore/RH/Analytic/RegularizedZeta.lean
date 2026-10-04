@@ -71,8 +71,10 @@ theorem continuedFractionalTail_analyticAt
     AnalyticAt ℂ continuedFractionalTail s := by
   unfold continuedFractionalTail
   have hs0 : s ≠ 0 := ne_zero_of_re_pos hs
-  exact ((analyticAt_const.sub (regularizedZeta_analytic s)).div
-    analyticAt_id hs0)
+  exact AnalyticAt.div
+    (analyticAt_const.sub (regularizedZeta_analytic s))
+    analyticAt_id
+    hs0
 
 /-- Away from s=1 this is exactly the familiar zeta expression. -/
 theorem continuedFractionalTail_eq_zeta
