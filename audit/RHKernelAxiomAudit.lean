@@ -1,3 +1,4 @@
+import MCore.RH.R0.VasyuninRateReduction
 import MCore.RH.Analytic.FourierLpCompatibility
 import MCore.RH.Analytic.FourierPlancherelReduction
 import MCore.RH.Analytic.LogPullbackNorm
@@ -225,3 +226,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.fourier_energy_frequency_rescale
 
 #print axioms MCore.RH.R0.residualFourierPlancherel_of_compatibility
+
+#print axioms MCore.RH.R0.finiteVasyuninRateTarget_iff_uniformLogDNBound_of_coprime
+
+#print axioms MCore.RH.R0.terminal_of_finiteVasyuninRate
