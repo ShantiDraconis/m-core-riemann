@@ -1,50 +1,54 @@
-import MCore.RH.Analytic.MellinCriticalDensity
-import MCore.RH.R0.ConcreteGramLogRate
+import MCore.RH.Analytic.MellinCriticalLine
+import MCore.RH.R0.LpToAE
 
 namespace MCore.RH.R0
 
-open MeasureTheory Complex
+open MeasureTheory Set
 
 /--
-The exact generic L2 Mellin-Plancherel statement needed by D3.
-This is deliberately isolated from the zeta/Dirichlet algebra.
+Bridge from the frozen Hilbert residual norm to the literal complex representative.
+This is purely an L2/coercion statement; no Mellin analysis is hidden here.
 -/
-def MellinPlancherelProducer : Prop :=
-  ∀ f : ℝ → ℂ,
-    MemLp f 2 zeroInfinityMeasure →
-      (∫ x : ℝ in Set.Ioi 0, ‖f x‖ ^ 2) =
-        (1 / (2 * Real.pi)) *
-          ∫ t : ℝ, ‖mellin f (criticalLine t)‖ ^ 2
+def ResidualRepresentativeNormBridge : Prop :=
+  ∀ {N : ℕ} (c : Fin N → ℝ),
+    ‖concreteNBData.chi - concreteFiniteCombination c‖ ^ 2 =
+      ∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)
 
 /--
-Residual-level Plancherel target: once the generic producer exists,
-the zeta/Dirichlet density is already explicit.
+Exact Mellin--Plancherel identity for the residual representative.
+This is the only harmonic-analysis producer in D3.
 -/
 def ResidualMellinPlancherel : Prop :=
   ∀ {N : ℕ} (c : Fin N → ℝ),
-    MemLp (residualRepresentativeC c) 2 zeroInfinityMeasure →
-      (∫ x : ℝ in Set.Ioi 0, ‖residualRepresentativeC c x‖ ^ 2) =
-        (1 / (2 * Real.pi)) *
-          ∫ t : ℝ, criticalResidualDensity c t
+    (∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)) =
+      (1 / (2 * Real.pi)) *
+        ∫ t : ℝ,
+          Complex.normSq
+            (mellin (residualRepresentativeC c) (criticalLine t))
 
-theorem residualMellinPlancherel_of_generic
-    (h : MellinPlancherelProducer) :
-    ResidualMellinPlancherel := by
-  intro N c hmem
-  rw [h (residualRepresentativeC c) hmem]
-  apply congrArg (fun z : ℝ => (1 / (2 * Real.pi)) * z)
+/-- Final explicit D3 target, with all zeta/Dirichlet algebra exposed. -/
+def ExplicitResidualMellinPlancherel : Prop :=
+  ∀ {N : ℕ} (c : Fin N → ℝ),
+    ‖concreteNBData.chi - concreteFiniteCombination c‖ ^ 2 =
+      (1 / (2 * Real.pi)) *
+        ∫ t : ℝ,
+          Complex.normSq
+            (1 + riemannZeta (criticalLine t) *
+              concreteDirichletPolynomial c (criticalLine t)) /
+            ((1 / 4 : ℝ) + t ^ 2)
+
+/-- D3 follows from exactly two structural bridges; the zeta algebra is already closed. -/
+theorem explicitResidualMellinPlancherel_of_bridges
+    (hL2 : ResidualRepresentativeNormBridge)
+    (hMP : ResidualMellinPlancherel) :
+    ExplicitResidualMellinPlancherel := by
+  intro N c
+  rw [hL2 c, hMP c]
+  congr 1
   apply integral_congr_ae
   filter_upwards with t
-  exact residual_mellin_critical_sq c t
+  exact normSq_mellin_residual_criticalLine c t
 
-/--
-D3 is now reduced to exactly one analytic producer.
--/
-theorem d3_reduced_to_mellin_plancherel :
-    MellinPlancherelProducer → ResidualMellinPlancherel :=
-  residualMellinPlancherel_of_generic
-
-#print axioms MCore.RH.R0.residualMellinPlancherel_of_generic
-#print axioms MCore.RH.R0.d3_reduced_to_mellin_plancherel
+#print axioms MCore.RH.R0.explicitResidualMellinPlancherel_of_bridges
 
 end MCore.RH.R0
