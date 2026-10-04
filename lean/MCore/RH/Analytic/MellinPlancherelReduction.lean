@@ -1,6 +1,6 @@
 import MCore.RH.Analytic.MellinResidual
 import MCore.RH.R0.GramEnergy
-import Mathlib.Analysis.Fourier.LpSpace
+import Mathlib.Analysis.Fourier.FourierTransform
 import Mathlib.Analysis.MellinInversion
 
 namespace MCore.RH.R0
