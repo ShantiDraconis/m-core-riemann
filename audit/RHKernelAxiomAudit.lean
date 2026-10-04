@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.MellinConcrete
 import MCore.RH.R0.RHKernelEntry
 
 #print axioms MCore.RH.R0.concreteVanishingUpperBound_to_FINAL_ROOT
@@ -20,3 +21,5 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.rh_material_producer_closes_terminal
 #print axioms MCore.RH.R0.rh_material_producer_nonempty_closes_terminal
 #print axioms MCore.RH.R0.rh_kernel_entry_MaterialProducer
+#print axioms MCore.RH.R0.rhoRepresentativeC_eq_dilate
+#print axioms MCore.RH.R0.mellin_rhoRepresentativeC_dilate
