@@ -133,75 +133,75 @@ fi
 
 echo "[RH] SOURCE_HYGIENE=PASS"
 
-lake env lean lean/MCore/RH/NB/LogMajorantTendsto.lean
-lake env lean lean/MCore/RH/Analytic/MellinConcrete.lean
-lake env lean lean/MCore/RH/R0/ConcreteZeroObstruction.lean
-lake env lean lean/MCore/RH/R0/ConcreteGramLogRate.lean
-lake env lean lean/MCore/RH/R0/HardFrontierReduction.lean
-lake env lean lean/MCore/RH/R0/FrontierExposure.lean
-lake env lean lean/MCore/RH/R0/GramExplicit.lean
-lake env lean lean/MCore/RH/R0/LinearIndependentReduction.lean
-lake env lean lean/MCore/RH/R0/VasyuninStructural.lean
-lake env lean lean/MCore/RH/R0/VasyuninGCD.lean
-lake env lean lean/MCore/RH/R0/VasyuninRateReduction.lean
-lake env lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
-lake env lean lean/MCore/RH/Analytic/D1KernelEntry.lean
-lake env lean lean/MCore/RH/Analytic/ResidualMellinAlgebra.lean
-lake env lean lean/MCore/RH/Analytic/CriticalLineResidual.lean
-lake env lean lean/MCore/RH/Analytic/MellinResidual.lean
-lake env lean lean/MCore/RH/Analytic/FourierL1L2Bridge.lean
-lake env lean lean/MCore/RH/Analytic/ResidualLogIsometry.lean
-lake env lean lean/MCore/RH/Analytic/MellinPlancherelBridge.lean
-lake env lean lean/MCore/RH/Analytic/ResidualL2Integral.lean
-lake env lean lean/MCore/RH/Analytic/ResidualNormBridge.lean
-lake env lean lean/MCore/RH/Analytic/MellinPlancherelFourierReduction.lean
-lake env lean lean/MCore/RH/Analytic/FourierLpCompatibility.lean
-lake env lean lean/MCore/RH/Analytic/FourierPlancherelReduction.lean
-lake env lean lean/MCore/RH/Analytic/LogPullbackNorm.lean
-lake env lean lean/MCore/RH/Analytic/MellinFourierBridge.lean
-lake env lean lean/MCore/RH/Analytic/MellinCriticalLine.lean
-lake env lean lean/MCore/RH/Analytic/ResidualMellin.lean
-lake env lean lean/MCore/RH/Analytic/FourierPlancherelBridge.lean
-lake env lean lean/MCore/RH/Analytic/LogResidualIsometry.lean
-lake env lean lean/MCore/RH/Analytic/ResidualPlancherelReduction.lean
-lake env lean lean/MCore/RH/Analytic/MellinPlancherelCoreReduction.lean
-lake env lean lean/MCore/RH/Analytic/MellinLogIsometry.lean
-lake env lean lean/MCore/RH/Analytic/D3PinnedGap.lean
-lake env lean lean/MCore/RH/Analytic/E1EvaluationReduction.lean
-lake env lean lean/MCore/RH/Analytic/OffLineZeroReflection.lean
-lake env lean lean/MCore/RH/Analytic/CriticalEvaluationKernel.lean
-lake env lean lean/MCore/RH/Analytic/D3LogLiftIsometry.lean
-lake env lean lean/MCore/RH/Analytic/D3FourierReduction.lean
-lake env lean lean/MCore/RH/Analytic/FourierCompatibilityRealization.lean
-lake env lean lean/MCore/RH/Analytic/FourierCompatibilityReduction.lean
-lake env lean lean/MCore/RH/Analytic/LogResidualMembership.lean
-lake env lean lean/MCore/RH/Analytic/D3Reduction.lean
-lake env lean lean/MCore/RH/Analytic/ResidualCriticalLine.lean
-lake env lean lean/MCore/RH/Analytic/MellinStripConvergence.lean
-lake env lean lean/MCore/RH/Analytic/MellinResidualAlgebra.lean
-lake env lean lean/MCore/RH/Analytic/MellinPlancherelReduction.lean
-lake env lean lean/MCore/RH/Analytic/LogPullbackIsometry.lean
-lake env lean lean/MCore/RH/Analytic/FourierMellinCriticalLine.lean
-lake env lean lean/MCore/RH/Analytic/CriticalLogPullbackL2.lean
-lake env lean lean/MCore/RH/Analytic/FourierPlancherelPinnedGap.lean
-lake env lean lean/MCore/RH/Analytic/D3SingleGap.lean
-lake env lean lean/MCore/RH/Analytic/MellinPlancherelEasyLaws.lean
-lake env lean lean/MCore/RH/Analytic/MellinPlancherelDecomposition.lean
-lake env lean lean/MCore/RH/Analytic/MellinCriticalDensity.lean
-lake env lean lean/MCore/RH/Analytic/CriticalLineBasic.lean
-lake env lean lean/MCore/RH/Analytic/MellinTargetConvergence.lean
-lake env lean lean/MCore/RH/Analytic/MellinRhoConvergence.lean
-lake env lean lean/MCore/RH/Analytic/MellinRhoClosedForm.lean
-lake env lean lean/MCore/RH/Analytic/MellinTailContinuationReduction.lean
-lake env lean lean/MCore/RH/Analytic/RegularizedZeta.lean
-lake env lean lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
-lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
-lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
-lake env lean lean/MCore/RH/R0/HardFrontier.lean
-lake env lean lean/MCore/RH/R0/FinalKernelComposition.lean
-lake env lean lean/MCore/RH/R0/ConcreteInhabitantKernelAudit.lean
-lake env lean lean/MCore/RH/R0/RHKernelEntry.lean
-lake env lean audit/RHKernelAxiomAudit.lean
+lake env lean -R lean lean/MCore/RH/NB/LogMajorantTendsto.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinConcrete.lean
+lake env lean -R lean lean/MCore/RH/R0/ConcreteZeroObstruction.lean
+lake env lean -R lean lean/MCore/RH/R0/ConcreteGramLogRate.lean
+lake env lean -R lean lean/MCore/RH/R0/HardFrontierReduction.lean
+lake env lean -R lean lean/MCore/RH/R0/FrontierExposure.lean
+lake env lean -R lean lean/MCore/RH/R0/GramExplicit.lean
+lake env lean -R lean lean/MCore/RH/R0/LinearIndependentReduction.lean
+lake env lean -R lean lean/MCore/RH/R0/VasyuninStructural.lean
+lake env lean -R lean lean/MCore/RH/R0/VasyuninGCD.lean
+lake env lean -R lean lean/MCore/RH/R0/VasyuninRateReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
+lake env lean -R lean lean/MCore/RH/Analytic/D1KernelEntry.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualMellinAlgebra.lean
+lake env lean -R lean lean/MCore/RH/Analytic/CriticalLineResidual.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinResidual.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierL1L2Bridge.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualLogIsometry.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinPlancherelBridge.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualL2Integral.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualNormBridge.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinPlancherelFourierReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierLpCompatibility.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierPlancherelReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/LogPullbackNorm.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinFourierBridge.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinCriticalLine.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualMellin.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierPlancherelBridge.lean
+lake env lean -R lean lean/MCore/RH/Analytic/LogResidualIsometry.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualPlancherelReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinPlancherelCoreReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinLogIsometry.lean
+lake env lean -R lean lean/MCore/RH/Analytic/D3PinnedGap.lean
+lake env lean -R lean lean/MCore/RH/Analytic/E1EvaluationReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/OffLineZeroReflection.lean
+lake env lean -R lean lean/MCore/RH/Analytic/CriticalEvaluationKernel.lean
+lake env lean -R lean lean/MCore/RH/Analytic/D3LogLiftIsometry.lean
+lake env lean -R lean lean/MCore/RH/Analytic/D3FourierReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierCompatibilityRealization.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierCompatibilityReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/LogResidualMembership.lean
+lake env lean -R lean lean/MCore/RH/Analytic/D3Reduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/ResidualCriticalLine.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinStripConvergence.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinResidualAlgebra.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinPlancherelReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/LogPullbackIsometry.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierMellinCriticalLine.lean
+lake env lean -R lean lean/MCore/RH/Analytic/CriticalLogPullbackL2.lean
+lake env lean -R lean lean/MCore/RH/Analytic/FourierPlancherelPinnedGap.lean
+lake env lean -R lean lean/MCore/RH/Analytic/D3SingleGap.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinPlancherelEasyLaws.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinPlancherelDecomposition.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinCriticalDensity.lean
+lake env lean -R lean lean/MCore/RH/Analytic/CriticalLineBasic.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinTargetConvergence.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinRhoConvergence.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinRhoClosedForm.lean
+lake env lean -R lean lean/MCore/RH/Analytic/MellinTailContinuationReduction.lean
+lake env lean -R lean lean/MCore/RH/Analytic/RegularizedZeta.lean
+lake env lean -R lean lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
+lake env lean -R lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
+lake env lean -R lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
+lake env lean -R lean lean/MCore/RH/R0/HardFrontier.lean
+lake env lean -R lean lean/MCore/RH/R0/FinalKernelComposition.lean
+lake env lean -R lean lean/MCore/RH/R0/ConcreteInhabitantKernelAudit.lean
+lake env lean -R lean lean/MCore/RH/R0/RHKernelEntry.lean
+lake env lean -R lean audit/RHKernelAxiomAudit.lean
 
 echo "[RH] MODULE_KERNEL=PASS"
 
