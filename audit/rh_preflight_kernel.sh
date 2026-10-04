@@ -52,6 +52,9 @@ files=(
   lean/MCore/RH/Analytic/ResidualPlancherelReduction.lean
   lean/MCore/RH/Analytic/MellinPlancherelCoreReduction.lean
   lean/MCore/RH/Analytic/MellinLogIsometry.lean
+  lean/MCore/RH/Analytic/FourierAeBridgeReduction.lean
+  lean/MCore/RH/Analytic/FourierPointwiseBridgeReduction.lean
+  lean/MCore/RH/Analytic/ResidualLogPullbackLp.lean
   lean/MCore/RH/Analytic/D3PinnedGap.lean
   lean/MCore/RH/Analytic/E1EvaluationReduction.lean
   lean/MCore/RH/Analytic/OffLineZeroReflection.lean
