@@ -26,9 +26,10 @@ theorem fractionalTailKernel_norm_le_one (t : ℝ) :
 /-- The cutoff fractional-part kernel is locally integrable on (0,∞). -/
 theorem fractionalTailKernel_locallyIntegrable :
     LocallyIntegrableOn fractionalTailKernel (Ioi 0) := by
-  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono
+  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm
     fractionalTailKernel_aestronglyMeasurable ?_
   filter_upwards with t
+  rw [enorm_le_iff_norm_le]
   simpa using fractionalTailKernel_norm_le_one t
 
 /-- At infinity the cutoff fractional-part kernel is O(1). -/
@@ -58,12 +59,13 @@ theorem fractionalTailKernel_isBigO_nhdsGT :
 /-- The set-integral tail is exactly the Mellin transform of the cutoff kernel at -s. -/
 theorem fractionalTailComplex_eq_mellin (s : ℂ) :
     fractionalTailComplex s = mellin fractionalTailKernel (-s) := by
-  rw [fractionalTailComplex, mellin]
-  rw [← integral_indicator measurableSet_Ioi]
+  rw [fractionalTailComplex, mellin, fractionalTailKernel]
+  simp_rw [← indicator_smul]
+  rw [setIntegral_indicator measurableSet_Ioi]
+  rw [inter_eq_right.mpr (Ioi_subset_Ioi zero_le_one)]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t ht
   have ht0 : 0 < t := zero_lt_one.trans ht
-  rw [fractionalTailKernel, Set.indicator_of_mem ht]
   simp only [smul_eq_mul]
   congr 1
   rw [← cpow_add (ofReal_ne_zero.mpr ht0.ne')]
