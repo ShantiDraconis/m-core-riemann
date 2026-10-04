@@ -1,6 +1,7 @@
 import MCore.RH.Analytic.MellinPlancherelBridges
 import MCore.RH.Analytic.MellinLogIsometry
 import MCore.RH.Analytic.FourierAeBridgeReduction
+import MCore.RH.Analytic.FourierL1L2AgreementReduction
 import Lean
 
 open Lean Elab Tactic
@@ -18,10 +19,16 @@ theorem DISCOVER_D3_LOG_ISOMETRY :
     ResidualLogPullbackIsometry :=
   residualLogPullbackIsometry_realized
 
-theorem DISCOVER_D3_POINTWISE_AE :
-    ResidualPointwiseFourierAeBridge := by
-  d3_gap "POINTWISE_FOURIER_EQ_L2_AE"
+theorem DISCOVER_D3_L1_L2_FOURIER :
+    L1L2FourierAgreement := by
+  unfold L1L2FourierAgreement
+  d3_gap "GENERIC_L1_L2_FOURIER_AGREEMENT"
   exact ?_
+
+theorem DISCOVER_D3_POINTWISE_AE
+    (h : L1L2FourierAgreement) :
+    ResidualPointwiseFourierAeBridge :=
+  residualPointwiseFourierAeBridge_of_L1L2 h
 
 theorem DISCOVER_D3_FOURIER_PLANCHEREL
     (h : ResidualPointwiseFourierAeBridge) :
