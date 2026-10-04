@@ -1,3 +1,4 @@
+import MCore.RH.Analytic.FourierMellinCriticalLine
 import MCore.RH.Analytic.LogPullbackIsometry
 import MCore.RH.Analytic.FourierL1L2Bridge
 import MCore.RH.Analytic.ResidualLogIsometry
@@ -339,3 +340,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residual_integral_eq_logPullback
 
 #print axioms MCore.RH.R0.d3_logPullbackIsometry_realized
+
+#print axioms MCore.RH.R0.mellin_criticalLine_eq_fourier
+
+#print axioms MCore.RH.R0.fourier_integral_eq_mellin_line
+
+#print axioms MCore.RH.R0.d3_fourierToMellinLine_realized
