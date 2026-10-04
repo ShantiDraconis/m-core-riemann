@@ -45,7 +45,7 @@ theorem residual_mellin_critical_line
 /-- The denominator on the critical line has squared norm 1/4+t^2. -/
 theorem criticalLinePoint_norm_sq (t : ℝ) :
     Complex.normSq (criticalLinePoint t) = (1 / 4 : ℝ) + t ^ 2 := by
-  simp [criticalLinePoint, Complex.normSq, pow_two]
+  simp [criticalLinePoint, Complex.normSq_apply, pow_two]
   ring
 
 /-- Squared norm of the residual Mellin transform in fully explicit zeta form. -/
@@ -57,9 +57,7 @@ theorem residual_mellin_norm_sq_critical_line
           residualDirichletPolynomial c (criticalLinePoint t)) /
         ((1 / 4 : ℝ) + t ^ 2) := by
   rw [residual_mellin_critical_line c t]
-  rw [norm_div, sq_div_sq, ← Complex.normSq_eq_abs, ← Complex.normSq_eq_abs]
-  rw [criticalLinePoint_norm_sq]
-  rfl
+  rw [Complex.sq_norm, Complex.normSq_div, criticalLinePoint_norm_sq]
 
 /--
 Once critical-line Mellin Plancherel is supplied, D3 becomes a direct rewrite:
