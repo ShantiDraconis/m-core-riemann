@@ -1,5 +1,6 @@
 import MCore.RH.R0.FrontierExposure
 import MCore.RH.R0.GramExplicit
+import MCore.RH.R0.LinearIndependentReduction
 import MCore.RH.R0.ConcreteGramLogRate
 import MCore.RH.R0.CriticalLineWeightedErrorRate
 import MCore.RH.NB.OrthogonalWitnessObstruction
@@ -43,12 +44,30 @@ theorem DISCOVER_gram_system (N : ℕ) :
       concreteTargetVector N := by
   exact optimalGramCoeff_mulVec N
 
-/-- Stage 3b: force the next algebraic question: is the finite Gram matrix positive definite? -/
+/-- Stage 3b.1: expose the analytic L2-to-Mellin bridge needed for independence. -/
+theorem DISCOVER_moment_bridge (N : ℕ) :
+    ConcreteMomentBridge N := by
+  unfold ConcreteMomentBridge
+  intro c hzero s hs0 hs1
+  set_option pp.all true in
+    trace_state
+  exact ?_
+
+/-- Stage 3b.2: expose finite exponential uniqueness on the Mellin strip. -/
+theorem DISCOVER_moment_uniqueness (N : ℕ) :
+    ConcreteMomentUniqueness N := by
+  unfold ConcreteMomentUniqueness
+  intro c hmom i
+  set_option pp.all true in
+    trace_state
+  exact ?_
+
+/-- Stage 3b.3: positive definiteness then closes mechanically. -/
 theorem DISCOVER_gram_posDef (N : ℕ) :
     (concreteGramMatrix N).PosDef := by
-  rw [concreteGramMatrix_posDef_iff_linearIndependent]
-  trace_state
-  exact ?_
+  exact concreteGramMatrix_posDef_of_moments N
+    (DISCOVER_moment_bridge N)
+    (DISCOVER_moment_uniqueness N)
 
 /-- Stage 3c: quantitative Gram form of the same material producer. -/
 theorem DISCOVER_gram_rate : Nonempty ConcreteGramLogRate := by
