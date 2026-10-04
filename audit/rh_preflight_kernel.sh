@@ -55,6 +55,9 @@ files=(
   lean/MCore/RH/Analytic/CriticalEvaluationKernel.lean
   lean/MCore/RH/Analytic/D3LogLiftIsometry.lean
   lean/MCore/RH/Analytic/D3FourierReduction.lean
+  lean/MCore/RH/Analytic/FourierCompatibilityRealization.lean
+  lean/MCore/RH/Analytic/FourierCompatibilityReduction.lean
+  lean/MCore/RH/Analytic/LogResidualMembership.lean
   lean/MCore/RH/Analytic/D3Reduction.lean
   lean/MCore/RH/Analytic/ResidualCriticalLine.lean
   lean/MCore/RH/Analytic/MellinStripConvergence.lean
@@ -141,6 +144,9 @@ lake env lean lean/MCore/RH/Analytic/OffLineZeroReflection.lean
 lake env lean lean/MCore/RH/Analytic/CriticalEvaluationKernel.lean
 lake env lean lean/MCore/RH/Analytic/D3LogLiftIsometry.lean
 lake env lean lean/MCore/RH/Analytic/D3FourierReduction.lean
+lake env lean lean/MCore/RH/Analytic/FourierCompatibilityRealization.lean
+lake env lean lean/MCore/RH/Analytic/FourierCompatibilityReduction.lean
+lake env lean lean/MCore/RH/Analytic/LogResidualMembership.lean
 lake env lean lean/MCore/RH/Analytic/D3Reduction.lean
 lake env lean lean/MCore/RH/Analytic/ResidualCriticalLine.lean
 lake env lean lean/MCore/RH/Analytic/MellinStripConvergence.lean
