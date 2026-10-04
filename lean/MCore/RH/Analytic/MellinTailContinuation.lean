@@ -64,13 +64,8 @@ theorem fractionalTailComplex_eq_mellin (s : ℂ) :
   rw [setIntegral_indicator measurableSet_Ioi]
   rw [inter_eq_right.mpr (Ioi_subset_Ioi zero_le_one)]
   apply setIntegral_congr_fun measurableSet_Ioi
-  intro t ht
-  have ht0 : 0 < t := zero_lt_one.trans ht
-  simp only [smul_eq_mul]
-  congr 1
-  rw [← cpow_add (ofReal_ne_zero.mpr ht0.ne')]
-  congr 1
-  ring
+  intro t _
+  rfl
 
 /-- The Mellin transform of the cutoff fractional-part kernel is holomorphic for Re(z)<0. -/
 theorem fractionalTailKernel_mellin_differentiableAt
