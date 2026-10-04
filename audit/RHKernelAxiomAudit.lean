@@ -230,3 +230,5 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.finiteVasyuninRateTarget_iff_uniformLogDNBound_of_coprime
 
 #print axioms MCore.RH.R0.terminal_of_finiteVasyuninRate
+
+#print axioms MCore.RH.R0.residualRepresentativeC_mellinConvergent
