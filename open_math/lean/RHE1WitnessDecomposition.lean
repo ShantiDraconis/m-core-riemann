@@ -1,5 +1,6 @@
 import MCore.RH.R0.ConcreteZeroObstruction
 import MCore.RH.Analytic.MellinConcrete
+import MCore.RH.Analytic.RawPowerL2Obstruction
 import Lean
 
 open Lean Elab Tactic
@@ -34,15 +35,11 @@ def E1_RawPowerTailCondition (β : ℝ) : Prop :=
 
 theorem DISCOVER_E1_NEAR_ZERO (β : ℝ) :
     E1_RawPowerNearZeroCondition β ↔ 1 / 2 < β := by
-  unfold E1_RawPowerNearZeroCondition
-  e1_gap "RAW_POWER_NEAR_ZERO"
-  exact ?_
+  exact rawPower_nearZero_iff β
 
 theorem DISCOVER_E1_TAIL (β : ℝ) :
     E1_RawPowerTailCondition β ↔ β < 1 / 2 := by
-  unfold E1_RawPowerTailCondition
-  e1_gap "RAW_POWER_TAIL"
-  exact ?_
+  exact rawPower_tail_iff β
 
 /-- The actual missing object: a genuine L2 witness in the frozen carrier. -/
 def E1_CorrectWitnessProducer : Prop :=
