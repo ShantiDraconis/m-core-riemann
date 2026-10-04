@@ -24,7 +24,7 @@ fi
 
 echo "[RH-DISCOVERY] STATUS=EXPECTED_OPEN_MATH_FAILURE"
 echo "[RH-DISCOVERY] LEAN_EXIT=$code"
-echo "[RH-DISCOVERY] GAP_ID=ConcreteUniformLogDNBound"
-echo "[RH-DISCOVERY] The Lean error output above is the current exact proof-state frontier."
+echo "[RH-DISCOVERY] GAP_ID=ExplicitGramRateTarget"
+echo "[RH-DISCOVERY] The Lean error output above is the explicit inverse-Gram/autocorrelation proof-state frontier."
 echo "[RH-DISCOVERY] This failure does not affect MCore because the challenge is not imported."
 exit 2
