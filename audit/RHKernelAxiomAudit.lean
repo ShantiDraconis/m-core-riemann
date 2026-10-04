@@ -1,3 +1,6 @@
+import MCore.RH.Analytic.FourierL1L2Bridge
+import MCore.RH.Analytic.ResidualLogIsometry
+import MCore.RH.Analytic.ResidualL2Integral
 import MCore.RH.Analytic.FourierL1L2AgreementReduction
 import MCore.RH.Analytic.ResidualLogPullbackL1
 import MCore.RH.Analytic.FourierAeBridgeReduction
@@ -311,3 +314,13 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residualLogPullback_integrable
 
 #print axioms MCore.RH.R0.residualCriticalLinePlancherel_of_L1L2
+
+#print axioms MCore.RH.R0.residualL2IntegralIdentity_realized
+
+#print axioms MCore.RH.R0.residual_mellin_eq_fourierIntegral
+
+#print axioms MCore.RH.R0.criticalLineFrequencyScaling_realized
+
+#print axioms MCore.RH.R0.residualLogL2Isometry_realized
+
+#print axioms MCore.RH.R0.d3_of_fourierCompatibility
