@@ -113,3 +113,7 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.d1_kernel_entry_continuation
 
 #print axioms MCore.RH.R0.d1_kernel_entry_mellin
+
+#print axioms MCore.RH.R0.mellin_rho_realized
+
+#print axioms MCore.RH.R0.d1_kernel_entry_rho_family
