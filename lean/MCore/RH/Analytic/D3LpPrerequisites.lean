@@ -83,6 +83,79 @@ theorem residualLogPullbackMemL1_realized :
 
 #print axioms MCore.RH.R0.residualCriticalMellinL1_realized
 #print axioms MCore.RH.R0.residualLogPullback_integrable
+/-- Finite complex rho combinations remain in L2 on the frozen positive-half-line measure. -/
+theorem concreteFiniteCombinationC_memLp_two
+    {N : ℕ} (c : Fin N → ℝ) :
+    MemLp (concreteFiniteCombinationC c) 2 zeroInfinityMeasure := by
+  classical
+  unfold concreteFiniteCombinationC
+  induction (Finset.univ : Finset (Fin N)) using Finset.induction_on with
+  | empty =>
+      simpa using (memLp_zero : MemLp (fun _ : ℝ => (0 : ℂ)) 2 zeroInfinityMeasure)
+  | @insert a S ha ih =>
+      rw [Finset.sum_insert ha]
+      exact MemLp.add
+        (by
+          simpa only [smul_eq_mul] using
+            (rho_memLp_two a).ofReal.const_smul (c a : ℂ))
+        ih
+
+/-- The complex residual itself belongs to L2. -/
+theorem concreteResidualC_memLp_two
+    {N : ℕ} (c : Fin N → ℝ) :
+    MemLp (concreteResidualC c) 2 zeroInfinityMeasure := by
+  unfold concreteResidualC
+  exact MemLp.sub chi_memLp_two.ofReal
+    (concreteFiniteCombinationC_memLp_two c)
+
+/-- The squared norm of the logarithmic pullback is integrable. -/
+theorem residualLogPullback_sq_norm_integrable
+    {N : ℕ} (c : Fin N → ℝ) :
+    Integrable (fun u : ℝ => ‖residualLogPullback c u‖ ^ 2) volume := by
+  have horig :
+      IntegrableOn
+        (fun x : ℝ => ‖concreteResidualC c x‖ ^ 2)
+        (Ioi 0) :=
+    (memLp_two_iff_integrable_sq_norm
+      (concreteResidualC_memLp_two c).aestronglyMeasurable).1
+      (concreteResidualC_memLp_two c)
+  have hexp :
+      Integrable
+        (fun u : ℝ =>
+          Real.exp u *
+            ‖concreteResidualC c (Real.exp u)‖ ^ 2) volume := by
+    simpa [smul_eq_mul] using
+      (integrable_comp_exp
+        (fun x : ℝ => ‖concreteResidualC c x‖ ^ 2)).2 horig
+  have hneg :
+      Integrable
+        (fun u : ℝ => ‖residualLogPullback c (-u)‖ ^ 2) volume := by
+    apply hexp.congr
+    filter_upwards with u
+    exact (residualLogPullback_norm_sq_neg c u).symm
+  have hmp := Measure.measurePreserving_neg (volume : Measure ℝ)
+  have hcomp :
+      Integrable
+        ((fun u : ℝ => ‖residualLogPullback c u‖ ^ 2) ∘
+          fun u : ℝ => -u) volume := by
+    simpa [Function.comp_def] using hneg
+  exact (hmp.integrable_comp
+    (Homeomorph.neg ℝ).measurableEmbedding
+    (fun u : ℝ => ‖residualLogPullback c u‖ ^ 2)).mp hcomp
+
+/-- L2 prerequisite for Fourier Plancherel is realized. -/
+theorem residualLogPullbackMemL2_realized :
+    ResidualLogPullbackMemL2 := by
+  intro N c
+  apply (memLp_two_iff_integrable_sq_norm ?_).2
+    (residualLogPullback_sq_norm_integrable c)
+  have hmem :
+      MemLp (residualLogPullback c) 1 volume :=
+    residualLogPullbackMemL1_realized c
+  exact hmem.aestronglyMeasurable
+
 #print axioms MCore.RH.R0.residualLogPullbackMemL1_realized
+#print axioms MCore.RH.R0.concreteResidualC_memLp_two
+#print axioms MCore.RH.R0.residualLogPullbackMemL2_realized
 
 end MCore.RH.R0
