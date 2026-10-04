@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+REAL_FILE="lean/MCore/RH/R0/HardFrontierReal.lean"
+REAL_MODULE="MCore.RH.R0.HardFrontierReal"
+REAL_DECL="MCore.RH.R0.concreteUniformLogDNBound_real"
+
+echo "[RH-MATERIAL] checking structural frontier exposure"
+lake env lean lean/MCore/RH/R0/FrontierExposure.lean
+
+if [[ ! -f "$REAL_FILE" ]]; then
+  echo "[RH-MATERIAL] MATERIAL_OPEN_GAPS=1"
+  echo "[RH-MATERIAL] GAP_ID=ConcreteUniformLogDNBound"
+  echo "[RH-MATERIAL] REQUIRED_FILE=$REAL_FILE"
+  echo "[RH-MATERIAL] REQUIRED_DECL=$REAL_DECL"
+  echo "[RH-MATERIAL] STATUS=OPEN_MATH"
+  echo "[RH-MATERIAL] TERMINAL_PROMOTION=FORBIDDEN_WITHOUT_MATERIAL_INHABITANT"
+  exit 2
+fi
+
+if grep -nE '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)|^[[:space:]]*axiom[[:space:]]' "$REAL_FILE"; then
+  echo "[RH-MATERIAL] UNSAFE_PLACEHOLDER=FOUND"
+  echo "[RH-MATERIAL] STATUS=RED"
+  exit 3
+fi
+
+TMP="$(mktemp --suffix=.lean)"
+trap 'rm -f "$TMP"' EXIT
+cat > "$TMP" <<'LEAN'
+import MCore.RH.R0.HardFrontierReal
+
+#check MCore.RH.R0.concreteUniformLogDNBound_real
+#print axioms MCore.RH.R0.concreteUniformLogDNBound_real
+
+example : MCore.RH.R0.ConcreteUniformLogDNBound :=
+  MCore.RH.R0.concreteUniformLogDNBound_real
+LEAN
+
+lake env lean "$TMP"
+
+echo "[RH-MATERIAL] MATERIAL_OPEN_GAPS=0"
+echo "[RH-MATERIAL] GAP_ID=ConcreteUniformLogDNBound"
+echo "[RH-MATERIAL] REQUIRED_DECL=$REAL_DECL"
+echo "[RH-MATERIAL] STATUS=GREEN_TERMINAL_CANDIDATE"
+echo "[RH-MATERIAL] TERMINAL_PROMOTION=ALLOWED_AFTER_FULL_STRICT_PREFLIGHT"
