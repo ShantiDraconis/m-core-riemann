@@ -1,45 +1,92 @@
-import MCore.RH.Analytic.MellinRhoClosedForm
-import MCore.RH.Analytic.MellinTarget
-import MCore.RH.R0.WeightedIntegrability
+import MCore.RH.Analytic.MellinConcrete
+import MCore.RH.R0.RhoBasicFacts
+import MCore.RH.R0.ChiMemLp
+import Mathlib.Analysis.MellinTransform
 
 namespace MCore.RH.R0
 
-open MeasureTheory Set Complex
+open MeasureTheory Set Asymptotics Filter Complex
 
-/-- The complexified concrete generator is Mellin-convergent on the full strip 0 < Re(s) < 1. -/
+/-- rho_n is O(1) near zero. -/
+theorem rhoRepresentativeC_isBigO_nhdsGT_zero (n : ℕ) :
+    rhoRepresentativeC n =O[𝓝[>] (0 : ℝ)]
+      (fun x : ℝ => x ^ (0 : ℝ)) := by
+  apply IsBigO.of_bound 1
+  filter_upwards with x
+  rw [Real.rpow_zero, norm_one, rhoRepresentativeC, norm_real]
+  exact abs_le.mpr ⟨by linarith [rhoRepresentative_nonneg n x],
+    rhoRepresentative_le_one n x⟩
+
+/-- rho_n is O(x^-1) at infinity. -/
+theorem rhoRepresentativeC_isBigO_atTop_negOne (n : ℕ) :
+    rhoRepresentativeC n =O[atTop]
+      (fun x : ℝ => x ^ (-1 : ℝ)) := by
+  apply IsBigO.of_bound (1 / (((rhoIndex n : ℕ) : ℝ)))
+  filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
+  rw [rhoRepresentativeC, rhoRepresentative_tail n hx, norm_real]
+  have hx0 : 0 < x := zero_lt_one.trans hx
+  have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by
+    exact_mod_cast rhoIndex_pos n
+  rw [abs_of_nonneg (by positivity), Real.rpow_neg_one]
+  field_simp
+
+/-- chi is O(1) near zero. -/
+theorem chiRepresentativeC_isBigO_nhdsGT_zero :
+    chiRepresentativeC =O[𝓝[>] (0 : ℝ)]
+      (fun x : ℝ => x ^ (0 : ℝ)) := by
+  apply IsBigO.of_bound 1
+  filter_upwards with x
+  rw [Real.rpow_zero, norm_one]
+  unfold chiRepresentativeC chiRepresentative
+  by_cases hx : x ∈ Ioo (0 : ℝ) 1 <;> simp [hx]
+
+/-- chi vanishes identically at infinity, hence is O(x^-1). -/
+theorem chiRepresentativeC_isBigO_atTop_negOne :
+    chiRepresentativeC =O[atTop]
+      (fun x : ℝ => x ^ (-1 : ℝ)) := by
+  apply IsBigO.of_bound 1
+  filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
+  unfold chiRepresentativeC chiRepresentative
+  have hnot : x ∉ Ioo (0 : ℝ) 1 := by
+    intro h; linarith [h.2]
+  simp [hnot]
+
+/-- Local integrability of rho_n on the positive half-line. -/
+theorem rhoRepresentativeC_locallyIntegrable (n : ℕ) :
+    LocallyIntegrableOn (rhoRepresentativeC n) (Ioi 0) := by
+  exact (rhoRepresentative_measurable_public n).ofReal.locallyIntegrableOn_of_bound
+    (C := 1) (by
+      filter_upwards with x
+      rw [rhoRepresentativeC, norm_real]
+      exact abs_le.mpr ⟨by linarith [rhoRepresentative_nonneg n x],
+        rhoRepresentative_le_one n x⟩)
+
+/-- Local integrability of chi on the positive half-line. -/
+theorem chiRepresentativeC_locallyIntegrable :
+    LocallyIntegrableOn chiRepresentativeC (Ioi 0) := by
+  exact chi_memLp_two.locallyIntegrableOn
+
+/-- Mellin convergence of every rho_n on the open strip 0<Re(s)<1. -/
 theorem rhoRepresentativeC_mellinConvergent
     (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent (rhoRepresentativeC n) s := by
-  have hmeas :
-      AEStronglyMeasurable (rhoRepresentativeC n)
-        (volume.restrict (Ioi 0)) := by
-    exact ((rhoRepresentative_measurable_public n).ofReal.aestronglyMeasurable).restrict
-  rw [mellin_convergent_iff_norm Subset.rfl measurableSet_Ioi hmeas]
-  have hreal := rho_weighted_integrableOn_Ioi n s.re hs0 hs1
-  refine hreal.congr_fun ?_ measurableSet_Ioi
-  intro t ht
-  have hr0 : 0 ≤ rhoRepresentative n t := rhoRepresentative_nonneg n t
-  rw [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0]
-  ring
+  exact mellinConvergent_of_isBigO_rpow
+    (a := 0) (b := 1)
+    (rhoRepresentativeC_locallyIntegrable n)
+    (rhoRepresentativeC_isBigO_nhdsGT_zero n)
+    (rhoRepresentativeC_isBigO_atTop_negOne n)
+    hs0 hs1
 
-/-- The concrete target is Mellin-convergent on Re(s)>0. -/
+/-- Mellin convergence of chi on the same strip. -/
 theorem chiRepresentativeC_mellinConvergent
-    (s : ℂ) (hs0 : 0 < s.re) :
+    (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent chiRepresentativeC s := by
-  have hstd : MellinConvergent (Ioc (0 : ℝ) 1).indicator (fun _ : ℝ => (1 : ℂ)) s :=
-    (hasMellin_one_Ioc (s := s) hs0).1
-  rw [MellinConvergent] at hstd ⊢
-  refine hstd.congr_fun ?_ measurableSet_Ioi
-  intro t ht
-  have ht0 : 0 < t := ht
-  by_cases ht1 : t < 1
-  · simp [chiRepresentativeC, chiRepresentative, ht0, ht1]
-  · have htge : 1 ≤ t := le_of_not_gt ht1
-    by_cases hteq : t = 1
-    · subst t
-      simp [chiRepresentativeC, chiRepresentative]
-    · have htgt : 1 < t := lt_of_le_of_ne htge (Ne.symm hteq)
-      simp [chiRepresentativeC, chiRepresentative, ht0, ht1, htgt.ne]
+  exact mellinConvergent_of_isBigO_rpow
+    (a := 0) (b := 1)
+    chiRepresentativeC_locallyIntegrable
+    chiRepresentativeC_isBigO_nhdsGT_zero
+    chiRepresentativeC_isBigO_atTop_negOne
+    hs0 hs1
 
 #print axioms MCore.RH.R0.rhoRepresentativeC_mellinConvergent
 #print axioms MCore.RH.R0.chiRepresentativeC_mellinConvergent
