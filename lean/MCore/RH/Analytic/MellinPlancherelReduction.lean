@@ -1,21 +1,17 @@
-import MCore.RH.Analytic.ResidualMellin
+import MCore.RH.Analytic.MellinResidualAlgebra
+import MCore.RH.R0.LinearIndependentReduction
 import Mathlib.Analysis.MellinInversion
 import Mathlib.Analysis.Fourier.LpSpace
 
+open scoped BigOperators
+
 namespace MCore.RH.R0
 
-open scoped FourierTransform
 open Complex MeasureTheory Set
 
-/-- Standard critical-line parameter. -/
+/-- Critical-line parameter. -/
 noncomputable def criticalLine (t : ℝ) : ℂ :=
-  (1 / 2 : ℂ) + (t : ℂ) * Complex.I
-
-/-- Logarithmic lift used by Mathlib's Mellin/Fourier identity at Re(s)=1/2. -/
-noncomputable def residualLogLift
-    {N : ℕ} (c : Fin N → ℝ) (u : ℝ) : ℂ :=
-  Real.exp (-(1 / 2 : ℝ) * u) *
-    residualRepresentativeC c (Real.exp (-u))
+  (1 / 2 : ℝ) + (t : ℂ) * I
 
 @[simp] theorem criticalLine_re (t : ℝ) :
     (criticalLine t).re = 1 / 2 := by
@@ -25,81 +21,60 @@ noncomputable def residualLogLift
     (criticalLine t).im = t := by
   simp [criticalLine]
 
-@[simp] theorem criticalLine_normSq (t : ℝ) :
-    Complex.normSq (criticalLine t) = 1 / 4 + t ^ 2 := by
-  simp [criticalLine, Complex.normSq]
+/-- Norm square of the critical-line parameter. -/
+theorem normSq_criticalLine (t : ℝ) :
+    normSq (criticalLine t) = 1 / 4 + t ^ 2 := by
+  simp [criticalLine, normSq_apply]
   ring
 
-/-- Pointwise Mellin/Fourier identity on the critical line with Mathlib normalization. -/
-theorem mellin_residual_eq_fourierIntegral
+/-- Pointwise D3 formula on the critical line, already forced by D1+D2. -/
+theorem mellin_complexResidual_criticalLine
     {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    mellin (residualRepresentativeC c) (criticalLine t) =
-      𝓕 (residualLogLift c) (t / (2 * Real.pi)) := by
-  simpa [criticalLine, residualLogLift, smul_eq_mul] using
-    (mellin_eq_fourierIntegral
-      (residualRepresentativeC c)
-      (s := criticalLine t))
-
-/-- Closed critical-line formula supplied by D1+D2 plus finite linearity. -/
-theorem mellin_residual_critical_closed_form
-    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
-    mellin (residualRepresentativeC c) (criticalLine t) =
+    mellin (complexResidual c) (criticalLine t) =
       (1 + riemannZeta (criticalLine t) *
         concreteDirichletPolynomial c (criticalLine t)) /
-      criticalLine t := by
-  exact mellin_residual_closed_form c (criticalLine t)
-    (by norm_num [criticalLine])
-    (by norm_num [criticalLine])
+        criticalLine t := by
+  exact mellin_complexResidual c (criticalLine t) (by norm_num) (by norm_num)
+
+/-- Squared norm of the pointwise Mellin residual in explicit zeta form. -/
+theorem normSq_mellin_complexResidual_criticalLine
+    {N : ℕ} (c : Fin N → ℝ) (t : ℝ) :
+    normSq (mellin (complexResidual c) (criticalLine t)) =
+      normSq
+        (1 + riemannZeta (criticalLine t) *
+          concreteDirichletPolynomial c (criticalLine t)) /
+        (1 / 4 + t ^ 2) := by
+  rw [mellin_complexResidual_criticalLine c t, normSq_div, normSq_criticalLine]
 
 /--
-The sole analytic norm identity left in D3 after the Mellin algebra is closed.
-This is exactly Mellin-Plancherel with Mathlib's Fourier normalization.
+The only remaining analytic producer for D3: Mellin-Plancherel on the frozen
+positive-half-line L2 normalization.
 -/
-def ResidualMellinPlancherelCore : Prop :=
+def ResidualMellinPlancherel : Prop :=
   ∀ {N : ℕ} (c : Fin N → ℝ),
-    (∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)) =
+    (∫ x : ℝ in Ioi 0, normSq (complexResidual c x)) =
       (1 / (2 * Real.pi)) *
-        ∫ t : ℝ,
-          Complex.normSq
-            (mellin (residualRepresentativeC c) (criticalLine t))
+        ∫ t : ℝ, normSq (mellin (complexResidual c) (criticalLine t))
 
-/-- D3 in fully explicit zeta/Dirichlet-polynomial form follows from the Plancherel core. -/
-theorem residual_mellin_plancherel_closed_form
-    (hP : ResidualMellinPlancherelCore)
+/-- Once Mellin-Plancherel is available, D3 has the desired explicit integrand. -/
+theorem residual_plancherel_explicit
+    (hP : ResidualMellinPlancherel)
     {N : ℕ} (c : Fin N → ℝ) :
-    (∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)) =
+    (∫ x : ℝ in Ioi 0, normSq (complexResidual c x)) =
       (1 / (2 * Real.pi)) *
         ∫ t : ℝ,
-          Complex.normSq
-            ((1 + riemannZeta (criticalLine t) *
-                concreteDirichletPolynomial c (criticalLine t)) /
-              criticalLine t) := by
-  rw [hP c]
-  apply congrArg (fun z : ℝ => (1 / (2 * Real.pi)) * z)
-  apply integral_congr_ae
-  filter_upwards with t
-  rw [mellin_residual_critical_closed_form c t]
-
-/-- Final D3 integrand in the usual weighted zeta form. -/
-theorem residual_mellin_plancherel_weighted
-    (hP : ResidualMellinPlancherelCore)
-    {N : ℕ} (c : Fin N → ℝ) :
-    (∫ x : ℝ in Ioi 0, Complex.normSq (residualRepresentativeC c x)) =
-      (1 / (2 * Real.pi)) *
-        ∫ t : ℝ,
-          Complex.normSq
+          normSq
             (1 + riemannZeta (criticalLine t) *
               concreteDirichletPolynomial c (criticalLine t)) /
             (1 / 4 + t ^ 2) := by
-  rw [residual_mellin_plancherel_closed_form hP c]
-  apply congrArg (fun z : ℝ => (1 / (2 * Real.pi)) * z)
+  rw [hP c]
+  congr 1
   apply integral_congr_ae
   filter_upwards with t
-  rw [Complex.normSq_div, criticalLine_normSq]
+  exact normSq_mellin_complexResidual_criticalLine c t
 
-#print axioms MCore.RH.R0.mellin_residual_eq_fourierIntegral
-#print axioms MCore.RH.R0.mellin_residual_critical_closed_form
-#print axioms MCore.RH.R0.residual_mellin_plancherel_closed_form
-#print axioms MCore.RH.R0.residual_mellin_plancherel_weighted
+#print axioms MCore.RH.R0.mellin_complexResidual_criticalLine
+#print axioms MCore.RH.R0.normSq_mellin_complexResidual_criticalLine
+#print axioms MCore.RH.R0.residual_plancherel_explicit
 
 end MCore.RH.R0
