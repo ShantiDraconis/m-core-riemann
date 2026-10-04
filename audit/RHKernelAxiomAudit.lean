@@ -1,3 +1,4 @@
+import MCore.RH.R0.LinearIndependentReduction
 import MCore.RH.R0.GramExplicit
 import MCore.RH.R0.FrontierExposure
 import MCore.RH.R0.HardFrontierReduction
@@ -50,3 +51,6 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.concreteGramMatrix_posDef_iff_linearIndependent
 #print axioms MCore.RH.R0.concrete_normal_equations_iff_mulVec
 #print axioms MCore.RH.R0.optimalGramCoeff_mulVec
+#print axioms MCore.RH.R0.rhoIndex_cast_injective
+#print axioms MCore.RH.R0.concreteGeneratorFamily_linearIndependent_of_moments
+#print axioms MCore.RH.R0.concreteGramMatrix_posDef_of_moments
