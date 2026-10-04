@@ -27,6 +27,9 @@ files=(
   lean/MCore/RH/Analytic/MellinRhoReduction.lean
   lean/MCore/RH/Analytic/MellinTailPartial.lean
   lean/MCore/RH/Analytic/MellinTailRight.lean
+  lean/MCore/RH/Analytic/MellinTailContinuation.lean
+  lean/MCore/RH/Analytic/MellinTailContinuationReduction.lean
+  lean/MCore/RH/Analytic/RegularizedZeta.lean
   lean/MCore/RH/Analytic/MellinTailSeriesLimit.lean
   lean/MCore/RH/Analytic/MellinTailRightReduction.lean
   lean/MCore/RH/Analytic/MellinTailBlocks.lean
@@ -73,6 +76,9 @@ lake env lean lean/MCore/RH/R0/HardFrontierReduction.lean
 lake env lean lean/MCore/RH/R0/FrontierExposure.lean
 lake env lean lean/MCore/RH/R0/GramExplicit.lean
 lake env lean lean/MCore/RH/R0/LinearIndependentReduction.lean
+lake env lean lean/MCore/RH/Analytic/MellinTailContinuation.lean
+lake env lean lean/MCore/RH/Analytic/MellinTailContinuationReduction.lean
+lake env lean lean/MCore/RH/Analytic/RegularizedZeta.lean
 lake env lean lean/MCore/RH/NB/OrthogonalWitnessObstruction.lean
 lake env lean lean/MCore/RH/R0/ConcreteVanishingProducer.lean
 lake env lean lean/MCore/RH/R0/ConcreteLogMajorantProducer.lean
