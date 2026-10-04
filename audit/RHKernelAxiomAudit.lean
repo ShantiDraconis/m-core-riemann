@@ -1,3 +1,5 @@
+import MCore.RH.Analytic.MellinPlancherelCoreReduction
+import MCore.RH.Analytic.MellinLogIsometry
 import MCore.RH.R0.VasyuninRateReduction
 import MCore.RH.Analytic.FourierLpCompatibility
 import MCore.RH.Analytic.FourierPlancherelReduction
@@ -232,3 +234,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.terminal_of_finiteVasyuninRate
 
 #print axioms MCore.RH.R0.residualRepresentativeC_mellinConvergent
+
+#print axioms MCore.RH.R0.residualLogLift_integral_normSq
+
+#print axioms MCore.RH.R0.criticalLine_frequency_rescale
+
+#print axioms MCore.RH.R0.residualMellinPlancherelCore_of_fourier
