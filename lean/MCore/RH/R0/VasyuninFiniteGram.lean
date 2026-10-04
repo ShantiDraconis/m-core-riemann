@@ -1,5 +1,5 @@
 import MCore.RH.R0.ExplicitGramRate
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 
 open scoped BigOperators
 
