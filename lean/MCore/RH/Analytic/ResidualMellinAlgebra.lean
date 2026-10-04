@@ -31,7 +31,7 @@ theorem concreteCombinationC_mellinConvergent
     MellinConvergent (concreteCombinationC c) s := by
   classical
   unfold concreteCombinationC
-  apply Finset.integrable_sum
+  apply integrable_finsetSum
   intro i hi
   simpa [MellinConvergent, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc] using
     (rhoRepresentativeC_mellinConvergent i s hs0 hs1).const_smul (c i : ℂ)
@@ -45,7 +45,7 @@ theorem mellin_concreteCombinationC
   classical
   unfold concreteCombinationC concreteDirichletPolynomial
   rw [mellin]
-  rw [integral_finset_sum]
+  rw [integral_finsetSum]
   · apply Finset.sum_congr rfl
     intro i hi
     rw [← mellin]
