@@ -17,7 +17,7 @@ noncomputable def mellinScale (n : ℕ) (s : ℝ) : ℝ :=
 theorem rhoIndex_cast_injective :
     Function.Injective (fun n : ℕ => ((rhoIndex n : ℕ) : ℝ)) := by
   intro m n h
-  exact rhoIndex_injective (by exact_mod_cast h)
+  exact rhoIndex_injective (Nat.cast_injective h)
 
 theorem rhoIndex_cast_pos (n : ℕ) :
     0 < ((rhoIndex n : ℕ) : ℝ) := by
@@ -72,7 +72,6 @@ theorem concreteGeneratorFamily_linearIndependent_of_moments
     LinearIndependent ℝ (fun i : Fin N => concreteGeneratorFamily i) := by
   rw [Fintype.linearIndependent_iff]
   intro c hc
-  apply funext
   intro i
   exact hUnique c (hBridge c (by simpa [concreteFiniteCombination] using hc)) i
 
