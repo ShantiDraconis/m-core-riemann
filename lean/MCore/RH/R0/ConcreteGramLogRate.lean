@@ -110,7 +110,7 @@ Conversely, every canonical DN logarithmic bound has an optimal coefficient
 vector satisfying the Gram normal equations at each stage, so this Gram
 formulation loses no information.
 -/
-theorem uniformLogDNBound_to_ConcreteGramLogRate
+noncomputable def uniformLogDNBound_to_ConcreteGramLogRate
     (h : ConcreteUniformLogDNBound) :
     ConcreteGramLogRate := by
   rcases h with ⟨K, hK, hDN⟩
