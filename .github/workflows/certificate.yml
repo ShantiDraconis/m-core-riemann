@@ -3,6 +3,7 @@ on:
   push:
     branches-ignore:
       - research/r2-dnlimit-zero
+      - atk/terminal-parameter-law-20261003
   pull_request:
 jobs:
   k8:
