@@ -9,7 +9,7 @@ open MeasureTheory
 
 /-- The frozen concrete generator has the literal rhoRepresentative as an a.e. representative. -/
 theorem concreteGeneratorFamily_coeFn_ae (n : ℕ) :
-    (concreteGeneratorFamily n : ℝ → ℝ) =ᵐ[zeroInfinityMeasure]
+    ((show ConcreteH from concreteGeneratorFamily n) : ℝ → ℝ) =ᵐ[zeroInfinityMeasure]
       rhoRepresentative n := by
   simpa [concreteGeneratorFamily, concreteNBData, ConcreteH, twoExponent, rhoLp] using
     (rho_memLp_two n).coeFn_toLp
@@ -20,11 +20,11 @@ the literal finite sum of the frozen rho representatives.
 -/
 theorem concreteFiniteCombination_coeFn_ae
     {N : ℕ} (c : Fin N → ℝ) :
-    (concreteFiniteCombination c : ℝ → ℝ) =ᵐ[zeroInfinityMeasure]
+    ((show ConcreteH from concreteFiniteCombination c) : ℝ → ℝ) =ᵐ[zeroInfinityMeasure]
       (fun x : ℝ => ∑ i : Fin N, c i * rhoRepresentative i x) := by
   classical
   have hsum : ∀ S : Finset (Fin N),
-      ((∑ i ∈ S, c i • concreteGeneratorFamily i : concreteNBData.H) : ℝ → ℝ)
+      ((show ConcreteH from ∑ i ∈ S, c i • concreteGeneratorFamily i) : ℝ → ℝ)
         =ᵐ[zeroInfinityMeasure]
       (fun x : ℝ => ∑ i ∈ S, c i * rhoRepresentative i x) := by
     intro S
@@ -32,7 +32,7 @@ theorem concreteFiniteCombination_coeFn_ae
     | empty =>
         simpa using
           (Lp.coeFn_zero :
-            ((0 : concreteNBData.H) : ℝ → ℝ) =ᵐ[zeroInfinityMeasure] 0)
+            ((show ConcreteH from (0 : concreteNBData.H)) : ℝ → ℝ) =ᵐ[zeroInfinityMeasure] 0)
     | @insert a S ha ih =>
         filter_upwards [
           Lp.coeFn_add
