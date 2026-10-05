@@ -19,7 +19,8 @@ theorem rhoRepresentative_zero_pos_on_half_one
   have hfloor : ⌊(1 / x : ℝ)⌋ = (1 : ℤ) := by
     rw [Int.floor_eq_iff]
     norm_num
-    exact ⟨le_of_lt hlow, hhigh⟩
+    exact ⟨le_of_lt (by simpa [one_div] using hlow),
+      (by simpa [one_div] using hhigh)⟩
   have hfract : Int.fract (1 / x) = 1 / x - 1 := by
     calc
       Int.fract (1 / x) = 1 / x - (⌊(1 / x : ℝ)⌋ : ℝ) := by rfl
