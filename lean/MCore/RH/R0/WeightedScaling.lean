@@ -38,8 +38,14 @@ theorem rho_weighted_integral_scaling
       rw [← Real.rpow_add ha]
       ring_nf
       simp
-    ring_nf at hpow ⊢
-    nlinarith
+    calc
+      rhoRepresentative 0 (a * x) * x ^ (s - 1)
+          = (a ^ (1 - s) * a ^ (s - 1)) *
+              (rhoRepresentative 0 (a * x) * x ^ (s - 1)) := by
+                rw [hpow, one_mul]
+      _ = a ^ (1 - s) *
+            (rhoRepresentative 0 (a * x) * (a ^ (s - 1) * x ^ (s - 1))) := by
+              ring
   rw [setIntegral_congr_fun measurableSet_Ioi hrewrite]
   rw [integral_const_mul]
   rw [integral_comp_mul_left_Ioi
