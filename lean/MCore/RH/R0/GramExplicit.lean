@@ -36,7 +36,8 @@ private theorem concreteGram_quadratic
   simp only [concreteGramMatrix, Matrix.mulVec, dotProduct, Finset.mul_sum,
     Finset.sum_mul, sum_inner, inner_sum, real_inner_smul_left,
     real_inner_smul_right]
-  ring_nf
+  simp only [Finset.sum_mul, Finset.mul_sum]
+  ring
 
 /-- Every finite concrete Gram matrix is positive semidefinite. -/
 theorem concreteGramMatrix_posSemidef (N : ℕ) :
