@@ -28,6 +28,9 @@ theorem weighted_integral_finset_linearity
               (rhoRepresentative i x * x ^ (s - 1)) := by
               apply integral_congr_ae
               filter_upwards with x
+              rw [Finset.sum_mul]
+              apply Finset.sum_congr rfl
+              intro i hi
               ring
     _ = ∑ i : Fin N,
           ∫ x : ℝ in Ioi 0,
