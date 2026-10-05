@@ -45,7 +45,7 @@ theorem base_weighted_integral_pos
       Ioo (1 / 2 : ℝ) 1 ⊆ support f ∩ Ioi 0 := by
     intro x hx
     constructor
-    · apply mem_support.mpr
+    · change f x ≠ 0
       have hrho : 0 < rhoRepresentative 0 x :=
         rhoRepresentative_zero_pos_on_half_one hx
       have hx0 : 0 < x := by linarith [hx.1]
