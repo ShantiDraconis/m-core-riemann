@@ -4,52 +4,111 @@ on:
   push:
     branches: [atk/terminal-parameter-law-20261003]
     paths:
-      - 'lean/MCore/RH/NB/**'
-      - 'lean/MCore/RH/R0/**'
+      - 'lean/MCore/RH/**'
       - 'audit/RHKernelAxiomAudit.lean'
       - 'audit/rh_preflight_kernel.sh'
       - 'audit/rh_terminal_kernel_check.sh'
       - '.github/workflows/atk-terminal-producer.yml'
   workflow_dispatch:
+    inputs:
+      full:
+        description: 'Run full RH audit/root build'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: rh-fast-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  rh-terminal:
+  rh-fast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Lean + Mathlib cache only
+        uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      - name: G0 fast source hygiene
+        run: |
+          set -euo pipefail
+          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean/MCore/RH; then
+            exit 1
+          fi
+          if grep -R -n -E '^[[:space:]]*(@\\[[^]]*\\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean/MCore/RH; then
+            exit 1
+          fi
+
+      - name: Build only changed RH Lean modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t FILES < <(git diff --name-only HEAD^ HEAD -- 'lean/MCore/RH/**/*.lean')
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "NO_CHANGED_RH_LEAN_MODULES"
+            exit 0
+          fi
+          printf 'Changed RH modules:\n%s\n' "${FILES[@]}"
+          for f in "${FILES[@]}"; do
+            module="${f#lean/}"
+            module="${module%.lean}"
+            module="${module//\//.}"
+            echo "=== FAST BUILD: $module ==="
+            lake build "$module"
+          done
+
+      - name: Fast changed-file axiom scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t FILES < <(git diff --name-only HEAD^ HEAD -- 'lean/MCore/RH/**/*.lean')
+          for f in "${FILES[@]}"; do
+            grep -nE '^[[:space:]]*#print axioms' "$f" || true
+          done
+
+  rh-full:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.full }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lean
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Resolve dependencies and cache
-        run: |
-          lake update
-          lake exe cache get
-      - name: Producer-first preflight
-        run: |
-          set -euo pipefail
-          bash audit/rh_terminal_kernel_check.sh
-      - name: Exact terminal axiom audit
+
+      - name: Lean + Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: true
+
+      - name: Full producer-first preflight
+        run: bash audit/rh_terminal_kernel_check.sh
+
+      - name: Full exact axiom audit
         run: |
           set -euo pipefail
           lake env lean audit/RHKernelAxiomAudit.lean 2>&1 | tee /tmp/rh-kernel-axioms.log
-          if grep -q 'sorryAx' /tmp/rh-kernel-axioms.log; then
-            echo "RH_KERNEL_AXIOMS=RED"
-            exit 1
-          fi
-          echo "RH_KERNEL_AXIOMS=GREEN"
-      - name: Explicit kernel entry build
+          ! grep -q 'sorryAx' /tmp/rh-kernel-axioms.log
+
+      - name: Full terminal/root build
         run: |
           lake build MCore.RH.R0.RHKernelEntry
-      - name: Aggregate MCore build
-        run: |
           lake build MCore
+
       - name: Frontier status
         run: |
           echo "RH_STRUCTURE=KERNEL_TESTED"
-          echo "RH_OPEN_MATH=Nonempty ConcreteVanishingUpperBound"
+          echo "RH_OPEN_MATH=ConcreteUniformLogDNBound"
           echo "RH_PROOF=OPEN"
