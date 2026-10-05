@@ -48,7 +48,7 @@ theorem base_weighted_integral_pos
     · change f x ≠ 0
       have hrho : 0 < rhoRepresentative 0 x :=
         rhoRepresentative_zero_pos_on_half_one hx
-      have hx0 : 0 < x := by linarith [hx.1]
+      have hx0 : 0 < x := lt_trans (by norm_num : (0 : ℝ) < 1 / 2) hx.1
       exact mul_ne_zero hrho.ne' (Real.rpow_pos_of_pos hx0 _).ne'
     · exact lt_trans (by norm_num : (0 : ℝ) < 1 / 2) hx.1
   exact ((Measure.measure_Ioo_pos volume).mpr (by norm_num : (1 / 2 : ℝ) < 1)).trans_le
