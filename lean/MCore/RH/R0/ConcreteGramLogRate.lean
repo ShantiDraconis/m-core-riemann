@@ -7,6 +7,7 @@ open scoped BigOperators
 namespace MCore.RH.R0
 
 open MCore.RH.NB
+open MCore.RH.NB.Final
 
 /--
 Quantitative Gram normal-equation form of the canonical logarithmic producer.
@@ -109,7 +110,7 @@ Conversely, every canonical DN logarithmic bound has an optimal coefficient
 vector satisfying the Gram normal equations at each stage, so this Gram
 formulation loses no information.
 -/
-noncomputable theorem uniformLogDNBound_to_ConcreteGramLogRate
+theorem uniformLogDNBound_to_ConcreteGramLogRate
     (h : ConcreteUniformLogDNBound) :
     ConcreteGramLogRate := by
   rcases h with ⟨K, hK, hDN⟩
