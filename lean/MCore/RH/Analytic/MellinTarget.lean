@@ -21,7 +21,11 @@ theorem mellin_chiRepresentativeC
     hne_one] with x hx h1
   have hx0 : 0 < x := hx
   have hmemIoc : x ∈ Ioc (0 : ℝ) 1 ↔ x < 1 := by
-    simp [hx0.le]
+    constructor
+    · intro h
+      exact lt_of_le_of_ne h.2 h1
+    · intro h
+      exact ⟨hx0, h.le⟩
   have hmemIoo : x ∈ Ioo (0 : ℝ) 1 ↔ x < 1 := by
     simp [hx0]
   by_cases hxlt : x < 1
