@@ -1,0 +1,36 @@
+name: Material Atom Search
+
+on:
+  push:
+    branches:
+      - work/rh-coefficient-material-search-20261005
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Probe material atoms
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.R0.CoefficientMaterialSearch
+      - name: Hygiene
+        if: always()
+        run: |
+          set -euo pipefail
+          if grep -nE '\b(sorry|admit|sorryAx|axiom)\b' lean/MCore/RH/R0/CoefficientMaterialSearch.lean; then exit 1; fi
+          echo MATERIAL_ATOM_HYGIENE_GREEN
