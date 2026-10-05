@@ -17,8 +17,11 @@ theorem concreteMomentBridge_realized (N : ℕ) : ConcreteMomentBridge N := by
   have hae0 := concreteFiniteCombination_eq_zero_ae c hc
   have hae0' :
       (fun x : ℝ => ∑ i : Fin N, c i * rhoRepresentative i x)
-        =ᵐ[volume.restrict (Set.Ioi 0)] 0 := by
-    simpa [zeroInfinityMeasure, ambientMeasure, zeroInfinityDomain] using hae0
+        =ᵐ[(volume : MeasureTheory.Measure ℝ).restrict (Set.Ioi 0)] 0 := by
+    change
+      (fun x : ℝ => ∑ i : Fin N, c i * rhoRepresentative i x)
+        =ᵐ[zeroInfinityMeasure] 0
+    exact hae0
   have hIntZero :
       (∫ x : ℝ in Set.Ioi 0,
         (∑ i : Fin N, c i * rhoRepresentative i x) * x ^ (s - 1)) = 0 := by
