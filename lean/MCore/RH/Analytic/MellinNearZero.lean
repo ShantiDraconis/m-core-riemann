@@ -1,5 +1,4 @@
 import MCore.RH.Analytic.MellinRhoReduction
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 namespace MCore.RH.R0
 
