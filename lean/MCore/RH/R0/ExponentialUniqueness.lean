@@ -41,9 +41,9 @@ theorem mellinScale_sample_eq_pow (N : ℕ) (i j : Fin N) :
   unfold mellinScale mellinSample vandermondeBase
   -- Pure real-power arithmetic; kept as the next kernel obligation if simp/rpow
   -- normalization does not close directly in the pinned Mathlib version.
-  rw [Real.rpow_natCast]
+  rw [← Real.rpow_natCast]
   rw [← Real.rpow_mul (le_of_lt (rhoIndex_cast_pos i))]
-  congr
+  congr 1
   field_simp
   ring
 
@@ -52,14 +52,20 @@ theorem vandermondeBase_injective (N : ℕ) :
     Function.Injective (vandermondeBase N) := by
   intro i j h
   unfold vandermondeBase at h
+  let e : ℝ := -1 / ((N + 1 : ℕ) : ℝ)
+  have he : e < 0 := by
+    dsimp [e]
+    positivity
+  have hi : 0 < (((rhoIndex i : ℕ) : ℝ)) := rhoIndex_cast_pos i
+  have hj : 0 < (((rhoIndex j : ℕ) : ℝ)) := rhoIndex_cast_pos j
+  have hji : (((rhoIndex j : ℕ) : ℝ)) ≤ (((rhoIndex i : ℕ) : ℝ)) :=
+    (Real.rpow_le_rpow_iff_of_neg hi hj he).mp (by simpa [e] using h.le)
+  have hij : (((rhoIndex i : ℕ) : ℝ)) ≤ (((rhoIndex j : ℕ) : ℝ)) :=
+    (Real.rpow_le_rpow_iff_of_neg hj hi he).mp (by simpa [e] using h.symm.le)
   have hpow :
-      (((rhoIndex i : ℕ) : ℝ)) = (((rhoIndex j : ℕ) : ℝ)) := by
-    -- rpow by the same nonzero exponent is injective on positive reals.
-    exact (Real.strictAnti_rpow_of_neg
-      (by positivity : (-1 / ((N + 1 : ℕ) : ℝ)) < 0)).injective h
-  exact Fin.ext (by
-    have := rhoIndex_cast_injective hpow
-    simpa using this)
+      (((rhoIndex i : ℕ) : ℝ)) = (((rhoIndex j : ℕ) : ℝ)) :=
+    le_antisymm hij hji
+  exact Fin.ext (rhoIndex_cast_injective hpow)
 
 /--
 A2 in finite form: values at N rational points produce an invertible
