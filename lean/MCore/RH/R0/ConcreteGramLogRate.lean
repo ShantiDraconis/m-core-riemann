@@ -113,10 +113,11 @@ formulation loses no information.
 noncomputable def uniformLogDNBound_to_ConcreteGramLogRate
     (h : ConcreteUniformLogDNBound) :
     ConcreteGramLogRate := by
-  rcases h with ⟨K, hK, hDN⟩
+  let B : ConcreteLogDNBound :=
+    Classical.choice (concreteUniformLogDNBound_iff_nonempty.mp h)
   refine {
-    K := K
-    hK := hK
+    K := B.K
+    hK := B.hK
     coeff := optimalGramCoeff
     normal := ?_
     reduced_energy_le := ?_
@@ -143,7 +144,7 @@ noncomputable def uniformLogDNBound_to_ConcreteGramLogRate
                 optimalGramCoeff N i *
                   concreteNBData.targetEntry concreteGeneratorFamily i := by rw [hchi]
     rw [← hEq]
-    exact hDN N
+    exact B.dn_le N
 
 theorem concreteGramLogRate_iff_uniformLogDNBound :
     Nonempty ConcreteGramLogRate ↔ ConcreteUniformLogDNBound := by
