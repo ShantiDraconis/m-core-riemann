@@ -15,7 +15,7 @@ theorem rhoRepresentative_zero_pos_on_half_one
     simpa using hx.2
   have hhigh : 1 / x < 2 := by
     rw [div_lt_iff₀ hx0]
-    linarith [hx.1]
+    nlinarith [hx.1]
   have hfloor : ⌊(1 / x : ℝ)⌋ = (1 : ℤ) := by
     rw [Int.floor_eq_iff]
     norm_num
