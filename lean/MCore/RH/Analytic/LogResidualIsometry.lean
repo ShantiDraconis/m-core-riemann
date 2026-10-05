@@ -1,5 +1,5 @@
 import MCore.RH.Analytic.MellinPlancherelDecomposition
-import Mathlib.MeasureTheory.Function.JacobianOneDim
+import Mathlib.Analysis.MellinInversion
 
 namespace MCore.RH.R0
 
