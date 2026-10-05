@@ -33,8 +33,8 @@ private theorem concreteGram_quadratic
       @inner ℝ concreteNBData.H _
         (∑ i : Fin N, x i • concreteGeneratorFamily i)
         (∑ i : Fin N, x i • concreteGeneratorFamily i) := by
-  simp_rw [Matrix.mulVec, dotProduct, concreteGramMatrix, sum_inner, inner_sum,
-    real_inner_smul_left, real_inner_smul_right, Finset.mul_sum, Finset.sum_mul]
+  unfold Matrix.mulVec dotProduct concreteGramMatrix
+  simp_rw [sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right]
   ring
 
 /-- Every finite concrete Gram matrix is positive semidefinite. -/
@@ -75,7 +75,9 @@ theorem concreteGramMatrix_posDef_iff_linearIndependent (N : ℕ) :
       have hsum :
           (∑ i : Fin N, x i • concreteGeneratorFamily i) ≠ 0 := by
         intro hs
-        exact hx (h x hs)
+        apply hx
+        funext i
+        exact h x hs i
       exact real_inner_self_pos.mpr hsum
 
 /-- Existing scalar normal equations are exactly the matrix equation G_N c = b_N. -/
@@ -89,12 +91,37 @@ theorem concrete_normal_equations_iff_mulVec
   constructor
   · intro h
     funext j
-    simpa [concreteGramMatrix, concreteTargetVector, Matrix.mulVec,
-      dotProduct, mul_comm, real_inner_comm] using h j
+    unfold Matrix.mulVec dotProduct concreteGramMatrix concreteTargetVector
+    calc
+      (∑ i : Fin N,
+          @inner ℝ concreteNBData.H _
+            (concreteGeneratorFamily j) (concreteGeneratorFamily i) * c i)
+          =
+        ∑ i : Fin N,
+          c i * @inner ℝ concreteNBData.H _
+            (concreteGeneratorFamily i) (concreteGeneratorFamily j) := by
+              apply Finset.sum_congr rfl
+              intro i hi
+              rw [real_inner_comm]
+              ring
+      _ = concreteNBData.targetEntry concreteGeneratorFamily j := by
+            simpa [MCore.RH.NB.NBHilbertData.gramEntry] using h j
   · intro h j
     have hj := congr_fun h j
-    simpa [concreteGramMatrix, concreteTargetVector, Matrix.mulVec,
-      dotProduct, mul_comm, real_inner_comm] using hj
+    unfold Matrix.mulVec dotProduct concreteGramMatrix concreteTargetVector at hj
+    calc
+      (∑ i : Fin N,
+          c i * concreteNBData.gramEntry concreteGeneratorFamily i j)
+          =
+        ∑ i : Fin N,
+          @inner ℝ concreteNBData.H _
+            (concreteGeneratorFamily j) (concreteGeneratorFamily i) * c i := by
+              apply Finset.sum_congr rfl
+              intro i hi
+              unfold MCore.RH.NB.NBHilbertData.gramEntry
+              rw [real_inner_comm]
+              ring
+      _ = concreteNBData.targetEntry concreteGeneratorFamily j := hj
 
 /-- The canonical optimal coefficients solve the explicit concrete Gram system. -/
 theorem optimalGramCoeff_mulVec (N : ℕ) :
