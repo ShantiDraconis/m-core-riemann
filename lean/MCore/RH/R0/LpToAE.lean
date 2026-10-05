@@ -41,7 +41,7 @@ theorem concreteFiniteCombination_coeFn_ae
           ih] with x hadd hsmul hgen hrest
         simp only [Finset.sum_insert ha, Pi.add_apply, Pi.smul_apply] at *
         rw [hadd, hsmul, hgen, hrest]
-        ring_nf
+        simp [smul_eq_mul, add_comm]
   change
     ((show ConcreteH from ∑ i : Fin N, c i • concreteGeneratorFamily i) : ℝ → ℝ)
       =ᵐ[zeroInfinityMeasure]
