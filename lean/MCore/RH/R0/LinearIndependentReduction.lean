@@ -17,8 +17,7 @@ noncomputable def mellinScale (n : ℕ) (s : ℝ) : ℝ :=
 theorem rhoIndex_cast_injective :
     Function.Injective (fun n : ℕ => ((rhoIndex n : ℕ) : ℝ)) := by
   intro m n h
-  have hnat : rhoIndex m = rhoIndex n := by
-    exact_mod_cast h
+  have hnat : rhoIndex m = rhoIndex n := Nat.cast_inj.mp h
   exact rhoIndex_injective hnat
 
 theorem rhoIndex_cast_pos (n : ℕ) :
