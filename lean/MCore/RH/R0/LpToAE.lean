@@ -30,9 +30,7 @@ theorem concreteFiniteCombination_coeFn_ae
     intro S
     induction S using Finset.induction_on with
     | empty =>
-        simpa using
-          (Lp.coeFn_zero :
-            ((show ConcreteH from (0 : concreteNBData.H)) : ℝ → ℝ) =ᵐ[zeroInfinityMeasure] 0)
+        exact Lp.coeFn_zero ℝ (2 : ENNReal) zeroInfinityMeasure
     | @insert a S ha ih =>
         filter_upwards [
           Lp.coeFn_add
@@ -43,8 +41,12 @@ theorem concreteFiniteCombination_coeFn_ae
           ih] with x hadd hsmul hgen hrest
         simp only [Finset.sum_insert ha, Pi.add_apply, Pi.smul_apply] at *
         rw [hadd, hsmul, hgen, hrest]
-        ring
-  simpa [concreteFiniteCombination] using hsum Finset.univ
+        ring_nf
+  change
+    ((show ConcreteH from ∑ i : Fin N, c i • concreteGeneratorFamily i) : ℝ → ℝ)
+      =ᵐ[zeroInfinityMeasure]
+    (fun x : ℝ => ∑ i : Fin N, c i * rhoRepresentative i x)
+  exact hsum Finset.univ
 
 /-- A1.0: zero in Lp implies the literal finite rho combination vanishes a.e. -/
 theorem concreteFiniteCombination_eq_zero_ae
@@ -52,9 +54,12 @@ theorem concreteFiniteCombination_eq_zero_ae
     (h : concreteFiniteCombination c = 0) :
     (fun x : ℝ => ∑ i : Fin N, c i * rhoRepresentative i x)
       =ᵐ[zeroInfinityMeasure] 0 := by
+  have h' : (show ConcreteH from concreteFiniteCombination c) = 0 := by
+    simpa [concreteNBData, ConcreteH] using h
   have hcarrier :
-      (concreteFiniteCombination c : ℝ → ℝ) =ᵐ[zeroInfinityMeasure] 0 :=
-    Lp.eq_zero_iff_ae_eq_zero.mp h
+      ((show ConcreteH from concreteFiniteCombination c) : ℝ → ℝ)
+        =ᵐ[zeroInfinityMeasure] 0 :=
+    Lp.eq_zero_iff_ae_eq_zero.mp h'
   exact (concreteFiniteCombination_coeFn_ae c).symm.trans hcarrier
 
 #print axioms MCore.RH.R0.concreteGeneratorFamily_coeFn_ae
