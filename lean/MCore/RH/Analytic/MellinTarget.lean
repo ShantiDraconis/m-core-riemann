@@ -13,9 +13,12 @@ theorem mellin_chiRepresentativeC
   rw [← hstd]
   unfold mellin
   apply integral_congr_ae
+  have hne_one : ∀ᵐ x : ℝ ∂volume.restrict (Ioi 0), x ≠ 1 := by
+    rw [ae_iff]
+    simp [Real.volume_singleton]
   filter_upwards [
     self_mem_ae_restrict measurableSet_Ioi,
-    (Set.countable_singleton (1 : ℝ)).measure_zero.ae_notMem] with x hx h1
+    hne_one] with x hx h1
   have hx0 : 0 < x := hx
   have hmemIoc : x ∈ Ioc (0 : ℝ) 1 ↔ x < 1 := by
     simp [hx0.le]
@@ -24,9 +27,8 @@ theorem mellin_chiRepresentativeC
   by_cases hxlt : x < 1
   · simp [chiRepresentativeC, chiRepresentative, hx0, hxlt, hmemIoc.mpr hxlt]
   · have hxge : 1 ≤ x := le_of_not_gt hxlt
-    have hxne : x ≠ 1 := by exact fun h => h1 (h ▸ rfl)
-    have hxgt : 1 < x := lt_of_le_of_ne hxge (Ne.symm hxne)
-    simp [chiRepresentativeC, chiRepresentative, hx0, hxlt, hmemIoc, hxlt]
+    have hxgt : 1 < x := lt_of_le_of_ne hxge (Ne.symm h1)
+    simp [chiRepresentativeC, chiRepresentative, hx0, hxlt, hmemIoc, hxgt.not_le]
 
 #print axioms MCore.RH.R0.mellin_chiRepresentativeC
 
