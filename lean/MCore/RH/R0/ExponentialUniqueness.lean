@@ -45,7 +45,6 @@ theorem mellinScale_sample_eq_pow (N : ℕ) (i j : Fin N) :
       -(((j.1 + 1 : ℕ) : ℝ) / ((N + 1 : ℕ) : ℝ)) =
         (-1 / ((N + 1 : ℕ) : ℝ)) * ((j.1 + 1 : ℕ) : ℝ) := by
     field_simp
-    ring
   change A ^ (-(((j.1 + 1 : ℕ) : ℝ) / ((N + 1 : ℕ) : ℝ))) =
     (A ^ (-1 / ((N + 1 : ℕ) : ℝ))) ^ (j.1 + 1)
   rw [hexp, Real.rpow_mul hA,
