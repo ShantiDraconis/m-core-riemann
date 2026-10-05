@@ -48,10 +48,12 @@ theorem rhoRepresentativeC_isBigO_atTop (n : ℕ) :
     exact_mod_cast Nat.succ_le_iff.mpr (rhoIndex_pos n)
   rw [rhoRepresentativeC, rhoRepresentative_tail n hx,
     Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity),
-    Real.norm_eq_abs, Real.rpow_neg_one, abs_of_pos hx0]
+    Real.norm_eq_abs, Real.rpow_neg_one]
   have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := mul_pos (by positivity) hx0
-  rw [abs_of_pos (one_div_pos.mpr hden)]
-  exact one_div_le_one_div_of_le hx0 (by nlinarith)
+  rw [abs_of_pos (one_div_pos.mpr hden), abs_of_pos (inv_pos.mpr hx0)]
+  simpa [one_div] using
+    (one_div_le_one_div_of_le hx0 (by nlinarith :
+      x ≤ ((rhoIndex n : ℕ) : ℝ) * x))
 
 /-- Near zero the target is O(1). -/
 theorem chiRepresentativeC_isBigO_nhdsGT :
@@ -74,10 +76,11 @@ theorem rhoRepresentativeC_mellinConvergent
     (n : ℕ) (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent (rhoRepresentativeC n) s := by
   exact mellinConvergent_of_isBigO_rpow
+    (a := 1) (b := 0)
     (rhoRepresentativeC_locallyIntegrableOn n)
-    (rhoRepresentativeC_isBigO_atTop n)
+    (by simpa using rhoRepresentativeC_isBigO_atTop n)
     hs1
-    (rhoRepresentativeC_isBigO_nhdsGT n)
+    (by simpa using rhoRepresentativeC_isBigO_nhdsGT n)
     hs0
 
 /-- chi has a convergent Mellin transform throughout the critical strip. -/
@@ -85,10 +88,11 @@ theorem chiRepresentativeC_mellinConvergent
     (s : ℂ) (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     MellinConvergent chiRepresentativeC s := by
   exact mellinConvergent_of_isBigO_rpow
+    (a := 1) (b := 0)
     chiRepresentativeC_locallyIntegrableOn
-    chiRepresentativeC_isBigO_atTop
+    (by simpa using chiRepresentativeC_isBigO_atTop)
     hs1
-    chiRepresentativeC_isBigO_nhdsGT
+    (by simpa using chiRepresentativeC_isBigO_nhdsGT)
     hs0
 
 #print axioms MCore.RH.R0.rhoRepresentativeC_mellinConvergent
