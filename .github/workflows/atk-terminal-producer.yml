@@ -56,20 +56,27 @@ jobs:
             exit 1
           fi
 
-      - name: Build only changed RH Lean modules
+      - name: Build active RH bundle plus changed modules
         shell: bash
         run: |
           set -euo pipefail
+          MODULES=(
+            MCore.RH.R0.ChiNorm
+            MCore.RH.R0.ConcreteGramLogRate
+            MCore.RH.R0.GramExplicit
+            MCore.RH.R0.WeightedIntegrability
+            MCore.RH.Analytic.MellinTarget
+            MCore.RH.Analytic.MellinStripConvergence
+            MCore.RH.Analytic.MellinRhoReduction
+          )
           mapfile -t FILES < <(git diff --name-only HEAD^ HEAD -- 'lean/MCore/RH/**/*.lean')
-          if [ "${#FILES[@]}" -eq 0 ]; then
-            echo "NO_CHANGED_RH_LEAN_MODULES"
-            exit 0
-          fi
-          printf 'Changed RH modules:\n%s\n' "${FILES[@]}"
           for f in "${FILES[@]}"; do
             module="${f#lean/}"
             module="${module%.lean}"
             module="${module//\//.}"
+            MODULES+=("$module")
+          done
+          printf '%s\n' "${MODULES[@]}" | awk '!seen[$0]++' | while read -r module; do
             echo "=== FAST BUILD: $module ==="
             lake build "$module"
           done
