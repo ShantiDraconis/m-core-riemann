@@ -15,20 +15,43 @@ theorem concreteMomentBridge_realized (N : ℕ) : ConcreteMomentBridge N := by
   unfold ConcreteMomentBridge
   intro c hc s hs0 hs1
   have hae0 := concreteFiniteCombination_eq_zero_ae c hc
+  have hae0' :
+      (fun x : ℝ => ∑ i : Fin N, c i * rhoRepresentative i x)
+        =ᵐ[volume.restrict (Set.Ioi 0)] 0 := by
+    simpa [zeroInfinityMeasure, ambientMeasure, zeroInfinityDomain] using hae0
   have hIntZero :
       (∫ x : ℝ in Set.Ioi 0,
         (∑ i : Fin N, c i * rhoRepresentative i x) * x ^ (s - 1)) = 0 := by
-    apply integral_eq_zero_of_ae
-    filter_upwards [hae0] with x hx
-    simp [hx]
+    calc
+      (∫ x : ℝ in Set.Ioi 0,
+        (∑ i : Fin N, c i * rhoRepresentative i x) * x ^ (s - 1))
+          = ∫ x : ℝ in Set.Ioi 0, 0 := by
+              apply integral_congr_ae
+              filter_upwards [hae0'] with x hx
+              rw [hx]
+              simp
+      _ = 0 := by simp
   rw [weighted_integral_finset_linearity c s hs0 hs1] at hIntZero
   have hscaleAll :
       (∑ i : Fin N, c i *
         (∫ x : ℝ in Set.Ioi 0, rhoRepresentative i x * x ^ (s - 1))) =
       concreteMomentPolynomial c s *
         (∫ x : ℝ in Set.Ioi 0, rhoRepresentative 0 x * x ^ (s - 1)) := by
+    let B : ℝ :=
+      ∫ x : ℝ in Set.Ioi 0, rhoRepresentative 0 x * x ^ (s - 1)
     simp_rw [rho_weighted_integral_scaling _ s hs0 hs1]
-    simp [concreteMomentPolynomial, Finset.sum_mul]
+    change (∑ i : Fin N, c i * (mellinScale i s * B)) =
+      concreteMomentPolynomial c s * B
+    calc
+      (∑ i : Fin N, c i * (mellinScale i s * B))
+          = ∑ i : Fin N, (c i * mellinScale i s) * B := by
+              apply Finset.sum_congr rfl
+              intro i hi
+              ring
+      _ = (∑ i : Fin N, c i * mellinScale i s) * B := by
+            rw [Finset.sum_mul]
+      _ = concreteMomentPolynomial c s * B := by
+            rfl
   rw [hscaleAll] at hIntZero
   have hbase :
       (∫ x : ℝ in Set.Ioi 0, rhoRepresentative 0 x * x ^ (s - 1)) ≠ 0 :=
