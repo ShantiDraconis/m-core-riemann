@@ -36,7 +36,11 @@ private theorem concreteGram_quadratic
   unfold Matrix.mulVec dotProduct concreteGramMatrix
   simp_rw [sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right,
     Finset.mul_sum]
-  ring_nf
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  ring
 
 /-- Every finite concrete Gram matrix is positive semidefinite. -/
 theorem concreteGramMatrix_posSemidef (N : ℕ) :
