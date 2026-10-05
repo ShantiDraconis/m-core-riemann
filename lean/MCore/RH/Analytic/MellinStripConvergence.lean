@@ -7,27 +7,26 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 namespace MCore.RH.R0
 
 open MeasureTheory Set Filter Asymptotics Complex
+open scoped Topology
 
 /-- Complex rho is locally integrable on the positive half-line. -/
 theorem rhoRepresentativeC_locallyIntegrableOn (n : ℕ) :
     LocallyIntegrableOn (rhoRepresentativeC n) (Ioi 0) := by
-  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm
+  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono
     ?_ ?_
-  · exact (rhoRepresentative_measurable_public n).ofReal.aestronglyMeasurable.restrict
+  · exact (rhoRepresentative_measurable_public n).ofReal.aestronglyMeasurable
   · filter_upwards with x
-    rw [enorm_le_iff_norm_le]
-    rw [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (rhoRepresentative_nonneg n x)]
-    exact rhoRepresentative_le_one n x
+    simpa [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (rhoRepresentative_nonneg n x)] using
+      (rhoRepresentative_le_one n x)
 
 /-- Complex chi is locally integrable on the positive half-line. -/
 theorem chiRepresentativeC_locallyIntegrableOn :
     LocallyIntegrableOn chiRepresentativeC (Ioi 0) := by
-  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono_enorm
+  refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono
     ?_ ?_
-  · exact chiRepresentative_measurable.ofReal.aestronglyMeasurable.restrict
+  · exact chiRepresentative_measurable.ofReal.aestronglyMeasurable
   · filter_upwards with x
-    rw [enorm_le_iff_norm_le]
     simpa [chiRepresentativeC, Complex.norm_real] using chiRepresentative_norm_le_one x
 
 /-- Near zero every concrete generator is O(1). -/
