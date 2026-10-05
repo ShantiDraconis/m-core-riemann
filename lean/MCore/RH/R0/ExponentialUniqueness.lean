@@ -39,13 +39,17 @@ theorem mellinScale_sample_eq_pow (N : ℕ) (i j : Fin N) :
     mellinScale i (mellinSample N j) =
       (vandermondeBase N i) ^ (j.1 + 1) := by
   unfold mellinScale mellinSample vandermondeBase
-  -- Pure real-power arithmetic; kept as the next kernel obligation if simp/rpow
-  -- normalization does not close directly in the pinned Mathlib version.
-  rw [← Real.rpow_natCast]
-  rw [← Real.rpow_mul (le_of_lt (rhoIndex_cast_pos i))]
-  congr 1
-  field_simp
-  ring
+  let A : ℝ := ((rhoIndex i : ℕ) : ℝ)
+  have hA : 0 ≤ A := (rhoIndex_cast_pos i).le
+  have hexp :
+      -(((j.1 + 1 : ℕ) : ℝ) / ((N + 1 : ℕ) : ℝ)) =
+        (-1 / ((N + 1 : ℕ) : ℝ)) * ((j.1 + 1 : ℕ) : ℝ) := by
+    field_simp
+    ring
+  change A ^ (-(((j.1 + 1 : ℕ) : ℝ) / ((N + 1 : ℕ) : ℝ))) =
+    (A ^ (-1 / ((N + 1 : ℕ) : ℝ))) ^ (j.1 + 1)
+  rw [hexp, Real.rpow_mul hA,
+    Real.rpow_natCast]
 
 /-- Distinct concrete indices give distinct Vandermonde bases. -/
 theorem vandermondeBase_injective (N : ℕ) :
@@ -53,9 +57,10 @@ theorem vandermondeBase_injective (N : ℕ) :
   intro i j h
   unfold vandermondeBase at h
   let e : ℝ := -1 / ((N + 1 : ℕ) : ℝ)
+  have hden : 0 < ((N + 1 : ℕ) : ℝ) := by positivity
   have he : e < 0 := by
     dsimp [e]
-    positivity
+    exact div_neg_of_neg_of_pos (by norm_num) hden
   have hi : 0 < (((rhoIndex i : ℕ) : ℝ)) := rhoIndex_cast_pos i
   have hj : 0 < (((rhoIndex j : ℕ) : ℝ)) := rhoIndex_cast_pos j
   have hji : (((rhoIndex j : ℕ) : ℝ)) ≤ (((rhoIndex i : ℕ) : ℝ)) :=
