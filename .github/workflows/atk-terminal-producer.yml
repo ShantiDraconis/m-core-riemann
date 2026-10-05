@@ -67,6 +67,10 @@ jobs:
             MCore.RH.R0.ChiNorm
             MCore.RH.R0.ConcreteGramLogRate
             MCore.RH.R0.GramExplicit
+            MCore.RH.R0.LinearIndependent
+            MCore.RH.R0.GramInverse
+            MCore.RH.R0.TargetClosedForm
+            MCore.RH.R0.GramAutocorrelation
             MCore.RH.R0.WeightedIntegrability
             MCore.RH.Analytic.MellinTarget
             MCore.RH.Analytic.MellinStripConvergence
