@@ -1,5 +1,5 @@
 import MCore.RH.Analytic.ResidualMellinAlgebra
-import Mathlib.Analysis.Complex.Norm
+import Mathlib.Data.Complex.Norm
 
 namespace MCore.RH.R0
 
