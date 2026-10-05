@@ -1,5 +1,6 @@
 import MCore.RH.Analytic.MellinConcrete
 import Mathlib.Analysis.MellinTransform
+import Mathlib.NumberTheory.LSeries.RiemannZeta
 
 namespace MCore.RH.R0
 
@@ -13,7 +14,7 @@ noncomputable def fractRepresentativeC (t : ℝ) : ℂ :=
 theorem rhoRepresentativeC_zero_eq_fract_inv :
     rhoRepresentativeC 0 = fun x : ℝ => fractRepresentativeC x⁻¹ := by
   funext x
-  simp [rhoRepresentativeC, rhoRepresentative, rhoBase, rhoIndex, fractRepresentativeC]
+  simp [rhoRepresentativeC, rhoRepresentative, rhoBase, rhoIndex, fractRepresentativeC, one_div]
 
 /-- D1.0: inversion reduces Mellin(rho_0) to Mellin(fract) at the reflected exponent. -/
 theorem mellin_rhoBase_reduction (s : ℂ) :
