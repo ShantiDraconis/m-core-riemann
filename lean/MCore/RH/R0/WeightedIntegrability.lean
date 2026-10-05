@@ -29,7 +29,7 @@ theorem rho_weighted_integrableOn_Ioi
     · exact (rhoRepresentative_measurable_public n).aestronglyMeasurable.restrict
     · exact ContinuousOn.aestronglyMeasurable
         (continuousOn_of_forall_continuousAt fun x hx =>
-          (Real.continuousAt_rpow_const _ _ (Or.inl hx.1.ne')).continuousWithinAt)
+          Real.continuousAt_rpow_const _ _ (Or.inl hx.1.ne'))
         measurableSet_Ioc
   have hnear :
       IntegrableOn
@@ -43,8 +43,6 @@ theorem rho_weighted_integrableOn_Ioi
       rhoRepresentative_nonneg n x
     have hr1 : rhoRepresentative n x ≤ 1 :=
       rhoRepresentative_le_one n x
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hr hp),
-      Real.norm_eq_abs, abs_of_nonneg hp]
     exact mul_le_of_le_one_left hp hr1
   have htail_rpow :
       IntegrableOn (fun x : ℝ => x ^ (s - 2)) (Ioi 1) volume := by
