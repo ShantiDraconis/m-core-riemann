@@ -36,10 +36,10 @@ theorem concreteNBData_chi_norm :
         exact h.1
       · intro h
         exact ⟨h, h.1⟩
-    rw [show zeroInfinityMeasure = volume.restrict (Ioi (0 : ℝ)) by
-      rfl]
-    rw [Measure.restrict_apply measurableSet_Ioo]
+    rw [show zeroInfinityMeasure = volume.restrict (Ioi (0 : ℝ)) by rfl]
+    rw [measureReal_restrict_apply measurableSet_Ioo]
     rw [hset]
+    rw [Real.volume_real_Ioo]
     norm_num [twoExponent]
   · norm_num [twoExponent]
   · norm_num [twoExponent]
