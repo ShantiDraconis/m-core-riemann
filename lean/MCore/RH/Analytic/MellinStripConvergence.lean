@@ -14,7 +14,9 @@ theorem rhoRepresentativeC_locallyIntegrableOn (n : ℕ) :
     LocallyIntegrableOn (rhoRepresentativeC n) (Ioi 0) := by
   refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono
     ?_ ?_
-  · exact (rhoRepresentative_measurable_public n).ofReal.aestronglyMeasurable
+  · exact
+      (Complex.continuous_ofReal.measurable.comp
+        (rhoRepresentative_measurable_public n)).aestronglyMeasurable
   · filter_upwards with x
     simpa [rhoRepresentativeC, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (rhoRepresentative_nonneg n x)] using
@@ -25,7 +27,9 @@ theorem chiRepresentativeC_locallyIntegrableOn :
     LocallyIntegrableOn chiRepresentativeC (Ioi 0) := by
   refine (locallyIntegrableOn_const (s := Ioi (0 : ℝ)) (1 : ℂ)).mono
     ?_ ?_
-  · exact chiRepresentative_measurable.ofReal.aestronglyMeasurable
+  · exact
+      (Complex.continuous_ofReal.measurable.comp
+        chiRepresentative_measurable).aestronglyMeasurable
   · filter_upwards with x
     simpa [chiRepresentativeC, Complex.norm_real] using chiRepresentative_norm_le_one x
 
