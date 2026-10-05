@@ -8,7 +8,7 @@ open MeasureTheory Set Complex
 
 /-- Complexified raw fractional-part function. -/
 noncomputable def fractRepresentativeC (t : ℝ) : ℂ :=
-  (Int.fract t : ℂ)
+  ((Int.fract t : ℝ) : ℂ)
 
 /-- rho_0 is exactly the inversion pullback of the raw fractional-part function. -/
 theorem rhoRepresentativeC_zero_eq_fract_inv :
