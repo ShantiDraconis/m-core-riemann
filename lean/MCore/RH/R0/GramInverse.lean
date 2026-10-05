@@ -16,7 +16,7 @@ theorem concreteGramMatrix_det_ne_zero (N : ℕ) :
 /-- B2: the canonical optimal coefficient vector is the inverse-Gram solution. -/
 theorem optimalGramCoeff_eq_inv_mulVec_target (N : ℕ) :
     optimalGramCoeff N =
-      (concreteGramMatrix N)⁻¹ *ᵥ concreteTargetVector N := by
+      (concreteGramMatrix N)⁻¹.mulVec (concreteTargetVector N) := by
   letI : Invertible (concreteGramMatrix N) :=
     (concreteGramMatrix_posDef N).isUnit.invertible
   have hnormal :
