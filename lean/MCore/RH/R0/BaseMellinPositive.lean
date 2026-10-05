@@ -16,17 +16,17 @@ theorem rhoRepresentative_zero_pos_on_half_one
   have hhigh : 1 / x < 2 := by
     rw [div_lt_iff₀ hx0]
     linarith [hx.1]
-  have hne : Int.fract (1 / x) ≠ 0 := by
-    rw [Int.fract_ne_zero_iff]
-    intro hcast
-    rcases hcast with ⟨z, hz⟩
-    have hzlow : (1 : ℝ) < (z : ℝ) := by simpa [← hz] using hlow
-    have hzhigh : (z : ℝ) < 2 := by simpa [← hz] using hhigh
-    have hzlow' : (1 : ℤ) < z := by exact_mod_cast hzlow
-    have hzhigh' : z < (2 : ℤ) := by exact_mod_cast hzhigh
-    omega
-  have hnonneg : 0 ≤ Int.fract (1 / x) := Int.fract_nonneg _
-  have hpos : 0 < Int.fract (1 / x) := lt_of_le_of_ne hnonneg (Ne.symm hne)
+  have hfloor : ⌊(1 / x : ℝ)⌋ = (1 : ℤ) := by
+    rw [Int.floor_eq_iff]
+    norm_num
+    exact ⟨le_of_lt hlow, hhigh⟩
+  have hfract : Int.fract (1 / x) = 1 / x - 1 := by
+    calc
+      Int.fract (1 / x) = 1 / x - (⌊(1 / x : ℝ)⌋ : ℝ) := by rfl
+      _ = 1 / x - 1 := by rw [hfloor]; norm_num
+  have hpos : 0 < Int.fract (1 / x) := by
+    rw [hfract]
+    linarith
   simpa [rhoRepresentative, rhoBase, rhoIndex, one_mul] using hpos
 
 /-- A1.4: the base real Mellin integral is strictly positive on 0<s<1. -/
@@ -50,7 +50,7 @@ theorem base_weighted_integral_pos
         rhoRepresentative_zero_pos_on_half_one hx
       have hx0 : 0 < x := by linarith [hx.1]
       exact mul_ne_zero hrho.ne' (Real.rpow_pos_of_pos hx0 _).ne'
-    · linarith [hx.1]
+    · exact lt_trans (by norm_num : (0 : ℝ) < 1 / 2) hx.1
   exact ((Measure.measure_Ioo_pos volume).mpr (by norm_num : (1 / 2 : ℝ) < 1)).trans_le
     (measure_mono hsupp)
 
