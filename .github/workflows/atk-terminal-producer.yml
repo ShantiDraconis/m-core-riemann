@@ -9,6 +9,7 @@ on:
       - 'audit/rh_preflight_kernel.sh'
       - 'audit/rh_terminal_kernel_check.sh'
       - '.github/workflows/atk-terminal-producer.yml'
+      - 'lake-manifest.json'
   workflow_dispatch:
     inputs:
       full:
