@@ -29,14 +29,12 @@ theorem concreteTargetVector_apply (N : ℕ) (i : Fin N) :
 
 private theorem concreteGram_quadratic
     (N : ℕ) (x : Fin N → ℝ) :
-    dotProduct x (concreteGramMatrix N *ᵥ x) =
+    dotProduct x (Matrix.mulVec (concreteGramMatrix N) x) =
       @inner ℝ concreteNBData.H _
         (∑ i : Fin N, x i • concreteGeneratorFamily i)
         (∑ i : Fin N, x i • concreteGeneratorFamily i) := by
-  simp only [concreteGramMatrix, Matrix.mulVec, dotProduct, Finset.mul_sum,
-    Finset.sum_mul, sum_inner, inner_sum, real_inner_smul_left,
-    real_inner_smul_right]
-  simp only [Finset.sum_mul, Finset.mul_sum]
+  simp_rw [Matrix.mulVec, dotProduct, concreteGramMatrix, sum_inner, inner_sum,
+    real_inner_smul_left, real_inner_smul_right, Finset.mul_sum, Finset.sum_mul]
   ring
 
 /-- Every finite concrete Gram matrix is positive semidefinite. -/
@@ -46,8 +44,10 @@ theorem concreteGramMatrix_posSemidef (N : ℕ) :
   · ext i j
     simp [concreteGramMatrix, real_inner_comm]
   · intro x
-    rw [show star x = x by ext i; simp]
-    rw [concreteGram_quadratic]
+    have hstar : star x = x := by
+      ext i
+      simp
+    rw [hstar, concreteGram_quadratic]
     exact real_inner_self_nonneg
 
 /-- Positive definiteness is exactly finite linear independence of the generators. -/
@@ -56,20 +56,27 @@ theorem concreteGramMatrix_posDef_iff_linearIndependent (N : ℕ) :
       LinearIndependent ℝ (fun i : Fin N => concreteGeneratorFamily i) := by
   rw [Fintype.linearIndependent_iff]
   constructor
-  · intro h x hx
-    by_contra hs
+  · intro h x hsum
+    by_contra hx
     have hq := h.2 x hx
-    rw [show star x = x by ext i; simp] at hq
-    rw [concreteGram_quadratic] at hq
-    simp [hs] at hq
+    have hstar : star x = x := by
+      ext i
+      simp
+    rw [hstar, concreteGram_quadratic, hsum] at hq
+    simpa using hq
   · intro h
-    refine ⟨(concreteGramMatrix_posSemidef N).1, ?_⟩
-    intro x hx
-    rw [show star x = x by ext i; simp]
-    rw [concreteGram_quadratic]
-    have hsum : (∑ i : Fin N, x i • concreteGeneratorFamily i) ≠ 0 := by
-      exact mt (h x) hx
-    exact real_inner_self_pos.mpr hsum
+    constructor
+    · exact (concreteGramMatrix_posSemidef N).1
+    · intro x hx
+      have hstar : star x = x := by
+        ext i
+        simp
+      rw [hstar, concreteGram_quadratic]
+      have hsum :
+          (∑ i : Fin N, x i • concreteGeneratorFamily i) ≠ 0 := by
+        intro hs
+        exact hx (h x hs)
+      exact real_inner_self_pos.mpr hsum
 
 /-- Existing scalar normal equations are exactly the matrix equation G_N c = b_N. -/
 theorem concrete_normal_equations_iff_mulVec
@@ -78,7 +85,7 @@ theorem concrete_normal_equations_iff_mulVec
       (∑ i : Fin N,
         c i * concreteNBData.gramEntry concreteGeneratorFamily i j) =
         concreteNBData.targetEntry concreteGeneratorFamily j) ↔
-      concreteGramMatrix N *ᵥ c = concreteTargetVector N := by
+      Matrix.mulVec (concreteGramMatrix N) c = concreteTargetVector N := by
   constructor
   · intro h
     funext j
@@ -91,7 +98,7 @@ theorem concrete_normal_equations_iff_mulVec
 
 /-- The canonical optimal coefficients solve the explicit concrete Gram system. -/
 theorem optimalGramCoeff_mulVec (N : ℕ) :
-    concreteGramMatrix N *ᵥ optimalGramCoeff N =
+    Matrix.mulVec (concreteGramMatrix N) (optimalGramCoeff N) =
       concreteTargetVector N := by
   exact
     (concrete_normal_equations_iff_mulVec N (optimalGramCoeff N)).1
