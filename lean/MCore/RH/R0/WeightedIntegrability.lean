@@ -43,6 +43,7 @@ theorem rho_weighted_integrableOn_Ioi
       rhoRepresentative_nonneg n x
     have hr1 : rhoRepresentative n x ≤ 1 :=
       rhoRepresentative_le_one n x
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hr hp)]
     exact mul_le_of_le_one_left hp hr1
   have htail_rpow :
       IntegrableOn (fun x : ℝ => x ^ (s - 2)) (Ioi 1) volume := by
@@ -62,6 +63,9 @@ theorem rho_weighted_integrableOn_Ioi
     have hx0 : 0 < x := zero_lt_one.trans hx
     have ha0 : 0 < ((rhoIndex n : ℕ) : ℝ) := by
       exact_mod_cast rhoIndex_pos n
+    change
+      (1 / (((rhoIndex n : ℕ) : ℝ))) * x ^ (s - 2) =
+        rhoRepresentative n x * x ^ (s - 1)
     rw [rhoRepresentative_tail n hx]
     rw [show s - 2 = (s - 1) - 1 by ring,
       Real.rpow_sub_one hx0.ne' (s - 1)]
