@@ -1,4 +1,5 @@
 import MCore.RH.R0.ChiNorm
+import MCore.RH.R0.RhoConcrete
 import MCore.RH.NB.GramEndpoint
 
 open scoped BigOperators
