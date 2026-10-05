@@ -1,0 +1,61 @@
+{
+  "audit": "RH_FROZEN_REUSE_2026-10-05",
+  "policy": "forward-only, fail-closed, content-identity required for diverged frozen refs",
+  "verified_reuse": [
+    {
+      "ref": "frozen/r0-rho-identification-green-66a9b18",
+      "sha": "66a9b18f26fd714a968c1d33935d54dde4e6bf30",
+      "relation_to_attack_head": "ANCESTOR",
+      "certifies": ["concrete R0 rho realization layer"],
+      "does_not_certify": ["DNLimit = 0", "RiemannHypothesis"]
+    },
+    {
+      "ref": "frozen/nb16-chain-audit-green-540066e",
+      "sha": "540066e741d0cfb88e9cf5b84364ab0715afab1d",
+      "relation_to_attack_head": "ANCESTOR",
+      "certifies": ["NB0-NB16 structural chain"],
+      "does_not_certify": ["material inhabitant for DNLimit = 0", "RiemannHypothesis"]
+    },
+    {
+      "ref": "frozen/vanishing-upper-bound-green-5c66f8dc",
+      "sha": "5c66f8dca03834f24a61a9b1219e7af9d4892dd6",
+      "relation_to_attack_head": "ANCESTOR",
+      "certifies": ["consumer chain from a genuine vanishing upper bound"],
+      "does_not_certify": ["existence of the vanishing upper bound", "ConcreteUniformLogDNBound"]
+    },
+    {
+      "ref": "frozen/rh-coefficient-gram-reduction-green-0b2720d2",
+      "sha": "0b2720d2928fa0828ee3d3870fb2884f2d160433",
+      "relation_to_attack_head": "DIVERGED_REF_CONTENT_REUSED",
+      "file": "lean/MCore/RH/NB/GramNormalEquations.lean",
+      "frozen_blob": "52181cde41487ca5edb046311a93dc14af4c511d",
+      "current_blob": "52181cde41487ca5edb046311a93dc14af4c511d",
+      "content_identical": true,
+      "certifies": ["finite Gram normal-equation reduction"],
+      "does_not_certify": ["uniform logarithmic DN rate"]
+    },
+    {
+      "ref": "frozen/rh-gram-energy-endpoint-green-ac8ba3b8",
+      "sha": "ac8ba3b8e51363d431ade14c94e1092e1a3b326d",
+      "relation_to_attack_head": "DIVERGED_REF_CONTENT_REUSED",
+      "file": "lean/MCore/RH/NB/GramEnergy.lean",
+      "frozen_blob": "9021e801cf784ad5cc6d63a1e6bd6c18803be232",
+      "current_blob": "9021e801cf784ad5cc6d63a1e6bd6c18803be232",
+      "content_identical": true,
+      "certifies": ["coefficient energy identity", "normal-equation reduced energy", "finite optimal coefficients"],
+      "does_not_certify": ["ConcreteUniformLogDNBound"]
+    }
+  ],
+  "new_kernel_verified": [
+    {
+      "claim": "CHI_NORM_VALUE",
+      "source_sha": "538032efceb2b054d1181eef1482a2ccce5e421d",
+      "run_id": 37285045669,
+      "conclusion": "SUCCESS",
+      "file": "lean/MCore/RH/R0/ChiNorm.lean"
+    }
+  ],
+  "canonical_open_math": "ConcreteUniformLogDNBound",
+  "rh_proved": false,
+  "terminal_certified": false
+}
