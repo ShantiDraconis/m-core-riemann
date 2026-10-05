@@ -34,8 +34,9 @@ private theorem concreteGram_quadratic
         (∑ i : Fin N, x i • concreteGeneratorFamily i)
         (∑ i : Fin N, x i • concreteGeneratorFamily i) := by
   unfold Matrix.mulVec dotProduct concreteGramMatrix
-  simp_rw [sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right]
-  ring
+  simp_rw [sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right,
+    Finset.mul_sum]
+  ring_nf
 
 /-- Every finite concrete Gram matrix is positive semidefinite. -/
 theorem concreteGramMatrix_posSemidef (N : ℕ) :
@@ -58,7 +59,12 @@ theorem concreteGramMatrix_posDef_iff_linearIndependent (N : ℕ) :
   constructor
   · intro h x hsum
     by_contra hx
-    have hq := h.2 x hx
+    have hx0 : x ≠ 0 := by
+      intro hzero
+      apply hx
+      intro i
+      exact congrFun hzero i
+    have hq := h.2 x hx0
     have hstar : star x = x := by
       ext i
       simp
