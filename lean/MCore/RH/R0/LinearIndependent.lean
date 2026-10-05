@@ -9,6 +9,7 @@ import MCore.RH.R0.GramExplicit
 namespace MCore.RH.R0
 
 open MCore.RH.NB
+open MeasureTheory
 
 /-- Fully assembled A1 producer from the five non-RH ingredients. -/
 theorem concreteMomentBridge_realized (N : ℕ) : ConcreteMomentBridge N := by
@@ -42,19 +43,30 @@ theorem concreteMomentBridge_realized (N : ℕ) : ConcreteMomentBridge N := by
         (∫ x : ℝ in Set.Ioi 0, rhoRepresentative 0 x * x ^ (s - 1)) := by
     let B : ℝ :=
       ∫ x : ℝ in Set.Ioi 0, rhoRepresentative 0 x * x ^ (s - 1)
-    simp_rw [rho_weighted_integral_scaling _ s hs0 hs1]
-    change (∑ i : Fin N, c i * (mellinScale i s * B)) =
-      concreteMomentPolynomial c s * B
+    have hscale :
+        ∀ i : Fin N,
+          (∫ x : ℝ in Set.Ioi 0, rhoRepresentative i x * x ^ (s - 1)) =
+            mellinScale i s * B := by
+      intro i
+      simpa [B] using rho_weighted_integral_scaling i s hs0 hs1
     calc
-      (∑ i : Fin N, c i * (mellinScale i s * B))
-          = ∑ i : Fin N, (c i * mellinScale i s) * B := by
+      (∑ i : Fin N, c i *
+        (∫ x : ℝ in Set.Ioi 0, rhoRepresentative i x * x ^ (s - 1)))
+          = ∑ i : Fin N, c i * (mellinScale i s * B) := by
               apply Finset.sum_congr rfl
               intro i hi
-              ring
-      _ = (∑ i : Fin N, c i * mellinScale i s) * B := by
-            rw [Finset.sum_mul]
+              rw [hscale i]
       _ = concreteMomentPolynomial c s * B := by
-            rfl
+        calc
+          (∑ i : Fin N, c i * (mellinScale i s * B))
+              = ∑ i : Fin N, (c i * mellinScale i s) * B := by
+                  apply Finset.sum_congr rfl
+                  intro i hi
+                  ring
+          _ = (∑ i : Fin N, c i * mellinScale i s) * B := by
+                rw [Finset.sum_mul]
+          _ = concreteMomentPolynomial c s * B := by
+                rfl
   rw [hscaleAll] at hIntZero
   have hbase :
       (∫ x : ℝ in Set.Ioi 0, rhoRepresentative 0 x * x ^ (s - 1)) ≠ 0 :=
