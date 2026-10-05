@@ -54,7 +54,6 @@ theorem rhoRepresentativeC_isBigO_atTop (n : ℕ) :
     Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity),
     Real.norm_eq_abs, Real.rpow_neg_one]
   have hden : 0 < ((rhoIndex n : ℕ) : ℝ) * x := mul_pos (by positivity) hx0
-  rw [abs_of_pos (one_div_pos.mpr hden)]
   have hxinv : |x⁻¹| = x⁻¹ := abs_of_pos (inv_pos.mpr hx0)
   rw [hxinv]
   simpa [one_div] using
