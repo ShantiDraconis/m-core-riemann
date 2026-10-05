@@ -31,7 +31,7 @@ theorem weighted_integral_finset_linearity
               rw [Finset.sum_mul]
               apply Finset.sum_congr rfl
               intro i hi
-              ring
+              ring_nf
     _ = ∑ i : Fin N,
           ∫ x : ℝ in Ioi 0,
             c i * (rhoRepresentative i x * x ^ (s - 1)) := by
