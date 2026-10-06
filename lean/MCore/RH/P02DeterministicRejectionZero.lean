@@ -21,7 +21,7 @@ def functionalReflect (s : ℂ) : ℂ := 1 - s
 def criticalReflect (s : ℂ) : ℂ :=
   ⟨1 - s.re, s.im⟩
 
-def observedDefect (s : ℂ) : ℝ :=
+noncomputable def observedDefect (s : ℂ) : ℝ :=
   s.re - (1 / 2 : ℝ)
 
 theorem functionalReflect_involutive (s : ℂ) :
@@ -97,7 +97,7 @@ depending on the broken historical K9 import surface.
 
 def ProbeNontrivialZetaZero (s : ℂ) : Prop :=
   riemannZeta s = 0 ∧
-  (¬ ∃ n : ℕ, s = -2 * (n + 1)) ∧
+  (¬ ∃ n : ℕ, s = -(((2 * (n + 1) : ℕ) : ℂ))) ∧
   s ≠ 1
 
 def ProbeCriticalLineStatement : Prop :=
