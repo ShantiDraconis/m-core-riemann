@@ -1,70 +1,19 @@
 name: certificate
+
 on:
-  push:
-    branches-ignore:
-      - 'atk/rh-rejection-zero-probe-20261006'
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-on:
-  workflow_dispatch:
+
 jobs:
-  k8:
+  historical-k8-certificate:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
-      - name: G0 fail-closed source hygiene
+      - name: Historical certificate notice
         run: |
-          set -euo pipefail
-          if grep -R -n -E '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-          if grep -R -n -E '^[[:space:]]*(@\[[^]]*\][[:space:]]*)?(axiom|constant|constants)[[:space:]]' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-      - name: G1 preserve frozen K7
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "da5564fe1ac4da4d3a6b70b513abb7a8e281d8de"
-          test "$(git rev-parse HEAD^^)" = "ed937c9b72a831bd2fa270b8b050c5855567977d"
-          test "$(git rev-parse HEAD^^:lean/MCore/K7.lean)" = "abc1975c6de54eda03a5af2604490c1993fd5600"
-          lake build MCore.K7
-      - name: G2 explicit K8 build
-        run: lake build MCore.K8
-      - name: G3 exact RH endpoint API
-        run: |
-          cat > K8EndpointAudit.lean <<'EOF'
-          import MCore.K8
-          open MCore
-          example : OfficialSpecRH = RiemannHypothesis := rfl
-          example (h : RHAdapterObligations) : RiemannHypothesis := rh_endpoint_of_adapter h
-          EOF
-          lake env lean K8EndpointAudit.lean
-      - name: G4 K8 semantic axiom closure
-        run: |
-          printf 'import MCore.K8\n#print axioms MCore.rh_endpoint_of_adapter\n#print axioms MCore.k8_preserves_k7_firewall\n#print axioms MCore.k8_k7_target_open\n' > K8AxiomAudit.lean
-          lake env lean K8AxiomAudit.lean 2>&1 | tee K8AxiomAudit.log
-          grep -F "'MCore.rh_endpoint_of_adapter' does not depend on any axioms" K8AxiomAudit.log
-          grep -F "'MCore.k8_preserves_k7_firewall' does not depend on any axioms" K8AxiomAudit.log
-          grep -F "'MCore.k8_k7_target_open' does not depend on any axioms" K8AxiomAudit.log
-      - name: G5 structural K7 firewall remains valid
-        run: |
-          cat > K8FirewallAudit.lean <<'EOF'
-          import MCore.K8
-          open MCore
-          example : ¬ Nonempty (ProofCertificate k6_dependency.target) := k8_preserves_k7_firewall
-          example : k6_dependency.target.status = .openBridge := k8_k7_target_open
-          EOF
-          lake env lean K8FirewallAudit.lean
-      - name: G6 numerical evidence excluded from Lean proof chain
-        run: |
-          set -euo pipefail
-          if grep -R -n -E 'phi_derived|0\.309|0\.594|0\.609' --include='*.lean' lean; then exit 1; else rc=$?; [ "$rc" -eq 1 ] || exit "$rc"; fi
-      - name: G7 clean K8 reproduction
-        run: |
-          lake clean
-          lake build MCore.K3
-          lake build MCore.K4
-          lake build MCore.K5
-          lake build MCore.K6
-          lake build MCore.K7
-          lake build MCore.K8
+          echo "Historical K8 certificate is manual-only on this RH branch."
+          echo "Use RH Unified Final for the canonical branch gate."
