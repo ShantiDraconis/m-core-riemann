@@ -105,6 +105,17 @@ def ProbeNontrivialZetaZero (s : ℂ) : Prop :=
 def ProbeCriticalLineStatement : Prop :=
   ∀ s : ℂ, ProbeNontrivialZetaZero s → s.re = (1 / 2 : ℝ)
 
+
+/-- Q1 reduced exactly to Mathlib's side condition excluding negative naturals. -/
+theorem functionalReflect_zero_closed_of_not_neg_nat
+    {s : ℂ}
+    (hz : riemannZeta s = 0)
+    (hneg : ∀ n : ℕ, s ≠ -(n : ℂ))
+    (h1 : s ≠ 1) :
+    riemannZeta (functionalReflect s) = 0 := by
+  rw [functionalReflect, riemannZeta_one_sub hneg h1, hz, mul_zero]
+
+
 /-- The exact orbit-collapse obligation that symmetry alone does not provide. -/
 def CriticalOrbitCollapse : Prop :=
   ∀ s : ℂ, ProbeNontrivialZetaZero s → criticalReflect s = s
