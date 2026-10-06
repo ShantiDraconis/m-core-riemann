@@ -16,6 +16,7 @@ permissions:
 jobs:
   rh-unified-final:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - name: Install Lean
