@@ -133,17 +133,16 @@ theorem riemannZeta_neg_odd_ne_zero_of_pos_even
     (m : ℕ)
     (hzpos : riemannZeta (((2 * (m + 1) : ℕ) : ℂ)) ≠ 0) :
     riemannZeta (-((2 * m + 1 : ℕ) : ℂ)) ≠ 0 := by
-  have hzpos' : riemannZeta (2 * ((m + 1 : ℕ) : ℂ)) ≠ 0 := by
-    simpa [Nat.cast_mul, Nat.cast_add] using hzpos
+  have hzpos' : riemannZeta (2 * (((m + 1 : ℕ) : ℂ))) ≠ 0 := by
+    simpa [Nat.cast_add] using hzpos
   have hB : bernoulli (2 * (m + 1)) ≠ 0 :=
     bernoulli_two_mul_ne_zero_of_zeta (k := m + 1) (by omega) hzpos'
   rw [riemannZeta_neg_nat_eq_bernoulli (2 * m + 1)]
   apply div_ne_zero
   · apply mul_ne_zero
     · exact pow_ne_zero _ (by norm_num)
-    · simpa [Nat.mul_add, Nat.add_mul, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hB
-  · have hn : (2 * m + 2 : ℕ) ≠ 0 := by omega
-    exact_mod_cast hn
+    · convert hB using 1 <;> omega
+  · norm_num
 
 
 /-- The exact orbit-collapse obligation that symmetry alone does not provide. -/
