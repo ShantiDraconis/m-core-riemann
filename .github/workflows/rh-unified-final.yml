@@ -1,0 +1,91 @@
+name: RH Unified Final
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - atk/rh-rejection-zero-probe-20261006
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rh-unified-final:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Build structural chain
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02DeterministicRejectionZero
+          lake build MCore.RH.P02TerminalFrontier
+          lake build MCore.RH.P02FinalRoot
+          lake build MCore.RH.P02FinalGlobal
+          lake build MCore.RH.P02ExternalEndpoint
+          lake build MCore.RH.P02TerminalWheel
+          lake build MCore.RH.P02TerminalThreeWay
+          lake build MCore.RH.P02OpenClosedDuality
+          lake build MCore.RH.P02TerminalIdentityAudit
+          lake build MCore.RH.P02TerminalTransition
+      - name: Build RPA chain
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02RPADualCertificate
+          lake build MCore.RH.P02RPAEndpointLattice
+      - name: Build material payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02RiemannMaterialPayload
+      - name: Zero-hole unified audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            lean/MCore/RH/P02DeterministicRejectionZero.lean
+            lean/MCore/RH/P02TerminalFrontier.lean
+            lean/MCore/RH/P02FinalRoot.lean
+            lean/MCore/RH/P02FinalGlobal.lean
+            lean/MCore/RH/P02ExternalEndpoint.lean
+            lean/MCore/RH/P02TerminalWheel.lean
+            lean/MCore/RH/P02TerminalThreeWay.lean
+            lean/MCore/RH/P02OpenClosedDuality.lean
+            lean/MCore/RH/P02TerminalIdentityAudit.lean
+            lean/MCore/RH/P02TerminalTransition.lean
+            lean/MCore/RH/P02RPADualCertificate.lean
+            lean/MCore/RH/P02RPAEndpointLattice.lean
+            lean/MCore/RH/P02RiemannMaterialPayload.lean
+          )
+          for f in "${files[@]}"; do
+            if grep -En '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' "$f"; then
+              echo "proof hole found in $f"
+              exit 1
+            fi
+          done
+          grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'rpa_certificate_iff_dual_endpoint_state' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'finalCertificate_iff_materialRH' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'material_gate_exact' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          echo "RH_UNIFIED_FINAL=KERNEL_CHECKED"
