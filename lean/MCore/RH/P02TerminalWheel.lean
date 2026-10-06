@@ -27,11 +27,11 @@ theorem criticalWheel_two (s : ℂ) :
 
 theorem criticalWheel_add_two (n : ℕ) (s : ℂ) :
     criticalWheel (n + 2) s = criticalWheel n s := by
-  induction n generalizing s with
-  | zero =>
-      simpa [criticalWheel] using criticalReflect_involutive s
-  | succ n ih =>
-      simp [criticalWheel, Nat.succ_eq_add_one, ih]
+  have h :
+      criticalWheel n (criticalReflect (criticalReflect s)) =
+        criticalWheel n s :=
+    congrArg (criticalWheel n) (criticalReflect_involutive s)
+  simpa [criticalWheel, Nat.add_assoc] using h
 
 /-- Minimal truncation: the first reflected state is already the initial state. -/
 def CriticalWheelTruncatesAtLastBit (s : ℂ) : Prop :=
