@@ -32,8 +32,9 @@ theorem orbitCollapse_iff_materialRH :
 
 theorem endpoint_iff_materialRH :
     Endpoint ↔ RiemannHypothesisMaterial := by
-  rw [criticalWheelTerminalClosure_iff_orbitCollapse]
-  exact orbitCollapse_iff_materialRH
+  change CriticalWheelTerminalClosure ↔ RiemannHypothesisMaterial
+  exact criticalWheelTerminalClosure_iff_orbitCollapse.trans
+    orbitCollapse_iff_materialRH
 
 theorem payload_iff_materialRH :
     Nonempty RiemannMaterialPayload ↔ RiemannHypothesisMaterial := by
