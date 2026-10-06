@@ -1,4 +1,9 @@
 name: certificate
+on:
+  push:
+    branches-ignore:
+      - 'atk/rh-rejection-zero-probe-20261006'
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
