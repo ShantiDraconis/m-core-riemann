@@ -141,8 +141,12 @@ theorem riemannZeta_neg_odd_ne_zero_of_pos_even
   apply div_ne_zero
   · apply mul_ne_zero
     · exact pow_ne_zero _ (by norm_num)
-    · convert hB using 1 <;> omega
-  · norm_num
+    · have hidx : 2 * (m + 1) = (2 * m + 1) + 1 := by omega
+      simpa [hidx] using hB
+  · have hn : (2 * m + 2 : ℕ) ≠ 0 := by omega
+    have hc : (((2 * m + 2 : ℕ) : ℂ)) ≠ 0 := by
+      exact_mod_cast hn
+    convert hc using 1 <;> norm_num [Nat.cast_add, Nat.cast_mul] <;> ring
 
 
 /-- The exact orbit-collapse obligation that symmetry alone does not provide. -/
