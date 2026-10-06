@@ -1,0 +1,43 @@
+name: RH Last Open Math Bit
+
+on:
+  push:
+    branches:
+      - atk/rh-rejection-zero-probe-20261006
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  last-bit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Build last-bit target
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02LastOpenMath
+      - name: Assert exactly one open-math hole
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=lean/MCore/RH/P02LastOpenMath.lean
+          count=$(grep -Ec '^[[:space:]]*sorry[[:space:]]*$' "$target" || true)
+          test "$count" -eq 1
+          echo "RH_OPEN_MATH_HOLES=$count"
