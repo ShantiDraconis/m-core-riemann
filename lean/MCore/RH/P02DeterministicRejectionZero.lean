@@ -133,8 +133,10 @@ theorem riemannZeta_neg_odd_ne_zero_of_pos_even
     (m : ℕ)
     (hzpos : riemannZeta (((2 * (m + 1) : ℕ) : ℂ)) ≠ 0) :
     riemannZeta (-((2 * m + 1 : ℕ) : ℂ)) ≠ 0 := by
+  have hzpos' : riemannZeta (2 * ((m + 1 : ℕ) : ℂ)) ≠ 0 := by
+    simpa [Nat.cast_add] using hzpos
   have hB : bernoulli (2 * (m + 1)) ≠ 0 :=
-    bernoulli_two_mul_ne_zero_of_zeta (k := m + 1) (by omega) hzpos
+    bernoulli_two_mul_ne_zero_of_zeta (k := m + 1) (by omega) hzpos'
   rw [riemannZeta_neg_nat_eq_bernoulli (2 * m + 1)]
   apply div_ne_zero
   · apply mul_ne_zero
