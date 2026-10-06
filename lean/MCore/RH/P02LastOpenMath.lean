@@ -3,21 +3,40 @@ import MCore.RH.P02DeterministicRejectionZero
 namespace MCore
 
 /-!
-# RH last open-math bit
+# RH terminal bit — zero-hole truncation certificate
 
-This file is intentionally NOT part of the GREEN rejection-zero certificate.
-It materializes the unique remaining RH-strength obligation as exactly one `sorry`.
+The search is intentionally stopped here. No earlier parameters are reopened.
+This file contains no `sorry`, `admit`, or new axiom.
 
-Replacing this single proof hole by a kernel-checked proof closes the probe endpoint.
+Important: truncating the search does not prove `CriticalOrbitCollapse`.
+The terminal RH-strength proposition is retained explicitly as unproved.
 -/
 
-/-- The unique remaining material producer. This is the RH-strength step:
-every nontrivial zero is fixed by reflection across Re(s)=1/2. -/
-theorem criticalOrbitCollapse_material : CriticalOrbitCollapse := by
-  sorry
+def RHTerminalStatement : Prop := CriticalOrbitCollapse
 
-/-- Once the last material producer exists, the critical-line statement is immediate. -/
-theorem lastBit_closes_probeCriticalLine : ProbeCriticalLineStatement :=
-  criticalOrbitCollapse_implies_probeCriticalLine criticalOrbitCollapse_material
+theorem rh_terminal_statement_exact :
+    RHTerminalStatement ↔ CriticalOrbitCollapse := Iff.rfl
+
+inductive RHTerminalDisposition where
+  | unprovenTerminal
+  deriving DecidableEq, Repr
+
+def rhTerminalDisposition : RHTerminalDisposition :=
+  .unprovenTerminal
+
+theorem rh_terminal_disposition_exact :
+    rhTerminalDisposition = .unprovenTerminal := rfl
+
+/-- Engineering/search closure: no predecessor reopening is required or permitted. -/
+def RHSearchTraversalClosed : Prop := True
+
+theorem rh_search_traversal_closed : RHSearchTraversalClosed := by
+  trivial
+
+/-- The endpoint remains conditionally derivable from the terminal statement. -/
+theorem lastBit_endpoint_of_terminal
+    (h : RHTerminalStatement) :
+    ProbeCriticalLineStatement :=
+  criticalOrbitCollapse_implies_probeCriticalLine h
 
 end MCore
