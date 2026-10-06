@@ -1,21 +1,19 @@
-import MCore.RH.K9_ZetaBridge
+import Mathlib.NumberTheory.LSeries.RiemannZeta
 
 namespace MCore
 
 /-!
 # T7 deterministic rejection-zero invariant probe
 
-This file is intentionally algebraic.  It does not assume RH and it does not
-promote reflection symmetry to critical-line collapse.
+Autocontained on Mathlib's `riemannZeta`.  This file intentionally avoids the
+older K9 bridge so the rejection-zero probe can be kernel-tested independently.
 
-Two reflections must be kept distinct:
+Two reflections are kept distinct:
 
-* `functionalReflect s = 1 - s`: the functional-equation reflection.
-* `criticalReflect s = (1 - re s) + i (im s)`: reflection across Re(s)=1/2,
-  equivalently `1 - conj(s)`.
+* `functionalReflect s = 1 - s`.
+* `criticalReflect s = (1 - re s) + i (im s)`, i.e. reflection across Re(s)=1/2.
 
-The second map is the exact analogue of a deterministic reject-map whose fixed
-points are precisely the critical line.
+No theorem below derives orbit collapse from symmetry.
 -/
 
 def functionalReflect (s : ℂ) : ℂ := 1 - s
@@ -32,9 +30,7 @@ theorem functionalReflect_involutive (s : ℂ) :
 
 theorem criticalReflect_involutive (s : ℂ) :
     criticalReflect (criticalReflect s) = s := by
-  apply Complex.ext
-  · simp [criticalReflect]
-  · simp [criticalReflect]
+  apply Complex.ext <;> simp [criticalReflect]
 
 theorem observedDefect_functionalReflect (s : ℂ) :
     observedDefect (functionalReflect s) = - observedDefect s := by
@@ -46,25 +42,7 @@ theorem observedDefect_criticalReflect (s : ℂ) :
   simp [observedDefect, criticalReflect]
   ring
 
-/-- Functional reflection has only the literal complex fixed point 1/2. -/
-theorem functionalReflect_fixed_iff (s : ℂ) :
-    functionalReflect s = s ↔ s = (1 / 2 : ℂ) := by
-  constructor
-  · intro h
-    apply Complex.ext
-    · have hr := congrArg Complex.re h
-      simp [functionalReflect] at hr
-      norm_num at hr ⊢
-      linarith
-    · have hi := congrArg Complex.im h
-      simp [functionalReflect] at hi
-      norm_num at hi ⊢
-      linarith
-  · intro h
-    subst s
-    apply Complex.ext <;> norm_num [functionalReflect]
-
-/-- Reflection across the critical line fixes exactly the points with Re(s)=1/2. -/
+/-- Reflection across the critical line fixes exactly Re(s)=1/2. -/
 theorem criticalReflect_fixed_iff (s : ℂ) :
     criticalReflect s = s ↔ s.re = (1 / 2 : ℝ) := by
   constructor
@@ -87,11 +65,7 @@ theorem criticalReflect_preserves_defect_abs (s : ℂ) :
   rw [observedDefect_criticalReflect]
   exact abs_neg _
 
-/-!
-Negative control: involution + sign flip does not imply zero defect.
-This is the exact obstruction that prevents reflection symmetry alone from
-certifying RH.
--/
+/-! Negative control: involution + sign flip does not imply zero defect. -/
 
 structure ToyReflectionModel where
   Point : Type
@@ -116,28 +90,38 @@ theorem involution_and_flip_do_not_force_zero_defect :
   refine ⟨toyOffLine, 1, ?_⟩
   norm_num [toyOffLine]
 
-/-- The exact material collapse property still missing from reflection symmetry. -/
-def CriticalOrbitCollapse : Prop :=
-  ∀ s : ℂ, NontrivialZetaZero s → criticalReflect s = s
+/-!
+Local zero predicate used only to expose the structural endpoint without
+depending on the broken historical K9 import surface.
+-/
 
-theorem criticalOrbitCollapse_implies_RH
+def ProbeNontrivialZetaZero (s : ℂ) : Prop :=
+  riemannZeta s = 0 ∧
+  (¬ ∃ n : ℕ, s = -2 * (n + 1)) ∧
+  s ≠ 1
+
+def ProbeCriticalLineStatement : Prop :=
+  ∀ s : ℂ, ProbeNontrivialZetaZero s → s.re = (1 / 2 : ℝ)
+
+/-- The exact orbit-collapse obligation that symmetry alone does not provide. -/
+def CriticalOrbitCollapse : Prop :=
+  ∀ s : ℂ, ProbeNontrivialZetaZero s → criticalReflect s = s
+
+theorem criticalOrbitCollapse_implies_probeCriticalLine
     (h : CriticalOrbitCollapse) :
-    RiemannHypothesis := by
-  intro s hz htriv h1
-  have hs : NontrivialZetaZero s := ⟨hz, htriv, h1⟩
+    ProbeCriticalLineStatement := by
+  intro s hs
   exact (criticalReflect_fixed_iff s).mp (h s hs)
 
 /-!
 Kernel frontier:
 
-Q1. Prove zero-closure under functionalReflect from Mathlib's zeta functional law.
-Q2. Prove zero-closure under criticalReflect by composing functional reflection
-    with conjugation symmetry.
-Q3. Audit which hypotheses are needed at poles/trivial zeros.
-Q4. Do not promote involution, sign-flip, |defect|-preservation, or symmetry
-    to CriticalOrbitCollapse.
-Q5. The first genuinely RH-strength obligation is a theorem producing
-    CriticalOrbitCollapse (or an independently proved equivalent material law).
+Q1. zero-closure under functionalReflect.
+Q2. zero-closure under criticalReflect, using functional + conjugation symmetry.
+Q3. exact side conditions at poles/trivial zeros.
+Q4. involution, sign flip and |defect|-preservation are structural only.
+Q5-Q9. none may be promoted to orbit collapse.
+Q10. expose the first independent material law that implies CriticalOrbitCollapse.
 -/
 
 end MCore
