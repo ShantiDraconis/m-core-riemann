@@ -1,0 +1,52 @@
+name: RH Material Payload
+
+on:
+  push:
+    branches:
+      - atk/rh-rejection-zero-probe-20261006
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rh-material-payload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Build RH material payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02RiemannMaterialPayload
+      - name: Zero-hole material guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=lean/MCore/RH/P02RiemannMaterialPayload.lean
+          if grep -En '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' "$f"; then
+            echo "proof hole found in $f"
+            exit 1
+          fi
+          grep -q 'structure RiemannMaterialPayload' "$f"
+          grep -q 'orbitCollapse_iff_materialRH' "$f"
+          grep -q 'payload_iff_materialRH' "$f"
+          grep -q 'payload_iff_endpoint' "$f"
+          grep -q 'structure RiemannFinalCertificate' "$f"
+          grep -q 'finalCertificate_iff_materialRH' "$f"
+          grep -q 'material_gate_exact' "$f"
+          echo "RH_MATERIAL_PAYLOAD_TYPE=KERNEL_CHECKED"
