@@ -87,7 +87,8 @@ def toyOffLine : ToyReflectionModel where
 
 theorem involution_and_flip_do_not_force_zero_defect :
     ∃ (M : ToyReflectionModel) (x : M.Point), M.defect x ≠ 0 := by
-  refine ⟨toyOffLine, 1, ?_⟩
+  refine ⟨toyOffLine, ?_⟩
+  refine ⟨(1 : ℝ), ?_⟩
   norm_num [toyOffLine]
 
 /-!
