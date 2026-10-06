@@ -57,6 +57,8 @@ jobs:
               exit 1
             fi
           done
-          grep -q 'rpa_certificate_iff_endpoint' lean/MCore/RH/P02RPADualCertificate.lean
-          grep -q 'rpa_chain_exact' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_certificate_iff_dual_endpoint_state' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_dual_chain_exact' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_certificate_requires_open' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_certificate_requires_closed' lean/MCore/RH/P02RPADualCertificate.lean
           echo "RPA_DUAL_TRANSITION=KERNEL_CHECKED"
