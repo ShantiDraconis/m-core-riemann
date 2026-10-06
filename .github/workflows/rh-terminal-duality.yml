@@ -36,12 +36,14 @@ jobs:
           lake build MCore.RH.P02TerminalThreeWay
           lake build MCore.RH.P02OpenClosedDuality
           lake build MCore.RH.P02TerminalIdentityAudit
+          lake build MCore.RH.P02TerminalTransition
       - name: Zero-hole guard
         shell: bash
         run: |
           set -euo pipefail
           for f in             lean/MCore/RH/P02TerminalWheel.lean             lean/MCore/RH/P02TerminalThreeWay.lean             lean/MCore/RH/P02OpenClosedDuality.lean \
-            lean/MCore/RH/P02TerminalIdentityAudit.lean; do
+            lean/MCore/RH/P02TerminalIdentityAudit.lean \
+            lean/MCore/RH/P02TerminalTransition.lean; do
             if grep -En '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' "$f"; then
               echo "proof hole found in $f"
               exit 1
