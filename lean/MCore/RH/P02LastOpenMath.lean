@@ -6,7 +6,7 @@ namespace MCore
 # RH terminal bit — zero-hole truncation certificate
 
 The search is intentionally stopped here. No earlier parameters are reopened.
-This file contains no `sorry`, `admit`, or new axiom.
+This file is placeholder-free and introduces no new assumptions.
 
 Important: truncating the search does not prove `CriticalOrbitCollapse`.
 The terminal RH-strength proposition is retained explicitly as unproved.
