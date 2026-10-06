@@ -25,14 +25,15 @@ jobs:
       - name: Backward endpoint-type firewall
         run: |
           set -euo pipefail
-          lake build MCore.BackwardAudit.EndpointTypeResidue MCore.BackwardAudit.CrossProblemBridgeBoundary
+          lake build MCore.BackwardAudit.FinalEndpoint MCore.BackwardAudit.EndpointTypeResidue MCore.BackwardAudit.CrossProblemBridgeBoundary
           test ! -e lean/MCore/BackwardAudit/HypotheticalClosureOracle.lean
           lake env lean lean/MCore/BackwardAudit/EndpointTypeResidue.lean 2>&1 | tee BackwardEndpoint.log
           lake env lean lean/MCore/BackwardAudit/CrossProblemBridgeBoundary.lean 2>&1 | tee CrossProblemBridge.log
           if grep -E 'sorryAx' BackwardEndpoint.log CrossProblemBridge.log; then exit 1; fi
           grep -F "'MCore.BackwardAudit.endpoint_route_is_criticalLine' does not depend on any axioms" BackwardEndpoint.log
-          grep -F "'MCore.BackwardAudit.endpoint_proposition_still_untyped' does not depend on any axioms" BackwardEndpoint.log
-          grep -F "'MCore.BackwardAudit.cross_problem_endpoint_still_untyped' does not depend on any axioms" CrossProblemBridge.log
+          grep -F "'MCore.BackwardAudit.endpoint_proposition_is_typed' does not depend on any axioms" BackwardEndpoint.log
+          grep -F "'MCore.BackwardAudit.classical_semantic_adapter_still_open' does not depend on any axioms" BackwardEndpoint.log
+          grep -F "'MCore.BackwardAudit.cross_problem_endpoint_is_typed' does not depend on any axioms" CrossProblemBridge.log
           grep -F "'MCore.BackwardAudit.rh_to_pnp_equality_if_bridge_supplied' does not depend on any axioms" CrossProblemBridge.log
           grep -F "'MCore.BackwardAudit.rh_to_pnp_separation_if_bridge_supplied' does not depend on any axioms" CrossProblemBridge.log
       - {name: Clean reproduction, run: 'lake clean && timeout 20m lake build MCore'}

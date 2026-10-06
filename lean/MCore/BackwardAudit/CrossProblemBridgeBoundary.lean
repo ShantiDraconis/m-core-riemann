@@ -3,9 +3,8 @@ import MCore.BackwardAudit.EndpointTypeResidue
 namespace MCore
 namespace BackwardAudit
 
-/-- Abstract cross-problem specification. The current RH repository has not yet
-typed the classical RH endpoint proposition, so these are bridge obligations,
-not established implications. -/
+/-- Abstract cross-problem specification. RH now has a typed endpoint interface. Cross-problem claims are still bridge
+obligations unless an explicit implication is independently supplied. -/
 structure CrossProblemBridgeSpec where
   rh : Prop
   pnpDiscriminant : Prop
@@ -53,18 +52,17 @@ theorem twisted_zeta_to_separation_if_bridge_supplied
     ¬ S.pnpDiscriminant :=
   hBridge hOff
 
-/-- The current repository state itself remains untyped at the classical RH
-endpoint. This theorem records that no cross-problem bridge may be promoted
-before the endpoint proposition is first typed. -/
-theorem cross_problem_endpoint_still_untyped :
-    endpointPropositionTyped = false :=
-  endpoint_proposition_still_untyped
+/-- Endpoint typing is closed, but no RH-to-complexity implication is created
+by typing alone. -/
+theorem cross_problem_endpoint_is_typed :
+    endpointPropositionTyped = true :=
+  endpoint_proposition_is_typed
 
 #print axioms rh_to_pnp_equality_if_bridge_supplied
 #print axioms rh_to_pnp_separation_if_bridge_supplied
 #print axioms rh_to_factoring_if_bridge_supplied
 #print axioms twisted_zeta_to_separation_if_bridge_supplied
-#print axioms cross_problem_endpoint_still_untyped
+#print axioms cross_problem_endpoint_is_typed
 
 end BackwardAudit
 end MCore

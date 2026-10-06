@@ -1,0 +1,18 @@
+{
+  "schema": "mcore.frontier.certificate.v1",
+  "problem": "Riemann Hypothesis",
+  "certified_source_sha": "21216ff1141f97921aeddb3708fee0bfea05fd14",
+  "workflow_run": 35432825821,
+  "workflow_job": 105870314478,
+  "conclusion": "SUCCESS",
+  "certified_scope": "kernel-portable typing of the RH endpoint and semantic transport interface",
+  "certified_theorems": [
+    "MCore.RH.endpoint_transport",
+    "MCore.BackwardAudit.endpoint_proposition_is_typed",
+    "MCore.BackwardAudit.classical_semantic_adapter_still_open"
+  ],
+  "formal_status": "ENDPOINT_TYPING_CERTIFIED",
+  "mathematical_endpoint_status": "OPEN",
+  "remaining_frontier": "instantiate ClassicalZetaAdapter with the classical analytic zeta semantics and prove FinalEndpoint",
+  "no_mathematical_promotion": true
+}
