@@ -1,9 +1,6 @@
 name: RH Unified Final Gate
 
 on:
-  push:
-    branches:
-      - atk/rh-rejection-zero-probe-20261006
   workflow_dispatch:
 
 concurrency:
