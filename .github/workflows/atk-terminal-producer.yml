@@ -1,4 +1,4 @@
-name: atk-terminal-producer
+name: RH Unified Final
 
 on:
   push:
@@ -19,7 +19,7 @@ on:
         type: boolean
 
 concurrency:
-  group: rh-fast-${{ github.ref }}
+  group: rh-unified-final-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -28,7 +28,7 @@ permissions:
 jobs:
   rh-fast:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
