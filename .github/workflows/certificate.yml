@@ -1,5 +1,9 @@
 name: certificate
 on: [push, pull_request]
+
+concurrency:
+  group: rh-certificate-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   k6:
     runs-on: ubuntu-latest
