@@ -1,0 +1,47 @@
+name: RH Unified Final
+on:
+  push:
+    branches: [atk/terminal-parameter-law-20261003]
+    paths:
+      - 'lean/MCore/RH/**'
+      - '.github/workflows/rh-unified-final.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  unified-final:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        run: |
+          set -euo pipefail
+          lake update
+      - name: Build RH final chain
+        run: |
+          set -euo pipefail
+          lake build MCore.RH.NB.ExactFinalProducer
+          lake build MCore.RH.R0.ConcreteFinalProducer
+      - name: Axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/RHUnifiedAudit.lean <<'EOF'
+          import MCore.RH.NB.ExactFinalProducer
+          import MCore.RH.R0.ConcreteFinalProducer
+          #print axioms MCore.RH.NB.ExactFinalProducer
+          #print axioms MCore.RH.R0.ConcreteFinalProducer
+          EOF
+          lake env lean /tmp/RHUnifiedAudit.lean 2>&1 | tee rh-unified-final.log
+          if grep -q 'sorryAx' rh-unified-final.log; then exit 1; fi
