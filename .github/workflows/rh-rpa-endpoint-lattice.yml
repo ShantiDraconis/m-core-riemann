@@ -1,0 +1,52 @@
+name: RH RPA Endpoint Lattice
+
+on:
+  push:
+    branches:
+      - atk/rh-rejection-zero-probe-20261006
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rpa-endpoint-lattice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Build RPA endpoint lattice
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02RPADualCertificate
+          lake build MCore.RH.P02RPAEndpointLattice
+      - name: Zero-hole lattice guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in             lean/MCore/RH/P02RPADualCertificate.lean             lean/MCore/RH/P02RPAEndpointLattice.lean; do
+            if grep -En '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' "$f"; then
+              echo "proof hole found in $f"
+              exit 1
+            fi
+          done
+          grep -q 'canonicalize_empty' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'canonicalize_open' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'canonicalize_closed' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'canonicalize_dual' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'full_is_global_external_certificate' lean/MCore/RH/P02RPAEndpointLattice.lean
+          echo "RPA_ENDPOINT_LATTICE=KERNEL_CHECKED"
