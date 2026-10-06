@@ -1,4 +1,5 @@
 import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.NumberTheory.LSeries.HurwitzZetaValues
 
 namespace MCore
 
@@ -114,6 +115,32 @@ theorem functionalReflect_zero_closed_of_not_neg_nat
     (h1 : s ≠ 1) :
     riemannZeta (functionalReflect s) = 0 := by
   rw [functionalReflect, riemannZeta_one_sub hneg h1, hz, mul_zero]
+
+
+/-- Q3a: nonvanishing of ζ(2k) forces the corresponding even Bernoulli number to be nonzero. -/
+theorem bernoulli_two_mul_ne_zero_of_zeta
+    {k : ℕ} (hk : k ≠ 0)
+    (hz : riemannZeta (2 * k) ≠ 0) :
+    bernoulli (2 * k) ≠ 0 := by
+  intro hB
+  apply hz
+  rw [riemannZeta_two_mul_nat hk, hB]
+  simp
+
+/-- Q3b: every negative odd integer is a nonzero point of ζ, once the matching
+positive even zeta value is known to be nonzero. -/
+theorem riemannZeta_neg_odd_ne_zero_of_pos_even
+    (m : ℕ)
+    (hzpos : riemannZeta (2 * (m + 1)) ≠ 0) :
+    riemannZeta (-((2 * m + 1 : ℕ) : ℂ)) ≠ 0 := by
+  have hB : bernoulli (2 * (m + 1)) ≠ 0 :=
+    bernoulli_two_mul_ne_zero_of_zeta (k := m + 1) (by omega) hzpos
+  rw [riemannZeta_neg_nat_eq_bernoulli (2 * m + 1)]
+  apply div_ne_zero
+  · apply mul_ne_zero
+    · exact pow_ne_zero _ (by norm_num)
+    · simpa [Nat.mul_add, Nat.add_mul, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hB
+  · norm_num
 
 
 /-- The exact orbit-collapse obligation that symmetry alone does not provide. -/
