@@ -1,14 +1,10 @@
 name: RH RPA Endpoint Lattice
+on:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-on:
-  workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   rpa-endpoint-lattice:
