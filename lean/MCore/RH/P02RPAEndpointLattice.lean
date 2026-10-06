@@ -188,12 +188,6 @@ theorem canonicalize_full_2_2 :
       (rawWord4 rawOpen rawOpen rawClosed rawClosed) = .full := by
   native_decide
 
-theorem full_raw_2_2_is_global_external :
-    canonicalize
-        (rawWord4 rawOpen rawOpen rawClosed rawClosed) = .full ∧
-      (RPAFull ↔ RPAGlobalExternalCertificate) := by
-  exact ⟨canonicalize_full_2_2, full_is_global_external_certificate⟩
-
 theorem complete_lattice_14 :
     canonicalize rawOpen = .open ∧
     canonicalize rawClosed = .closed ∧
@@ -224,6 +218,12 @@ theorem full_is_final_root :
 
 theorem full_is_global_external_certificate :
     RPAFull ↔ RPAGlobalExternalCertificate := Iff.rfl
+
+theorem full_raw_2_2_is_global_external :
+    canonicalize
+        (rawWord4 rawOpen rawOpen rawClosed rawClosed) = .full ∧
+      (RPAFull ↔ RPAGlobalExternalCertificate) := by
+  exact ⟨canonicalize_full_2_2, full_is_global_external_certificate⟩
 
 theorem full_chain_exact :
     RPAFull ↔
