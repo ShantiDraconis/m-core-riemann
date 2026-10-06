@@ -89,7 +89,8 @@ theorem involution_and_flip_do_not_force_zero_defect :
     ∃ (M : ToyReflectionModel) (x : M.Point), M.defect x ≠ 0 := by
   refine ⟨toyOffLine, ?_⟩
   refine ⟨(1 : ℝ), ?_⟩
-  norm_num [toyOffLine]
+  change (1 : ℝ) ≠ 0
+  norm_num
 
 /-!
 Local zero predicate used only to expose the structural endpoint without
