@@ -39,6 +39,7 @@ jobs:
           export PATH="$HOME/.elan/bin:$PATH"
           lake build MCore.RH.P02DeterministicRejectionZero
           lake build MCore.RH.P02TerminalFrontier
+          lake build MCore.RH.P02LastOpenMath
           lake build MCore.RH.P02FinalRoot
           lake build MCore.RH.P02FinalGlobal
           lake build MCore.RH.P02ExternalEndpoint
@@ -67,6 +68,7 @@ jobs:
           files=(
             lean/MCore/RH/P02DeterministicRejectionZero.lean
             lean/MCore/RH/P02TerminalFrontier.lean
+            lean/MCore/RH/P02LastOpenMath.lean
             lean/MCore/RH/P02FinalRoot.lean
             lean/MCore/RH/P02FinalGlobal.lean
             lean/MCore/RH/P02ExternalEndpoint.lean
@@ -85,8 +87,24 @@ jobs:
               exit 1
             fi
           done
-          grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'criticalWheelTerminalClosure_iff_orbitCollapse' lean/MCore/RH/P02TerminalWheel.lean
+          grep -q 'terminal_three_way_signature' lean/MCore/RH/P02TerminalThreeWay.lean
+          grep -q 'rpa_endpoint_positions_distinct' lean/MCore/RH/P02RPADualCertificate.lean
           grep -q 'rpa_certificate_iff_dual_endpoint_state' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_certificate_requires_open' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_certificate_requires_closed' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'raw_full_2_2' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'full_raw_2_2_is_global_external' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'structure RiemannMaterialPayload' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'payload_iff_endpoint' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'finalCertificate_iff_materialRH' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'finalCertificate_iff_endpoint' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'material_gate_exact' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'unprovenTerminal' lean/MCore/RH/P02LastOpenMath.lean
+          grep -q 'RHSearchTraversalClosed' lean/MCore/RH/P02LastOpenMath.lean
+          echo "RH_STRUCTURE=KERNEL_CHECKED"
+          echo "RPA_LATTICE_14=KERNEL_CHECKED"
+          echo "GLOBAL_EXTERNAL_STRUCTURE=KERNEL_CHECKED"
+          echo "MATERIAL_ENDPOINT_INHABITANT=NOT_PROMOTED_BY_STRUCTURE"
           echo "RH_UNIFIED_FINAL=KERNEL_CHECKED"
