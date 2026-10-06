@@ -1,0 +1,49 @@
+name: RH Rejection Zero Probe
+
+on:
+  push:
+    branches:
+      - atk/rh-rejection-zero-probe-20261006
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rejection-zero-kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+
+      - name: Build exact RH rejection-zero target
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02DeterministicRejectionZero
+
+      - name: Fail closed on placeholders
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=lean/MCore/RH/P02DeterministicRejectionZero.lean
+          if grep -nE '\\b(sorry|admit|sorryAx|axiom)\\b' "$target"; then
+            echo "RH_REJECTION_ZERO_HYGIENE_RED"
+            exit 1
+          fi
+          echo "RH_REJECTION_ZERO_HYGIENE_GREEN"
