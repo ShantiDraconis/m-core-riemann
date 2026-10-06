@@ -3,7 +3,8 @@ name: certificate
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 jobs:
   k8:
     runs-on: ubuntu-latest
