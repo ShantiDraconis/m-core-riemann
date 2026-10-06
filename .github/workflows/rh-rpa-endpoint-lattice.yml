@@ -49,4 +49,7 @@ jobs:
           grep -q 'canonicalize_closed' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'canonicalize_dual' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'full_is_global_external_certificate' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'raw_full_2_2' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'full_raw_2_2_is_global_external' lean/MCore/RH/P02RPAEndpointLattice.lean
           echo "RPA_ENDPOINT_LATTICE=KERNEL_CHECKED"
