@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: rh-terminal-kernel-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   rh-terminal-kernel:
     if: github.head_ref == 'atk/terminal-parameter-law-20261003'
