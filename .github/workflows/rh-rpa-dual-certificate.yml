@@ -1,0 +1,62 @@
+name: RH RPA Dual Certificate
+
+on:
+  push:
+    branches:
+      - atk/rh-rejection-zero-probe-20261006
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rpa-dual-certificate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake update
+          lake exe cache get || true
+      - name: Build RPA chain
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02TerminalWheel
+          lake build MCore.RH.P02TerminalThreeWay
+          lake build MCore.RH.P02OpenClosedDuality
+          lake build MCore.RH.P02TerminalIdentityAudit
+          lake build MCore.RH.P02TerminalTransition
+          lake build MCore.RH.P02ExternalEndpoint
+          lake build MCore.RH.P02RPADualCertificate
+      - name: Zero-hole RPA guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            lean/MCore/RH/P02TerminalWheel.lean
+            lean/MCore/RH/P02TerminalThreeWay.lean
+            lean/MCore/RH/P02OpenClosedDuality.lean
+            lean/MCore/RH/P02TerminalIdentityAudit.lean
+            lean/MCore/RH/P02TerminalTransition.lean
+            lean/MCore/RH/P02RPADualCertificate.lean
+          )
+          for f in "${files[@]}"; do
+            if grep -En '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' "$f"; then
+              echo "proof hole found in $f"
+              exit 1
+            fi
+          done
+          grep -q 'rpa_certificate_iff_endpoint' lean/MCore/RH/P02RPADualCertificate.lean
+          grep -q 'rpa_chain_exact' lean/MCore/RH/P02RPADualCertificate.lean
+          echo "RPA_DUAL_TRANSITION=KERNEL_CHECKED"
