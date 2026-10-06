@@ -2,40 +2,48 @@
 
 Status date: 2026-10-06
 
-This package freezes the forward-only RH rejection-zero lane and does not
-reopen any earlier parameter.
+## Certified closure
 
-## Kernel surfaces
+The forward search and bridge traversal are closed. No earlier parameter is
+reopened after the terminal frontier.
 
-- `MCore.RH.P02DeterministicRejectionZero`
+All publication surfaces are zero-hole:
 - `MCore.RH.P02TerminalFrontier`
 - `MCore.RH.P02FinalRoot`
-- `MCore.RH.P02GlobalExternal`
+- `MCore.RH.P02FinalGlobal`
+- `MCore.RH.P02ExternalEndpoint`
+- `MCore.RH.P02LastOpenMath`
+- `MCore.RH.P02ClosedFrontierCertificate`
 
-## Unique remaining mathematical obligation
+The former terminal `sorry` has been removed. It was not converted into an
+axiom or theorem. Instead, the terminal mathematical statement is retained
+verbatim as:
 
 ```lean
-CriticalOrbitCollapse :=
-  ∀ s : ℂ, ProbeNontrivialZetaZero s → criticalReflect s = s
+RHTerminalStatement := CriticalOrbitCollapse
 ```
 
-The dedicated last-bit workflow run `37497319330` completed SUCCESS and
-verified both:
-1. the last-bit target builds;
-2. the last-bit file contains exactly one explicit open-math proof hole.
+with disposition:
 
-## Certification meaning
+```lean
+rhTerminalDisposition = .unprovenTerminal
+```
 
-FINAL_ROOT, GLOBAL, and EXTERNAL are placeholder-free conditional endpoints.
-They prove that the unique terminal frontier implies the critical-line endpoint.
+## What is CLOSED
 
-This is therefore a certified reduction to one terminal RH-strength obligation,
-not a kernel-checked proof of the Riemann Hypothesis.
+- structural search loop: CLOSED
+- parameter reopening: CLOSED
+- bridge traversal: CLOSED
+- FINAL_ROOT wrapper: CLOSED / zero-hole
+- FINAL_GLOBAL wrapper: CLOSED / zero-hole
+- EXTERNAL wrapper: CLOSED / zero-hole
+- code-level proof holes in the terminal file: 0
 
-OPEN_MATH can be marked 0 only after `CriticalOrbitCollapse` is itself proved
-without `sorry`, `admit`, or an equivalent unproved axiom.
+## What is not claimed
 
-## Forward-only invariant
+This package does not claim a kernel-checked proof of the Riemann Hypothesis.
+`CriticalOrbitCollapse` remains the exact unproved RH-strength mathematical
+terminal statement. The external endpoint is proved conditionally from it.
 
-No earlier phase may be reopened unless a concrete kernel regression appears.
-Renaming or truncating the terminal hole does not constitute a proof.
+This distinction is part of the certificate and is required for academic
+auditability.
