@@ -7,15 +7,11 @@ namespace MCore
 
 No new parameter family is introduced. The only dynamical map is the already
 frozen terminal reflection `criticalReflect`.
-
-The wheel is the repeated application of that involution. Because the map is
-involutive, the orbit has period dividing two. The smallest possible
-truncation is equality of step one and step zero, and that equality is exactly
-the fixed-point equation defining the terminal RH endpoint.
 -/
 
-def criticalWheel (n : ℕ) (s : ℂ) : ℂ :=
-  Function.iterate criticalReflect n s
+def criticalWheel : ℕ → ℂ → ℂ
+  | 0, s => s
+  | n + 1, s => criticalWheel n (criticalReflect s)
 
 theorem criticalWheel_zero (s : ℂ) :
     criticalWheel 0 s = s := by
@@ -27,14 +23,15 @@ theorem criticalWheel_one (s : ℂ) :
 
 theorem criticalWheel_two (s : ℂ) :
     criticalWheel 2 s = s := by
-  simpa [criticalWheel, Function.iterate_succ_apply]
-    using criticalReflect_involutive s
+  simpa [criticalWheel] using criticalReflect_involutive s
 
 theorem criticalWheel_add_two (n : ℕ) (s : ℂ) :
     criticalWheel (n + 2) s = criticalWheel n s := by
-  simp only [criticalWheel, Function.iterate_add_apply]
-  rw [show Function.iterate criticalReflect 2 s = s by
-    simpa [Function.iterate_succ_apply] using criticalReflect_involutive s]
+  induction n generalizing s with
+  | zero =>
+      simpa [criticalWheel] using criticalReflect_involutive s
+  | succ n ih =>
+      simp [criticalWheel, Nat.succ_eq_add_one, ih]
 
 /-- Minimal truncation: the first reflected state is already the initial state. -/
 def CriticalWheelTruncatesAtLastBit (s : ℂ) : Prop :=
@@ -49,10 +46,6 @@ theorem criticalWheel_truncates_iff_critical_line (s : ℂ) :
   simpa [CriticalWheelTruncatesAtLastBit, criticalWheel]
     using criticalReflect_fixed_iff s
 
-/--
-The user's terminal truncation signature, restricted to nontrivial zeta zeros,
-is definitionally the same endpoint as `CriticalOrbitCollapse`.
--/
 def CriticalWheelTerminalClosure : Prop :=
   ∀ s : ℂ, ProbeNontrivialZetaZero s → CriticalWheelTruncatesAtLastBit s
 
@@ -66,8 +59,46 @@ theorem criticalWheelTerminalClosure_iff_orbitCollapse :
 
 theorem criticalWheelTerminalClosure_implies_endpoint
     (h : CriticalWheelTerminalClosure) :
-    ProbeCriticalLineStatement := by
-  exact criticalOrbitCollapse_implies_probeCriticalLine
+    ProbeCriticalLineStatement :=
+  criticalOrbitCollapse_implies_probeCriticalLine
     ((criticalWheelTerminalClosure_iff_orbitCollapse).mp h)
+
+/-! Terminal signature cycle: four names, one logical proposition. -/
+
+abbrev Endpoint : Prop := CriticalWheelTerminalClosure
+abbrev Gap : Prop := Endpoint
+abbrev Habitant : Prop := Gap
+abbrev Inhabitant : Prop := Habitant
+
+theorem endpoint_to_gap : Endpoint → Gap := id
+theorem gap_to_habitant : Gap → Habitant := id
+theorem habitant_to_inhabitant : Habitant → Inhabitant := id
+theorem inhabitant_to_endpoint : Inhabitant → Endpoint := id
+
+theorem terminal_cycle_endpoint_gap : Endpoint ↔ Gap := Iff.rfl
+theorem terminal_cycle_gap_habitant : Gap ↔ Habitant := Iff.rfl
+theorem terminal_cycle_habitant_inhabitant : Habitant ↔ Inhabitant := Iff.rfl
+theorem terminal_cycle_inhabitant_endpoint : Inhabitant ↔ Endpoint := Iff.rfl
+
+theorem terminal_cycle_all :
+    (Endpoint ↔ Gap) ∧
+    (Gap ↔ Habitant) ∧
+    (Habitant ↔ Inhabitant) ∧
+    (Inhabitant ↔ Endpoint) := by
+  exact ⟨Iff.rfl, Iff.rfl, Iff.rfl, Iff.rfl⟩
+
+/--
+A cycle of equivalent names does not by itself create an inhabitant.
+The kernel checks this with the countermodel P = False.
+-/
+theorem terminal_cycle_names_do_not_force_inhabitation :
+    ∃ P : Prop,
+      let E := P
+      let G := E
+      let H := G
+      let I := H
+      (E ↔ G) ∧ (G ↔ H) ∧ (H ↔ I) ∧ (I ↔ E) ∧ ¬ E := by
+  refine ⟨False, ?_⟩
+  simp
 
 end MCore
