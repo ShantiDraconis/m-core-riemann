@@ -131,7 +131,7 @@ theorem bernoulli_two_mul_ne_zero_of_zeta
 positive even zeta value is known to be nonzero. -/
 theorem riemannZeta_neg_odd_ne_zero_of_pos_even
     (m : ℕ)
-    (hzpos : riemannZeta (2 * (m + 1)) ≠ 0) :
+    (hzpos : riemannZeta (((2 * (m + 1) : ℕ) : ℂ)) ≠ 0) :
     riemannZeta (-((2 * m + 1 : ℕ) : ℂ)) ≠ 0 := by
   have hB : bernoulli (2 * (m + 1)) ≠ 0 :=
     bernoulli_two_mul_ne_zero_of_zeta (k := m + 1) (by omega) hzpos
@@ -139,8 +139,8 @@ theorem riemannZeta_neg_odd_ne_zero_of_pos_even
   apply div_ne_zero
   · apply mul_ne_zero
     · exact pow_ne_zero _ (by norm_num)
-    · simpa [Nat.mul_add, Nat.add_mul, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hB
-  · norm_num
+    · convert hB using 1 <;> omega
+  · exact_mod_cast Nat.succ_ne_zero (2 * m + 1)
 
 
 /-- The exact orbit-collapse obligation that symmetry alone does not provide. -/
