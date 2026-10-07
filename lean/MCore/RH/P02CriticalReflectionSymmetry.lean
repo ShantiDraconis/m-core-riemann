@@ -87,4 +87,46 @@ theorem probeFunctionalSideConditions_proved :
     rw [← hsn]
     exact hs.1
 
+
+/-- Conjugation symmetry for Deligne's real Gamma factor.  This is independent
+of RH and follows from conjugation of complex powers and the Gamma function. -/
+theorem GammaR_star (s : ℂ) :
+    Complex.Gammaℝ (starRingEnd ℂ s) =
+      starRingEnd ℂ (Complex.Gammaℝ s) := by
+  change Complex.Gammaℝ (Complex.conj s) =
+    Complex.conj (Complex.Gammaℝ s)
+  rw [Complex.Gammaℝ_def, Complex.Gammaℝ_def, map_mul, Complex.Gamma_conj]
+  have hpi : (Complex.arg (Real.pi : ℂ)) ≠ Real.pi := by
+    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
+    exact Real.pi_ne_zero.symm
+  have hpow := Complex.conj_cpow (Real.pi : ℂ)
+    (-(Complex.conj s) / 2) hpi
+  simpa using congrArg (fun z : ℂ => z * Complex.Gamma (Complex.conj s / 2)) hpow
+
+/-- The remaining conjugation theorem can be isolated at the completed-zeta
+level.  This is strictly weaker infrastructure than assuming RH. -/
+def CompletedRiemannZetaConjugationSymmetry : Prop :=
+  ∀ z : ℂ,
+    completedRiemannZeta (starRingEnd ℂ z) =
+      starRingEnd ℂ (completedRiemannZeta z)
+
+/-- Completed-zeta conjugation plus the Gamma-factor symmetry produce the
+zero-level conjugation law needed by the terminal RH chain. -/
+theorem riemannZetaConjugationZeroSymmetry_of_completed
+    (hcomp : CompletedRiemannZetaConjugationSymmetry) :
+    RiemannZetaConjugationZeroSymmetry := by
+  intro z hz
+  have hz0 : z ≠ 0 := by
+    intro h0
+    subst z
+    rw [riemannZeta_zero] at hz
+    norm_num at hz
+  have hcz0 : starRingEnd ℂ z ≠ 0 := by
+    exact map_ne_zero_of_injective (starRingEnd ℂ).injective hz0
+  rw [riemannZeta_def_of_ne_zero hcz0]
+  rw [hcomp z, GammaR_star z]
+  have hzdiv : completedRiemannZeta z / Complex.Gammaℝ z = 0 := by
+    simpa [riemannZeta_def_of_ne_zero hz0] using hz
+  exact map_eq_zero.mp (congrArg (starRingEnd ℂ) hzdiv)
+
 end MCore
