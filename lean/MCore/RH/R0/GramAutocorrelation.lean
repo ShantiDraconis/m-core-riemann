@@ -39,7 +39,7 @@ theorem concreteGramMatrix_inversion
       rw [show (-1 : ℝ) - 1 = -(2 : ℝ) by norm_num,
         Real.rpow_neg ht0.le]
       simp only [div_eq_mul_inv]
-      ring_nf
+      ring_nf_nf
 
 /-- C5: every Gram entry is one scaled value of the same autocorrelation function. -/
 theorem concreteGramMatrix_eq_fractionalAutocorrelation
@@ -90,6 +90,9 @@ theorem concreteGramMatrix_eq_fractionalAutocorrelation
   have h₂ : (a * t) / b = (a / b) * t := by
     field_simp [hbne]
   dsimp
+  change
+    a * (Int.fract ((a * t) / a) * Int.fract ((a * t) / b) / (a * t) ^ 2) =
+      (1 / a) * (Int.fract ((a / b) * t) * Int.fract t / t ^ 2)
   rw [h₁, h₂]
   field_simp [hane, hbne, ht0.ne']
   ring
