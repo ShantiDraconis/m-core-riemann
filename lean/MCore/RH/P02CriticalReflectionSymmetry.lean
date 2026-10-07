@@ -88,6 +88,24 @@ theorem probeFunctionalSideConditions_proved :
     exact hs.1
 
 
+/-- Mellin transforms of pointwise star-fixed complex kernels commute with
+complex conjugation.  This is the analytic bridge needed for completed zeta. -/
+theorem mellin_star_of_star_fixed
+    (f : ℝ → ℂ)
+    (hf : ∀ t : ℝ, star (f t) = f t)
+    (s : ℂ) :
+    mellin f (star s) = star (mellin f s) := by
+  rw [mellin, mellin, ← integral_conj]
+  refine setIntegral_congr_fun measurableSet_Ioi (fun t ht => ?_)
+  simp only [smul_eq_mul]
+  rw [star_mul, hf t]
+  congr 1
+  have harg : Complex.arg (t : ℂ) ≠ Real.pi := by
+    rw [Complex.arg_ofReal_of_nonneg (le_of_lt ht)]
+    exact Real.pi_ne_zero.symm
+  simpa [starRingEnd_apply] using
+    (Complex.conj_cpow (t : ℂ) (star s - 1) harg)
+
 /-- Conjugation symmetry for Deligne's real Gamma factor.  This is independent
 of RH and follows from conjugation of complex powers and the Gamma function. -/
 theorem GammaR_star (s : ℂ) :
