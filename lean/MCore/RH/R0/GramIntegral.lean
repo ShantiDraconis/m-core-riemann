@@ -9,7 +9,7 @@ open MeasureTheory Set
 
 /-- The frozen target has the literal chiRepresentative as an a.e. representative. -/
 theorem concreteChi_coeFn_ae :
-    (concreteNBData.chi : ℝ → ℝ) =ᵐ[zeroInfinityMeasure]
+    ((show ConcreteH from concreteNBData.chi) : ℝ → ℝ) =ᵐ[zeroInfinityMeasure]
       chiRepresentative := by
   simpa [concreteNBData, ConcreteH, twoExponent, chiLpConcrete, chiLp] using
     chi_memLp_two.coeFn_toLp
@@ -24,8 +24,7 @@ theorem concreteTargetVector_eq_integral
   rw [MeasureTheory.L2.inner_def]
   apply integral_congr_ae
   filter_upwards [concreteChi_coeFn_ae, concreteGeneratorFamily_coeFn_ae i] with x hchi hrho
-  simp only [real_inner_eq_mul]
-  rw [hchi, hrho]
+  simp [hchi, hrho]
 
 /-- C3: Gram entry as a literal product integral over the frozen measure. -/
 theorem concreteGramMatrix_eq_integral
@@ -39,8 +38,7 @@ theorem concreteGramMatrix_eq_integral
   filter_upwards [
     concreteGeneratorFamily_coeFn_ae i,
     concreteGeneratorFamily_coeFn_ae j] with x hi hj
-  simp only [real_inner_eq_mul]
-  rw [hi, hj]
+  simp [hi, hj]
 
 /-- Same target identity expressed as a Lebesgue set integral on (0,infinity). -/
 theorem concreteTargetVector_eq_setIntegral
