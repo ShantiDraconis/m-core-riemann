@@ -119,6 +119,11 @@ files=(
   lean/MCore/RH/R0/FinalKernelComposition.lean
   lean/MCore/RH/R0/ConcreteInhabitantKernelAudit.lean
   lean/MCore/RH/R0/RHKernelEntry.lean
+  lean/MCore/RH/NB/BCFThreeTermMaterializer.lean
+  lean/MCore/RH/NB/BCFExplicitLogBounds.lean
+  lean/MCore/RH/NB/ExplicitCoefficientProducer.lean
+  lean/MCore/RH/NB/CoefficientPythagoras.lean
+  lean/MCore/RH/R0/MaterialRecovery.lean
   audit/RHKernelAxiomAudit.lean
 )
 
