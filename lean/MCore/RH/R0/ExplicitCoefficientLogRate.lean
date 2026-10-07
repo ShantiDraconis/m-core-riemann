@@ -36,7 +36,7 @@ theorem ConcreteCoefficientLogRate.toUniformLogDNBound
 
 /-- Conversely, the canonical DN bound has an optimal finite coefficient
 realization at every N, so the coefficient formulation loses no content. -/
-noncomputable theorem uniformLogDNBound_to_ConcreteCoefficientLogRate
+theorem uniformLogDNBound_to_ConcreteCoefficientLogRate
     (h : ConcreteUniformLogDNBound) :
     ConcreteCoefficientLogRate := by
   rcases h with ⟨K, hK, hDN⟩
