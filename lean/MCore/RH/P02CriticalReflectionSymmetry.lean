@@ -1,4 +1,5 @@
 import MCore.RH.P02DeterministicRejectionZero
+import Mathlib.NumberTheory.LSeries.Dirichlet
 
 namespace MCore
 
@@ -51,5 +52,38 @@ theorem criticalReflect_zero_value_closed
     riemannZeta (criticalReflect s) = 0 := by
   rcases hside s hs with ⟨hneg, h1⟩
   exact criticalReflect_zeta_zero_of_symmetries hconj hs.1 hneg h1
+
+
+/-- The functional-equation side conditions are already consequences of the
+probe nontrivial-zero predicate.  Negative even integers are excluded by
+definition, zero is not a zeta zero, and negative odd integers are nonzero by
+the Bernoulli-value lemma together with nonvanishing on Re(s) > 1. -/
+theorem probeFunctionalSideConditions_proved :
+    ProbeFunctionalSideConditions := by
+  intro s hs
+  refine ⟨?_, hs.2.2⟩
+  intro n hsn
+  rcases Nat.even_or_odd' n with ⟨k, hk | hk⟩
+  · subst n
+    rcases k with _ | k
+    · have hz0 : riemannZeta (0 : ℂ) = 0 := by
+        simpa using hs.1.trans (congrArg riemannZeta hsn)
+      rw [riemannZeta_zero] at hz0
+      norm_num at hz0
+    · apply hs.2.1
+      refine ⟨k, ?_⟩
+      simpa [Nat.cast_mul, Nat.cast_add] using hsn
+  · subst n
+    have hzpos :
+        riemannZeta (((2 * (k + 1) : ℕ) : ℂ)) ≠ 0 := by
+      apply riemannZeta_ne_zero_of_one_lt_re
+      simp
+      norm_num
+    have hodd :
+        riemannZeta (-((2 * k + 1 : ℕ) : ℂ)) ≠ 0 :=
+      riemannZeta_neg_odd_ne_zero_of_pos_even k hzpos
+    apply hodd
+    rw [← hsn]
+    exact hs.1
 
 end MCore
