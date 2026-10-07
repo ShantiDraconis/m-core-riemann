@@ -94,17 +94,20 @@ theorem GammaR_star (s : ℂ) :
     Complex.Gammaℝ (starRingEnd ℂ s) =
       starRingEnd ℂ (Complex.Gammaℝ s) := by
   rw [Complex.Gammaℝ_def, Complex.Gammaℝ_def, map_mul]
+  have htwo : starRingEnd ℂ (2 : ℂ) = 2 := by simp
   have hGamma :
       Complex.Gamma ((starRingEnd ℂ s) / 2) =
         starRingEnd ℂ (Complex.Gamma (s / 2)) := by
-    simpa using Complex.Gamma_conj (s / 2)
-  rw [hGamma]
+    simpa [htwo] using Complex.Gamma_conj (s / 2)
   have hpi : (Complex.arg (Real.pi : ℂ)) ≠ Real.pi := by
     rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
     exact Real.pi_ne_zero.symm
-  have hpow := Complex.conj_cpow (Real.pi : ℂ)
-    (-(starRingEnd ℂ s) / 2) hpi
-  simpa using hpow
+  have hpow :
+      (Real.pi : ℂ) ^ (-(starRingEnd ℂ s) / 2) =
+        starRingEnd ℂ ((Real.pi : ℂ) ^ (-s / 2)) := by
+    simpa [htwo] using
+      (Complex.conj_cpow (Real.pi : ℂ) (-(starRingEnd ℂ s) / 2) hpi)
+  exact congrArg₂ (· * ·) hpow hGamma
 
 /-- The remaining conjugation theorem can be isolated at the completed-zeta
 level.  This is strictly weaker infrastructure than assuming RH. -/
