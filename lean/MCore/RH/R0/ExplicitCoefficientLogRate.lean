@@ -36,22 +36,29 @@ theorem ConcreteCoefficientLogRate.toUniformLogDNBound
 
 /-- Conversely, the canonical DN bound has an optimal finite coefficient
 realization at every N, so the coefficient formulation loses no content. -/
-theorem uniformLogDNBound_to_ConcreteCoefficientLogRate
+noncomputable def uniformLogDNBound_to_ConcreteCoefficientLogRate
     (h : ConcreteUniformLogDNBound) :
-    ConcreteCoefficientLogRate := by
-  rcases h with ⟨K, hK, hDN⟩
-  choose coeff hcoeff using
-    fun N => concreteNBData.exists_optimal_coefficients_DN
-      concreteGeneratorFamily N
-  refine {
+    ConcreteCoefficientLogRate :=
+  let K : ℝ := Classical.choose h
+  let hspec := Classical.choose_spec h
+  let coeff : (N : ℕ) → Fin N → ℝ :=
+    fun N =>
+      Classical.choose
+        (concreteNBData.exists_optimal_coefficients_DN
+          concreteGeneratorFamily N)
+  {
     K := K
-    hK := hK
+    hK := hspec.1
     coeff := coeff
-    error_sq_le := ?_
+    error_sq_le := by
+      intro N
+      have hcoeff :=
+        Classical.choose_spec
+          (concreteNBData.exists_optimal_coefficients_DN
+            concreteGeneratorFamily N)
+      rw [hcoeff]
+      exact hspec.2 N
   }
-  intro N
-  rw [hcoeff N]
-  exact hDN N
 
 /-- Exact producer-first normalization of the material gap. -/
 theorem concreteCoefficientLogRate_iff_uniformLogDNBound :
