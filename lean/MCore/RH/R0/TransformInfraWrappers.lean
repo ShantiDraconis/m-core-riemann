@@ -1,5 +1,6 @@
 import MCore.RH.R0.FinalKernelComposition
 import MCore.RH.R0.ConcreteLogMajorantProducer
+import MCore.RH.R0.ExplicitGramRate
 import MCore.RH.NB.QuantitativeUpperBound
 
 namespace MCore.RH.R0
