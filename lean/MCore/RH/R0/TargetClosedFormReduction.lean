@@ -74,10 +74,13 @@ theorem target_elementary_interval_identity_realized :
     ring
   rw [hcongr]
   rw [← integral_Ioc_eq_integral_Ioo]
+  have hdiv1 : 1 / a ≤ (1 : ℝ) := by
+    rw [div_le_iff₀ ha0]
+    simpa using ha
   have hint :
       (∫ t : ℝ in Ioc (1 / a) 1, t⁻¹) =
         Real.log a := by
-    rw [← intervalIntegral.integral_of_le (le_of_lt hdiv0)]
+    rw [← intervalIntegral.integral_of_le hdiv1]
     rw [intervalIntegral.integral_inv_of_pos hdiv0 zero_lt_one]
     rw [one_div_div]
     simp [ha0.ne']
