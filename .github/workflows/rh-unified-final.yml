@@ -110,8 +110,8 @@ jobs:
           grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'raw_full_2_2' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'full_raw_2_2_is_global_external' lean/MCore/RH/P02RPAEndpointLattice.lean
-          grep -q 'criticalReflect_eq_conj_functionalReflect' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
-          grep -q 'criticalReflect_zeta_zero_of_functional_side_conditions' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
+          grep -q 'criticalReflect_eq_star_functionalReflect' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
+          grep -q 'criticalReflect_zeta_zero_of_symmetries' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
           grep -q 'structure RHMaterialRigidityCertificate' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'criticalOrbitCollapse_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'probeCriticalLine_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
