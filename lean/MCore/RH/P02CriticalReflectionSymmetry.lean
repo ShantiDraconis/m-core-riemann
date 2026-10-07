@@ -99,7 +99,7 @@ theorem mellin_star_of_star_fixed
     mellin f (star s) = star (mellin f s) := by
   change mellin f (conj s) = conj (mellin f s)
   rw [mellin, mellin, ← integral_conj]
-  refine setIntegral_congr_fun measurableSet_Ioi (fun t ht => ?_)
+  refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi (fun t ht => ?_)
   simp only [smul_eq_mul]
   rw [map_mul]
   have hft : conj (f t) = f t := by
