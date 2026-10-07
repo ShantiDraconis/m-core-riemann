@@ -65,6 +65,8 @@ jobs:
           #print axioms MCore.RH.R0.ConcreteCoefficientLogRate.toUniformLogDNBound
           #print axioms MCore.RH.R0.mellin_rhoRepresentativeC_zeta_formula
           #print axioms MCore.RH.R0.terminal_of_forensic_quantitative_fragment
+          #print axioms MCore.RH.R0.materialProducer_closes_all
+          #print axioms MCore.RH.R0.concreteDN_tendsto_zero_of_uniformLogBound
           #print axioms MCore.RH.R0.infra_FinalKernelComposition_como_prova
           #print axioms MCore.RH.R0.materialClosurePackage_of_producer
           EOF
