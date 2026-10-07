@@ -21,6 +21,37 @@ def CriticalReflectionZeroClosure : Prop :=
     ProbeNontrivialZetaZero s →
     ProbeNontrivialZetaZero (criticalReflect s)
 
+
+/-- Conjugation symmetry already suffices to construct the full reflected
+nontrivial-zero closure.  The remaining side conditions are elementary:
+the reflected point cannot be 1, and if it were a negative even integer then
+the original zero would lie in Re(s) > 1. -/
+theorem criticalReflectionZeroClosure_of_conjugation
+    (hconj : RiemannZetaConjugationZeroSymmetry) :
+    CriticalReflectionZeroClosure := by
+  intro s hs
+  refine ⟨criticalReflect_zero_value_closed hconj
+      probeFunctionalSideConditions_proved hs, ?_, ?_⟩
+  · intro htriv
+    rcases htriv with ⟨n, hn⟩
+    have hre := congrArg Complex.re hn
+    have hsre : s.re = 1 + (2 * (n + 1) : ℕ) := by
+      simp [criticalReflect] at hre
+      norm_num at hre ⊢
+      linarith
+    have hgt : (1 : ℝ) < s.re := by
+      rw [hsre]
+      positivity
+    exact (riemannZeta_ne_zero_of_one_lt_re hgt) hs.1
+  · intro h1
+    have hback := congrArg criticalReflect h1
+    rw [criticalReflect_involutive] at hback
+    have hs0 : s = 0 := by
+      simpa [criticalReflect] using hback
+    subst s
+    rw [riemannZeta_zero] at hs
+    norm_num at hs
+
 /-- Material rigidity law: an off-critical-line zero and its reflected partner
 cannot both satisfy the probe nontrivial-zero predicate.
 
