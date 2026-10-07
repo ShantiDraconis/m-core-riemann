@@ -120,7 +120,7 @@ theorem hurwitzEvenFEPair_zero_f_modif_star_fixed (t : ℝ) :
   unfold WeakFEPair.f_modif
   by_cases h1 : t ∈ Set.Ioi (1 : ℝ) <;>
     by_cases h01 : t ∈ Set.Ioo (0 : ℝ) 1 <;>
-      simp [h1, h01, hurwitzEvenFEPair, Complex.star_def]
+      simp [h1, h01, HurwitzZeta.hurwitzEvenFEPair, Complex.star_def, Function.comp_def]
 
 /-- Hence the entire part Λ₀ of the Riemann FE-pair commutes with
 complex conjugation. -/
