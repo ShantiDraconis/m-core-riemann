@@ -84,6 +84,47 @@ def materialWitnessOfRigidity
     RiemannFinalCertificate :=
   materialWitness (probeCriticalLine_of_material_rigidity cert)
 
+/-- Canonical object witnessing that the final RH certificate has been promoted
+from the exact remaining material input, rather than manufactured by structure. -/
+structure RHMaterialPromotion : Prop where
+  input : RHMaterialPromotionInput
+  finalCertificate : RiemannFinalCertificate
+
+/-- Canonical promotion constructor.  Once the sole remaining material law is
+provided, every downstream layer is filled mechanically. -/
+def promotedByMaterial
+    (input : RHMaterialPromotionInput) :
+    RHMaterialPromotion := by
+  let rigidity : RHMaterialRigidityCertificate :=
+    materialRigidityCertificateOfPromotionInput input
+  exact {
+    input := input
+    finalCertificate := materialWitnessOfRigidity rigidity
+  }
+
+/-- Promotion produces the material critical-line proposition. -/
+theorem promotedByMaterial_implies_materialRH
+    (p : RHMaterialPromotion) :
+    RiemannHypothesisMaterial :=
+  p.finalCertificate.payload.criticalLine
+
+/-- Promotion produces the endpoint consumed by the structural lattice. -/
+theorem promotedByMaterial_implies_endpoint
+    (p : RHMaterialPromotion) :
+    Endpoint :=
+  endpoint_iff_materialRH.mpr
+    (promotedByMaterial_implies_materialRH p)
+
+/-- Exact promotion theorem: a promoted material certificate exists if and only if
+the sole remaining RH-strength law has actually been proved. -/
+theorem materialPromotion_iff_offLineReflectedPairExclusion :
+    Nonempty RHMaterialPromotion ↔ OffLineReflectedPairExclusion := by
+  constructor
+  · rintro ⟨p⟩
+    exact p.input.excludeOffLinePair
+  · intro h
+    exact ⟨promotedByMaterial { excludeOffLinePair := h }⟩
+
 theorem finalCertificate_iff_materialRH :
     Nonempty RiemannFinalCertificate ↔ RiemannHypothesisMaterial := by
   constructor
