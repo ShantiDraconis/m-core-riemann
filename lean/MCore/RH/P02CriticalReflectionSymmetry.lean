@@ -94,7 +94,7 @@ theorem GammaR_star (s : ℂ) :
     Complex.Gammaℝ (starRingEnd ℂ s) =
       starRingEnd ℂ (Complex.Gammaℝ s) := by
   rw [Complex.Gammaℝ_def, Complex.Gammaℝ_def, map_mul]
-  have htwo : starRingEnd ℂ (2 : ℂ) = 2 := by simp
+  have htwo : starRingEnd ℂ (2 : ℂ) = 2 := rfl
   have hGamma :
       Complex.Gamma ((starRingEnd ℂ s) / 2) =
         starRingEnd ℂ (Complex.Gamma (s / 2)) := by
