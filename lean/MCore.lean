@@ -63,3 +63,5 @@ import MCore.RH.Analytic.MellinResidual
 import MCore.RH.Analytic.MellinPlancherelReduction
 
 import MCore.Frontier.R01Concrete
+
+import MCore.RH.R0.MaterialRecovery
