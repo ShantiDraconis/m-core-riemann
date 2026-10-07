@@ -24,7 +24,7 @@ theorem concreteTargetVector_eq_integral
   rw [MeasureTheory.L2.inner_def]
   apply integral_congr_ae
   filter_upwards [concreteChi_coeFn_ae, concreteGeneratorFamily_coeFn_ae i] with x hchi hrho
-  simp [hchi, hrho]
+  simp [hchi, hrho, mul_comm]
 
 /-- C3: Gram entry as a literal product integral over the frozen measure. -/
 theorem concreteGramMatrix_eq_integral
@@ -38,7 +38,7 @@ theorem concreteGramMatrix_eq_integral
   filter_upwards [
     concreteGeneratorFamily_coeFn_ae i,
     concreteGeneratorFamily_coeFn_ae j] with x hi hj
-  simp [hi, hj]
+  simp [hi, hj, mul_comm]
 
 /-- Same target identity expressed as a Lebesgue set integral on (0,infinity). -/
 theorem concreteTargetVector_eq_setIntegral
