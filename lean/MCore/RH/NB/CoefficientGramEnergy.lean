@@ -33,6 +33,7 @@ theorem norm_coefficientApproximant_sq_eq_gramEnergy
   funext i
   congr 1
   funext j
+  rw [real_inner_comm (rho j) (rho i)]
   ring
 
 /--
