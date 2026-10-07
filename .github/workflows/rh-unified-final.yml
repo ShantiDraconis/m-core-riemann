@@ -33,6 +33,12 @@ jobs:
           set -euo pipefail
           lake build MCore.RH.NB.ExactFinalProducer
           lake build MCore.RH.R0.ConcreteFinalProducer
+          lake build MCore.RH.NB.ExplicitCoefficientProducer
+          lake build MCore.RH.NB.CoefficientPythagoras
+          lake build MCore.RH.NB.CoefficientGramEnergy
+          lake build MCore.RH.R0.GramIntegral
+          lake build MCore.RH.R0.ConcreteGramLogRate
+          lake build MCore.RH.R0.ExplicitCoefficientLogRate
       - name: Axiom audit
         shell: bash
         run: |
@@ -40,8 +46,19 @@ jobs:
           cat >/tmp/RHUnifiedAudit.lean <<'EOF'
           import MCore.RH.NB.ExactFinalProducer
           import MCore.RH.R0.ConcreteFinalProducer
-          #print axioms MCore.RH.NB.ExactFinalProducer
-          #print axioms MCore.RH.R0.ConcreteFinalProducer
+          import MCore.RH.NB.ExplicitCoefficientProducer
+          import MCore.RH.NB.CoefficientPythagoras
+          import MCore.RH.NB.CoefficientGramEnergy
+          import MCore.RH.R0.GramIntegral
+          import MCore.RH.R0.ConcreteGramLogRate
+          import MCore.RH.R0.ExplicitCoefficientLogRate
+          #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_coefficient_error_tendsto_zero
+          #print axioms MCore.RH.NB.NBHilbertData.coefficient_error_sq_eq_DN_add_projection_gap
+          #print axioms MCore.RH.NB.NBHilbertData.coefficient_distance_sq_eq_gramEnergy_difference
+          #print axioms MCore.RH.R0.concreteTargetVector_eq_setIntegral
+          #print axioms MCore.RH.R0.concreteGramMatrix_eq_setIntegral
+          #print axioms MCore.RH.R0.ConcreteGramLogRate.toUniformLogDNBound
+          #print axioms MCore.RH.R0.ConcreteCoefficientLogRate.toUniformLogDNBound
           EOF
           lake env lean /tmp/RHUnifiedAudit.lean 2>&1 | tee rh-unified-final.log
           if grep -q 'sorryAx' rh-unified-final.log; then exit 1; fi
