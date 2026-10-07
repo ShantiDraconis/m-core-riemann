@@ -1,3 +1,4 @@
+import MCore.RH.R0.MaterialRecovery
 import MCore.RH.Analytic.D3PlancherelReduction
 import MCore.RH.Analytic.CriticalLogPullbackL2
 import MCore.RH.Analytic.FourierPlancherelPinnedGap
@@ -363,3 +364,9 @@ import MCore.RH.R0.RHKernelEntry
 #print axioms MCore.RH.R0.residual_mellinConvergent
 
 #print axioms MCore.RH.R0.residualEnergy_eq_zeta_integral
+
+#print axioms MCore.RH.R0.recovered_terminal_of_explicitGramRate
+#print axioms MCore.RH.R0.recovered_terminal_of_bcfExplicitLogBounds
+#print axioms MCore.RH.R0.recovered_terminal_of_coefficient_error_tendsto_zero
+#print axioms MCore.RH.R0.recoveredAllNRate_to_terminal
+#print axioms MCore.RH.R0.recoveredMaterialFrontier_to_terminal
