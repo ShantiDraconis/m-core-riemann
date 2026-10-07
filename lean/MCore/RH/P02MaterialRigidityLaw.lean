@@ -39,18 +39,21 @@ theorem criticalReflectionZeroClosure_of_conjugation
       simp [criticalReflect] at hre
       norm_num at hre ⊢
       linarith
+    have hpos : (0 : ℝ) < (((2 * (n + 1) : ℕ) : ℝ)) := by
+      exact_mod_cast (show 0 < 2 * (n + 1) by omega)
     have hgt : (1 : ℝ) < s.re := by
       rw [hsre]
-      positivity
+      linarith
     exact (riemannZeta_ne_zero_of_one_lt_re hgt) hs.1
   · intro h1
     have hback := congrArg criticalReflect h1
     rw [criticalReflect_involutive] at hback
     have hs0 : s = 0 := by
       simpa [criticalReflect] using hback
-    subst s
-    rw [riemannZeta_zero] at hs
-    norm_num at hs
+    have hz0 : riemannZeta (0 : ℂ) = 0 := by
+      simpa [hs0] using hs.1
+    rw [riemannZeta_zero] at hz0
+    norm_num at hz0
 
 /-- Material rigidity law: an off-critical-line zero and its reflected partner
 cannot both satisfy the probe nontrivial-zero predicate.
