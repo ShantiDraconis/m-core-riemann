@@ -103,7 +103,7 @@ theorem mellin_star_of_star_fixed
   simp only [smul_eq_mul]
   rw [map_mul]
   have hft : conj (f t) = f t := by
-    simpa [starRingEnd_apply] using hf t
+    simpa only [Complex.star_def] using hf t
   rw [hft]
   congr 1
   have harg : Complex.arg (t : ℂ) ≠ Real.pi := by
