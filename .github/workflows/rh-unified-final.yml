@@ -116,11 +116,17 @@ jobs:
           grep -q 'def CompletedRiemannZetaConjugationSymmetry' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
           grep -q 'riemannZetaConjugationZeroSymmetry_of_completed' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
           grep -q 'structure RHMaterialRigidityCertificate' lean/MCore/RH/P02MaterialRigidityLaw.lean
+          grep -q 'criticalReflectionZeroClosure_proved' lean/MCore/RH/P02MaterialRigidityLaw.lean
+          grep -q 'structure RHMaterialPromotionInput' lean/MCore/RH/P02MaterialRigidityLaw.lean
+          grep -q 'promotionInput_iff_offLineReflectedPairExclusion' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'criticalOrbitCollapse_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'probeCriticalLine_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'OffLineReflectedPairExclusion' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'structure RiemannMaterialPayload' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'materialWitnessOfRigidity' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'structure RHMaterialPromotion' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'def promotedByMaterial' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'materialPromotion_iff_offLineReflectedPairExclusion' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'payload_iff_endpoint' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'finalCertificate_iff_materialRH' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'finalCertificate_iff_endpoint' lean/MCore/RH/P02RiemannMaterialPayload.lean
@@ -132,6 +138,7 @@ jobs:
           echo "CRITICAL_REFLECTION_SYMMETRY=KERNEL_CHECKED"
           echo "MATERIAL_RIGIDITY_FRONTIER=KERNEL_CHECKED"
           echo "GLOBAL_EXTERNAL_STRUCTURE=KERNEL_CHECKED"
-          echo "MATERIAL_ENDPOINT_INHABITANT=NOT_PROMOTED_BY_STRUCTURE"
+          echo "MATERIAL_PROMOTION_STRUCTURE=KERNEL_CHECKED"
+          echo "MATERIAL_ENDPOINT_INHABITANT=AWAITING_OffLineReflectedPairExclusion"
           echo "REMAINING_MATERIAL_LAW=OffLineReflectedPairExclusion"
           echo "RH_UNIFIED_FINAL=KERNEL_CHECKED"
