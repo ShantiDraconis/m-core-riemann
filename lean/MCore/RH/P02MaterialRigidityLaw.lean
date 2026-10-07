@@ -55,6 +55,13 @@ theorem criticalReflectionZeroClosure_of_conjugation
     rw [riemannZeta_zero] at hz0
     norm_num at hz0
 
+/-- The reflected nontrivial-zero closure is now a proved analytic consequence of
+the completed-zeta conjugation theorem.  It is no longer part of the RH-strength mincut. -/
+theorem criticalReflectionZeroClosure_proved :
+    CriticalReflectionZeroClosure :=
+  criticalReflectionZeroClosure_of_conjugation
+    riemannZetaConjugationZeroSymmetry_proved
+
 /-- Material rigidity law: an off-critical-line zero and its reflected partner
 cannot both satisfy the probe nontrivial-zero predicate.
 
@@ -73,6 +80,29 @@ scientific task. -/
 structure RHMaterialRigidityCertificate : Prop where
   zeroClosure : CriticalReflectionZeroClosure
   excludeOffLinePair : OffLineReflectedPairExclusion
+
+/-- Exact remaining material input after all analytic symmetry infrastructure has
+been discharged.  This structure has exactly one RH-strength field. -/
+structure RHMaterialPromotionInput : Prop where
+  excludeOffLinePair : OffLineReflectedPairExclusion
+
+/-- Mechanical promotion of the exact remaining material input into the rigidity
+certificate.  No RH conclusion is stored in the input besides the explicit
+off-line-pair exclusion law itself. -/
+def materialRigidityCertificateOfPromotionInput
+    (input : RHMaterialPromotionInput) :
+    RHMaterialRigidityCertificate where
+  zeroClosure := criticalReflectionZeroClosure_proved
+  excludeOffLinePair := input.excludeOffLinePair
+
+/-- The exact promotion input is equivalent to the remaining material law. -/
+theorem promotionInput_iff_offLineReflectedPairExclusion :
+    Nonempty RHMaterialPromotionInput ↔ OffLineReflectedPairExclusion := by
+  constructor
+  · rintro ⟨input⟩
+    exact input.excludeOffLinePair
+  · intro h
+    exact ⟨{ excludeOffLinePair := h }⟩
 
 /-- Once zero closure and off-line-pair exclusion are both supplied, every
 probe zero is fixed by critical reflection. -/
