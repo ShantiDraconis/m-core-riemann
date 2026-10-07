@@ -1,4 +1,5 @@
 import MCore.RH.P02RPAEndpointLattice
+import MCore.RH.P02CriticalReflectionSymmetry
 
 namespace MCore
 
