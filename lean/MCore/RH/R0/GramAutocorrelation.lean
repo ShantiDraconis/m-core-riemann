@@ -25,7 +25,7 @@ theorem concreteGramMatrix_inversion
   calc
     (∫ x : ℝ in Ioi 0, rhoRepresentative i x * rhoRepresentative j x)
         = ∫ t : ℝ in Ioi 0,
-            (|-1 : ℝ| * t ^ ((-1 : ℝ) - 1)) *
+            (|(-1 : ℝ)| * t ^ ((-1 : ℝ) - 1)) *
               (rhoRepresentative i (t ^ (-1 : ℝ)) *
                 rhoRepresentative j (t ^ (-1 : ℝ))) := by
             simpa [smul_eq_mul] using hinv
@@ -50,7 +50,7 @@ theorem concreteGramMatrix_eq_fractionalAutocorrelation
   let b : ℝ := ((rhoIndex j : ℕ) : ℝ)
   have ha : 0 < a := by dsimp [a]; exact_mod_cast rhoIndex_pos i
   have hb : 0 < b := by dsimp [b]; exact_mod_cast rhoIndex_pos j
-  have hchange := integral_comp_mul_left_Ioi'
+  have hchange := integral_comp_mul_left_Ioi
     (g := fun t : ℝ =>
       (Int.fract (t / a) * Int.fract (t / b)) / t ^ 2)
     (a := 0) ha
@@ -77,7 +77,7 @@ theorem fractionalAutocorrelation_reciprocity
     fractionalAutocorrelation r =
       r * fractionalAutocorrelation (1 / r) := by
   unfold fractionalAutocorrelation
-  have hchange := integral_comp_mul_left_Ioi'
+  have hchange := integral_comp_mul_left_Ioi
     (g := fun t : ℝ =>
       (Int.fract (r * t) * Int.fract t) / t ^ 2)
     (a := 0) hr
