@@ -39,6 +39,7 @@ jobs:
           lake build MCore.RH.R0.GramIntegral
           lake build MCore.RH.R0.ConcreteGramLogRate
           lake build MCore.RH.R0.ExplicitCoefficientLogRate
+          lake build MCore.RH.R0.ForensicMaterialAssembly
       - name: Axiom audit
         shell: bash
         run: |
@@ -52,6 +53,7 @@ jobs:
           import MCore.RH.R0.GramIntegral
           import MCore.RH.R0.ConcreteGramLogRate
           import MCore.RH.R0.ExplicitCoefficientLogRate
+          import MCore.RH.R0.ForensicMaterialAssembly
           #print axioms MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_coefficient_error_tendsto_zero
           #print axioms MCore.RH.NB.NBHilbertData.coefficient_error_sq_eq_DN_add_projection_gap
           #print axioms MCore.RH.NB.NBHilbertData.coefficient_distance_sq_eq_gramEnergy_difference
@@ -59,6 +61,8 @@ jobs:
           #print axioms MCore.RH.R0.concreteGramMatrix_eq_setIntegral
           #print axioms MCore.RH.R0.ConcreteGramLogRate.toUniformLogDNBound
           #print axioms MCore.RH.R0.ConcreteCoefficientLogRate.toUniformLogDNBound
+          #print axioms MCore.RH.R0.mellin_rhoRepresentativeC_zeta_formula
+          #print axioms MCore.RH.R0.terminal_of_forensic_quantitative_fragment
           EOF
           lake env lean /tmp/RHUnifiedAudit.lean 2>&1 | tee rh-unified-final.log
           if grep -q 'sorryAx' rh-unified-final.log; then exit 1; fi
