@@ -112,6 +112,27 @@ theorem mellin_star_of_star_fixed
   simpa using
     (Complex.conj_cpow (t : ℂ) (conj s - 1) harg)
 
+/-- The modified Mellin kernel used for the Riemann completed zeta is
+pointwise fixed by conjugation: all of its data are real-valued. -/
+theorem hurwitzEvenFEPair_zero_f_modif_star_fixed (t : ℝ) :
+    star ((hurwitzEvenFEPair 0).f_modif t) =
+      (hurwitzEvenFEPair 0).f_modif t := by
+  unfold WeakFEPair.f_modif
+  by_cases h1 : t ∈ Set.Ioi (1 : ℝ) <;>
+    by_cases h01 : t ∈ Set.Ioo (0 : ℝ) 1 <;>
+      simp [h1, h01, hurwitzEvenFEPair, Complex.star_def]
+
+/-- Hence the entire part Λ₀ of the Riemann FE-pair commutes with
+complex conjugation. -/
+theorem hurwitzEvenFEPair_zero_Lambda0_star (s : ℂ) :
+    (hurwitzEvenFEPair 0).Λ₀ (star s) =
+      star ((hurwitzEvenFEPair 0).Λ₀ s) := by
+  rw [WeakFEPair.Λ₀]
+  exact mellin_star_of_star_fixed
+    (hurwitzEvenFEPair 0).f_modif
+    hurwitzEvenFEPair_zero_f_modif_star_fixed
+    s
+
 /-- Conjugation symmetry for Deligne's real Gamma factor.  This is independent
 of RH and follows from conjugation of complex powers and the Gamma function. -/
 theorem GammaR_star (s : ℂ) :
