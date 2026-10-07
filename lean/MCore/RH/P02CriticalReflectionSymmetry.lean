@@ -134,6 +134,16 @@ theorem hurwitzEvenFEPair_zero_Lambda0_star (s : ℂ) :
     hurwitzEvenFEPair_zero_f_modif_star_fixed
     s
 
+/-- The completed even Hurwitz zeta with poles removed, at a = 0,
+commutes with complex conjugation. -/
+theorem completedHurwitzZetaEven0_zero_star (s : ℂ) :
+    HurwitzZeta.completedHurwitzZetaEven₀ 0 (star s) =
+      star (HurwitzZeta.completedHurwitzZetaEven₀ 0 s) := by
+  rw [HurwitzZeta.completedHurwitzZetaEven₀,
+      HurwitzZeta.completedHurwitzZetaEven₀]
+  have h := hurwitzEvenFEPair_zero_Lambda0_star (s / 2)
+  simpa only [map_div₀, map_ofNat] using h
+
 /-- Conjugation symmetry for Deligne's real Gamma factor.  This is independent
 of RH and follows from conjugation of complex powers and the Gamma function. -/
 theorem GammaR_star (s : ℂ) :
@@ -162,6 +172,28 @@ def CompletedRiemannZetaConjugationSymmetry : Prop :=
   ∀ z : ℂ,
     completedRiemannZeta (starRingEnd ℂ z) =
       starRingEnd ℂ (completedRiemannZeta z)
+
+/-- The completed Riemann zeta conjugation symmetry is proved directly from
+its real Mellin kernel plus the explicit polar correction terms. -/
+theorem completedRiemannZetaConjugationSymmetry_proved :
+    CompletedRiemannZetaConjugationSymmetry := by
+  intro s
+  change HurwitzZeta.completedHurwitzZetaEven 0 (star s) =
+      star (HurwitzZeta.completedHurwitzZetaEven 0 s)
+  rw [HurwitzZeta.completedHurwitzZetaEven_eq,
+      HurwitzZeta.completedHurwitzZetaEven_eq]
+  rw [completedHurwitzZetaEven0_zero_star]
+  simp only [map_sub, map_div₀, map_one, map_ofNat]
+  congr 1
+  congr 1
+  simp
+
+/-- Consequently the zero-level conjugation symmetry needed downstream is
+materially available, without assuming RH. -/
+theorem riemannZetaConjugationZeroSymmetry_proved :
+    RiemannZetaConjugationZeroSymmetry :=
+  riemannZetaConjugationZeroSymmetry_of_completed
+    completedRiemannZetaConjugationSymmetry_proved
 
 /-- Completed-zeta conjugation plus the Gamma-factor symmetry produce the
 zero-level conjugation law needed by the terminal RH chain. -/
