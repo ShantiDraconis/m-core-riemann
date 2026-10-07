@@ -55,6 +55,12 @@ jobs:
           export PATH="$HOME/.elan/bin:$PATH"
           lake build MCore.RH.P02RPADualCertificate
           lake build MCore.RH.P02RPAEndpointLattice
+      - name: Build critical reflection symmetry
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02CriticalReflectionSymmetry
       - name: Build material rigidity frontier
         shell: bash
         run: |
@@ -85,6 +91,7 @@ jobs:
             lean/MCore/RH/P02TerminalTransition.lean
             lean/MCore/RH/P02RPADualCertificate.lean
             lean/MCore/RH/P02RPAEndpointLattice.lean
+            lean/MCore/RH/P02CriticalReflectionSymmetry.lean
             lean/MCore/RH/P02MaterialRigidityLaw.lean
             lean/MCore/RH/P02RiemannMaterialPayload.lean
           )
@@ -103,6 +110,8 @@ jobs:
           grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'raw_full_2_2' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'full_raw_2_2_is_global_external' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'criticalReflect_eq_conj_functionalReflect' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
+          grep -q 'criticalReflect_zeta_zero_of_functional_side_conditions' lean/MCore/RH/P02CriticalReflectionSymmetry.lean
           grep -q 'structure RHMaterialRigidityCertificate' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'criticalOrbitCollapse_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'probeCriticalLine_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
@@ -117,6 +126,7 @@ jobs:
           grep -q 'RHSearchTraversalClosed' lean/MCore/RH/P02LastOpenMath.lean
           echo "RH_STRUCTURE=KERNEL_CHECKED"
           echo "RPA_LATTICE_14=KERNEL_CHECKED"
+          echo "CRITICAL_REFLECTION_SYMMETRY=KERNEL_CHECKED"
           echo "MATERIAL_RIGIDITY_FRONTIER=KERNEL_CHECKED"
           echo "GLOBAL_EXTERNAL_STRUCTURE=KERNEL_CHECKED"
           echo "MATERIAL_ENDPOINT_INHABITANT=NOT_PROMOTED_BY_STRUCTURE"
