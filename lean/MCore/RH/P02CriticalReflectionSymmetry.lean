@@ -67,7 +67,7 @@ theorem probeFunctionalSideConditions_proved :
   · subst n
     rcases k with _ | k
     · have hz0 : riemannZeta (0 : ℂ) = 0 := by
-        simpa using hs.1.trans (congrArg riemannZeta hsn)
+        simpa using (congrArg riemannZeta hsn).symm.trans hs.1
       rw [riemannZeta_zero] at hz0
       norm_num at hz0
     · apply hs.2.1
@@ -78,7 +78,8 @@ theorem probeFunctionalSideConditions_proved :
         riemannZeta (((2 * (k + 1) : ℕ) : ℂ)) ≠ 0 := by
       apply riemannZeta_ne_zero_of_one_lt_re
       simp
-      norm_num
+      have hk0 : (0 : ℝ) ≤ k := by positivity
+      nlinarith
     have hodd :
         riemannZeta (-((2 * k + 1 : ℕ) : ℂ)) ≠ 0 :=
       riemannZeta_neg_odd_ne_zero_of_pos_even k hzpos
