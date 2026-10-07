@@ -3,6 +3,8 @@ import Mathlib.NumberTheory.LSeries.Dirichlet
 
 namespace MCore
 
+open scoped ComplexConjugate
+
 /-!
 # Critical-reflection zeta symmetry
 
@@ -95,16 +97,20 @@ theorem mellin_star_of_star_fixed
     (hf : ∀ t : ℝ, star (f t) = f t)
     (s : ℂ) :
     mellin f (star s) = star (mellin f s) := by
+  change mellin f (conj s) = conj (mellin f s)
   rw [mellin, mellin, ← integral_conj]
   refine setIntegral_congr_fun measurableSet_Ioi (fun t ht => ?_)
   simp only [smul_eq_mul]
-  rw [star_mul, hf t]
+  rw [map_mul]
+  have hft : conj (f t) = f t := by
+    simpa [starRingEnd_apply] using hf t
+  rw [hft]
   congr 1
   have harg : Complex.arg (t : ℂ) ≠ Real.pi := by
     rw [Complex.arg_ofReal_of_nonneg (le_of_lt ht)]
     exact Real.pi_ne_zero.symm
-  simpa [starRingEnd_apply] using
-    (Complex.conj_cpow (t : ℂ) (star s - 1) harg)
+  simpa using
+    (Complex.conj_cpow (t : ℂ) (conj s - 1) harg)
 
 /-- Conjugation symmetry for Deligne's real Gamma factor.  This is independent
 of RH and follows from conjugation of complex powers and the Gamma function. -/
