@@ -36,7 +36,10 @@ theorem concreteGramMatrix_inversion
       intro t ht
       have ht0 : 0 < t := ht
       simp [rhoRepresentative, rhoBase, Real.rpow_neg_one, ht0.ne', abs_of_nonneg]
-      field_simp
+      rw [show (-1 : ℝ) - 1 = -(2 : ℝ) by norm_num,
+        Real.rpow_neg ht0.le, Real.rpow_natCast]
+      field_simp [ht0.ne']
+      ring
 
 /-- C5: every Gram entry is one scaled value of the same autocorrelation function. -/
 theorem concreteGramMatrix_eq_fractionalAutocorrelation
@@ -50,26 +53,41 @@ theorem concreteGramMatrix_eq_fractionalAutocorrelation
   let b : ℝ := ((rhoIndex j : ℕ) : ℝ)
   have ha : 0 < a := by dsimp [a]; exact_mod_cast rhoIndex_pos i
   have hb : 0 < b := by dsimp [b]; exact_mod_cast rhoIndex_pos j
+  change
+    (∫ t : ℝ in Ioi 0,
+      (Int.fract (t / a) * Int.fract (t / b)) / t ^ 2) =
+      (1 / a) * fractionalAutocorrelation (a / b)
   have hchange := integral_comp_mul_left_Ioi
     (g := fun t : ℝ =>
       (Int.fract (t / a) * Int.fract (t / b)) / t ^ 2)
     (a := 0) ha
-  rw [mul_zero] at hchange
-  rw [← hchange]
-  rw [integral_const_mul]
-  change a *
+  rw [mul_zero, smul_eq_mul] at hchange
+  have horig :
       (∫ t : ℝ in Ioi 0,
-        (Int.fract ((a * t) / a) * Int.fract ((a * t) / b)) /
-          ((a * t) ^ 2)) = _
-  apply Eq.trans ?_ rfl
-  rw [setIntegral_congr_fun measurableSet_Ioi]
-  · intro t ht
-    have ht0 : 0 < t := ht
-    have hane : a ≠ 0 := ha.ne'
-    simp [fractionalAutocorrelation, hane]
-    field_simp
-    ring
-  · dsimp [a, b]
+        (Int.fract (t / a) * Int.fract (t / b)) / t ^ 2) =
+        a * (∫ t : ℝ in Ioi 0,
+          (Int.fract ((a * t) / a) * Int.fract ((a * t) / b)) /
+            ((a * t) ^ 2)) := by
+    calc
+      _ = a * (a⁻¹ *
+          (∫ t : ℝ in Ioi 0,
+            (Int.fract (t / a) * Int.fract (t / b)) / t ^ 2)) := by
+              field_simp [ha.ne']
+      _ = a * (∫ t : ℝ in Ioi 0,
+          (Int.fract ((a * t) / a) * Int.fract ((a * t) / b)) /
+            ((a * t) ^ 2)) := by
+              rw [← hchange]
+  rw [horig]
+  unfold fractionalAutocorrelation
+  rw [← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro t ht
+  have ht0 : 0 < t := ht
+  have hane : a ≠ 0 := ha.ne'
+  have hbne : b ≠ 0 := hb.ne'
+  simp [hane, hbne]
+  field_simp [hane, hbne, ht0.ne']
+  ring
 
 /-- Reciprocity forced by symmetry of the original Gram kernel. -/
 theorem fractionalAutocorrelation_reciprocity
@@ -81,15 +99,30 @@ theorem fractionalAutocorrelation_reciprocity
     (g := fun t : ℝ =>
       (Int.fract (r * t) * Int.fract t) / t ^ 2)
     (a := 0) hr
-  rw [mul_zero] at hchange
-  rw [← hchange]
-  rw [integral_const_mul]
+  rw [mul_zero, smul_eq_mul] at hchange
+  have horig :
+      (∫ t : ℝ in Ioi 0,
+        (Int.fract (r * t) * Int.fract t) / t ^ 2) =
+        r * (∫ t : ℝ in Ioi 0,
+          (Int.fract (r * (r * t)) * Int.fract (r * t)) /
+            ((r * t) ^ 2)) := by
+    calc
+      _ = r * (r⁻¹ *
+          (∫ t : ℝ in Ioi 0,
+            (Int.fract (r * t) * Int.fract t) / t ^ 2)) := by
+              field_simp [hr.ne']
+      _ = r * (∫ t : ℝ in Ioi 0,
+          (Int.fract (r * (r * t)) * Int.fract (r * t)) /
+            ((r * t) ^ 2)) := by
+              rw [← hchange]
+  rw [horig]
   apply congrArg (fun z : ℝ => r * z)
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t ht
   have hne : r ≠ 0 := hr.ne'
+  have ht0 : 0 < t := ht
   simp [hne]
-  field_simp
+  field_simp [hne, ht0.ne']
   ring
 
 #print axioms MCore.RH.R0.concreteGramMatrix_eq_fractionalAutocorrelation
