@@ -55,6 +55,12 @@ jobs:
           export PATH="$HOME/.elan/bin:$PATH"
           lake build MCore.RH.P02RPADualCertificate
           lake build MCore.RH.P02RPAEndpointLattice
+      - name: Build material rigidity frontier
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.elan/bin:$PATH"
+          lake build MCore.RH.P02MaterialRigidityLaw
       - name: Build material payload
         shell: bash
         run: |
@@ -79,6 +85,7 @@ jobs:
             lean/MCore/RH/P02TerminalTransition.lean
             lean/MCore/RH/P02RPADualCertificate.lean
             lean/MCore/RH/P02RPAEndpointLattice.lean
+            lean/MCore/RH/P02MaterialRigidityLaw.lean
             lean/MCore/RH/P02RiemannMaterialPayload.lean
           )
           for f in "${files[@]}"; do
@@ -96,7 +103,12 @@ jobs:
           grep -q 'complete_lattice_14' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'raw_full_2_2' lean/MCore/RH/P02RPAEndpointLattice.lean
           grep -q 'full_raw_2_2_is_global_external' lean/MCore/RH/P02RPAEndpointLattice.lean
+          grep -q 'structure RHMaterialRigidityCertificate' lean/MCore/RH/P02MaterialRigidityLaw.lean
+          grep -q 'criticalOrbitCollapse_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
+          grep -q 'probeCriticalLine_of_material_rigidity' lean/MCore/RH/P02MaterialRigidityLaw.lean
+          grep -q 'OffLineReflectedPairExclusion' lean/MCore/RH/P02MaterialRigidityLaw.lean
           grep -q 'structure RiemannMaterialPayload' lean/MCore/RH/P02RiemannMaterialPayload.lean
+          grep -q 'materialWitnessOfRigidity' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'payload_iff_endpoint' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'finalCertificate_iff_materialRH' lean/MCore/RH/P02RiemannMaterialPayload.lean
           grep -q 'finalCertificate_iff_endpoint' lean/MCore/RH/P02RiemannMaterialPayload.lean
@@ -105,6 +117,8 @@ jobs:
           grep -q 'RHSearchTraversalClosed' lean/MCore/RH/P02LastOpenMath.lean
           echo "RH_STRUCTURE=KERNEL_CHECKED"
           echo "RPA_LATTICE_14=KERNEL_CHECKED"
+          echo "MATERIAL_RIGIDITY_FRONTIER=KERNEL_CHECKED"
           echo "GLOBAL_EXTERNAL_STRUCTURE=KERNEL_CHECKED"
           echo "MATERIAL_ENDPOINT_INHABITANT=NOT_PROMOTED_BY_STRUCTURE"
+          echo "REMAINING_MATERIAL_LAW=OffLineReflectedPairExclusion"
           echo "RH_UNIFIED_FINAL=KERNEL_CHECKED"
