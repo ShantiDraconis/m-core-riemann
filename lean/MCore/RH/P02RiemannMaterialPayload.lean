@@ -1,15 +1,17 @@
-import MCore.RH.P02RPAEndpointLattice
+import MCore.RH.P02MaterialRigidityLaw
 
 namespace MCore
 
 /-!
 # RH material payload
 
-Riemann uses its own material payload.  No algebraicity payload from another
+Riemann uses its own material payload. No algebraicity payload from another
 lane is reused here.
 
 The payload is inhabited only by a proof that every probe nontrivial zero lies
-on the critical line.  The dual/lattice layer does not manufacture that proof.
+on the critical line. The dual/lattice layer does not manufacture that proof.
+The optional constructor from `RHMaterialRigidityCertificate` below makes the
+remaining material law explicit and auditable.
 -/
 
 def RiemannHypothesisMaterial : Prop :=
@@ -64,17 +66,31 @@ structure RiemannFinalCertificate where
   payload : RiemannMaterialPayload
   dual : DUAL_ENDPOINT_STATE
 
+/-- Mechanical certificate constructor once the material critical-line proof
+has actually been supplied. -/
+def materialWitness
+    (hRH : RiemannHypothesisMaterial) :
+    RiemannFinalCertificate := by
+  let p : RiemannMaterialPayload := { criticalLine := hRH }
+  exact {
+    payload := p
+    dual := payload_implies_dual_endpoint_state p
+  }
+
+/-- Preferred non-circular entry point: a genuine material rigidity certificate
+constructs the final payload and dual endpoint state. -/
+def materialWitnessOfRigidity
+    (cert : RHMaterialRigidityCertificate) :
+    RiemannFinalCertificate :=
+  materialWitness (probeCriticalLine_of_material_rigidity cert)
+
 theorem finalCertificate_iff_materialRH :
     Nonempty RiemannFinalCertificate ↔ RiemannHypothesisMaterial := by
   constructor
   · rintro ⟨c⟩
     exact c.payload.criticalLine
   · intro h
-    have p : RiemannMaterialPayload := { criticalLine := h }
-    exact ⟨{
-      payload := p
-      dual := payload_implies_dual_endpoint_state p
-    }⟩
+    exact ⟨materialWitness h⟩
 
 theorem finalCertificate_iff_endpoint :
     Nonempty RiemannFinalCertificate ↔ Endpoint := by
@@ -82,8 +98,9 @@ theorem finalCertificate_iff_endpoint :
 
 /--
 This is deliberately an equivalence, not a constructed certificate.
-A concrete term of `RiemannFinalCertificate` still requires a material proof
-of `RiemannHypothesisMaterial`.
+A concrete term of `RiemannFinalCertificate` still requires either a material
+proof of `RiemannHypothesisMaterial` or a constructed
+`RHMaterialRigidityCertificate`.
 -/
 theorem material_gate_exact :
     Nonempty RiemannFinalCertificate ↔
@@ -96,5 +113,11 @@ theorem material_gate_exact :
       payload := { criticalLine := hRH }
       dual := hDual
     }⟩
+
+/-- A genuine rigidity certificate is sufficient for the final certificate. -/
+theorem finalCertificate_of_material_rigidity
+    (cert : RHMaterialRigidityCertificate) :
+    Nonempty RiemannFinalCertificate :=
+  ⟨materialWitnessOfRigidity cert⟩
 
 end MCore
