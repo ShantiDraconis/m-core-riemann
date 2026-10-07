@@ -37,9 +37,15 @@ theorem target_closed_form_of_transform_tail
   have h := htransform N i
   dsimp at h
   rw [htail] at h
-  rw [h]
-  field_simp
-  ring
+  rw [concreteTargetVector_apply]
+  calc
+    concreteNBData.targetEntry concreteGeneratorFamily i
+        = Real.log ((rhoIndex i : ℕ) : ℝ) / ((rhoIndex i : ℕ) : ℝ) +
+          (1 - Real.eulerMascheroniConstant) / ((rhoIndex i : ℕ) : ℝ) := h
+    _ = (Real.log ((rhoIndex i : ℕ) : ℝ) + 1 -
+          Real.eulerMascheroniConstant) / ((rhoIndex i : ℕ) : ℝ) := by
+      field_simp
+      ring
 
 /-- The interval (1/a,1) contributes exactly log(a)/a once fract(t)=t there. -/
 def TargetElementaryIntervalIdentity : Prop :=
@@ -62,10 +68,12 @@ theorem target_elementary_interval_identity_realized :
     intro t ht
     have ht0 : 0 < t := hdiv0.trans ht.1
     have ht1 : t < 1 := ht.2
+    change Int.fract t / t ^ 2 = t⁻¹
     rw [Int.fract_eq_self.2 ⟨ht0.le, ht1⟩]
-    field_simp
+    field_simp [ht0.ne']
+    ring
   rw [hcongr]
-  rw [MeasureTheory.integral_Ioo_eq_integral_Ioc]
+  rw [← integral_Ioc_eq_integral_Ioo]
   have hint :
       (∫ t : ℝ in Ioc (1 / a) 1, t⁻¹) =
         Real.log a := by
