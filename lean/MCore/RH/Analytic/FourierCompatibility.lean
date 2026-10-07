@@ -7,6 +7,29 @@ namespace MCore.RH.R0
 
 open MeasureTheory
 
+/-- Test-function pairing interface used to identify the pointwise and L2 Fourier representatives. -/
+def ResidualFourierTestPairingCompatibility : Prop :=
+  ∀ {N : ℕ} (c : Fin N → ℝ),
+    MemLp (residualLogPullback c) 1 volume →
+    MemLp (residualLogPullback c) 2 volume →
+    ∀ (φ : ℝ → ℝ),
+      ContDiff ℝ ∞ φ →
+      HasCompactSupport φ →
+      ∫ y : ℝ, φ y •
+        (((𝓕 ((show MemLp (residualLogPullback c) 2 volume from by assumption).toLp
+          (residualLogPullback c)) : Lp ℂ 2 volume) : ℝ → ℂ) y) =
+      ∫ y : ℝ, φ y • (𝓕 (residualLogPullback c) y)
+
+/-- Classical pointwise Fourier transforms of L1 functions are locally integrable. -/
+theorem ordinaryFourier_locallyIntegrable
+    {f : ℝ → ℂ} (h1 : MemLp f 1 volume) :
+    LocallyIntegrable (fun y : ℝ => 𝓕 f y) volume := by
+  have hf : Integrable f volume := memLp_one_iff_integrable.mp h1
+  exact (VectorFourier.fourierIntegral_continuous
+    Real.continuous_fourierChar
+    (innerSL ℝ).continuous₂
+    hf).locallyIntegrable
+
 /--
 Pairing identity for the concrete log-pullback. It is the standard L1/L2
 compatibility theorem, proved by comparing both Fourier transforms as
@@ -67,5 +90,27 @@ theorem residualFourierTestPairingCompatibility_realized :
   · exact (ordinaryFourier_locallyIntegrable h1).integrable_of_hasCompactSupport hφcompact
 
 #print axioms MCore.RH.R0.residualFourierTestPairingCompatibility_realized
+
+end MCore.RH.R0
+
+
+namespace MCore.RH.R0
+
+open MeasureTheory
+
+/-- The concrete test pairing identifies the L2 Fourier representative with the classical L1 Fourier integral a.e. -/
+theorem residualFourierL2Compatibility_realized :
+    ResidualFourierL2Compatibility := by
+  intro N c h1 h2
+  exact ae_eq_of_integral_contDiff_smul_eq
+    (Lp.memLp
+      (𝓕 (h2.toLp (residualLogPullback c)) : Lp ℂ 2 volume)).locallyIntegrable
+      (by norm_num)
+    (ordinaryFourier_locallyIntegrable h1)
+    (fun φ hφsmooth hφcompact =>
+      residualFourierTestPairingCompatibility_realized
+        c h1 h2 φ hφsmooth hφcompact)
+
+#print axioms MCore.RH.R0.residualFourierL2Compatibility_realized
 
 end MCore.RH.R0
