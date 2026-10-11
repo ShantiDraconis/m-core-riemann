@@ -1,0 +1,91 @@
+name: Indeterminate Transform on Riemann Zeta
+
+# Isolated experiment in experiments/indeterminate-transform (Mathlib v4.19.0
+# pinned to c44e0c8e). Builds each module separately so the outcome of every
+# file is visible, and reports results as annotations.
+
+on:
+  push:
+    branches:
+      - atk/riemann-indeterminate-transform-test-20261011
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+        working-directory: experiments/indeterminate-transform
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib build cache
+        run: |
+          set -euo pipefail
+          lean --version
+          lake exe cache get
+      - name: Build each module separately
+        run: |
+          set +e
+          : > ../../built_modules.txt
+          for m in MainProofBridgeVerbatim Transform RiemannTest ZetaTwo; do
+            lake build "IndeterminateRiemann.$m" > "../../build_$m.log" 2>&1
+            rc=$?
+            if [ $rc -eq 0 ]; then
+              echo "::notice title=module-$m::BUILD PASS (IndeterminateRiemann.$m)"
+              echo "$m" >> ../../built_modules.txt
+            else
+              echo "::warning title=module-$m::BUILD FAIL exit $rc (IndeterminateRiemann.$m)"
+              grep -E "error:" "../../build_$m.log" | head -6 | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::warning title=error-$m::${l:0:900}"; done || true
+            fi
+          done
+          exit 0
+      - name: Axiom audit of built modules
+        run: |
+          set +e
+          {
+            while read -r m; do
+              [ "$m" = "MainProofBridgeVerbatim" ] && echo "import IndeterminateRiemann.MainProofBridgeVerbatim" || echo "import IndeterminateRiemann.$m"
+            done < ../../built_modules.txt
+            grep -qx MainProofBridgeVerbatim ../../built_modules.txt && echo "#print axioms SDCore.indeterminate_invariance"
+            if grep -qx Transform ../../built_modules.txt; then
+              echo "#print axioms IndeterminateRiemann.indeterminate_invariance"
+              echo "#print axioms IndeterminateRiemann.transform_eq_div_self"
+              echo "#print axioms IndeterminateRiemann.transform_eq_zero_iff"
+              echo "#print axioms IndeterminateRiemann.transform_values"
+            fi
+            if grep -qx RiemannTest ../../built_modules.txt; then
+              echo "#check @IndeterminateRiemann.transformedRH_iff_RH"
+              echo "#print axioms IndeterminateRiemann.zeta_transform_zero_iff"
+              echo "#print axioms IndeterminateRiemann.transform_zeta_neg_two"
+              echo "#print axioms IndeterminateRiemann.transform_forgets_location"
+              echo "#print axioms IndeterminateRiemann.transformedRH_iff_RH"
+            fi
+            grep -qx ZetaTwo ../../built_modules.txt && echo "#print axioms IndeterminateRiemann.transform_zeta_two"
+          } > AxiomProbe.lean
+          cat AxiomProbe.lean
+          lake env lean AxiomProbe.lean > ../../axioms.log 2>&1
+          echo "probe exit $?"
+          cat ../../axioms.log
+          tr '\n' ' ' < ../../axioms.log | sed -E "s/('[A-Za-z]+\.)/\n\1/g; s/(transformedRH_iff_RH :)/\n\1/g" | grep -E "axioms|:" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=axioms::${l:0:900}"; done || true
+          if grep -q "sorryAx" ../../axioms.log; then echo "::error title=axioms::sorryAx found"; exit 1; fi
+          exit 0
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: indeterminate-riemann-logs
+          path: |
+            build_*.log
+            axioms.log
+            built_modules.txt
