@@ -1,0 +1,1474 @@
+{
+ "schema": "proof-inventory.v1",
+ "generated_by": "scripts/proof_inventory.py (kernel-derived; do not edit by hand)",
+ "toolchain": "leanprover/lean4:v4.19.0",
+ "libraries": [
+  {
+   "name": "MCore",
+   "srcDir": "lean"
+  }
+ ],
+ "policy": {
+  "standard_axioms": [
+   "Classical.choice",
+   "Quot.sound",
+   "propext"
+  ],
+  "theorem_status": "CLEAN = only standard axioms; USES_SORRY = depends on sorryAx; USES_PROJECT_AXIOM = depends on an axiom declared in this library",
+  "prop_status": "PROVED/REFUTED = a CLEAN theorem has exactly that Prop (or its negation) as its type; VACUOUS = the definition body ends in True; NO_PROOF_IN_LIBRARY = no theorem of that exact type exists here (this is not a claim that it is open mathematics)",
+  "scope": "closed (arity-0) Prop definitions, plus any Prop-valued definition that is vacuous"
+ },
+ "summary": {
+  "modules_total": 43,
+  "modules_ok": 38,
+  "modules_failed": 5,
+  "modules_blocked": 0,
+  "modules_outside_default_build": 16,
+  "standalone_files_total": 0,
+  "standalone_files_failed": 0,
+  "theorems_total": 132,
+  "theorems_clean": 132,
+  "theorems_using_sorry": 0,
+  "theorems_using_project_axiom": 0,
+  "theorems_nonstandard_axioms": 0,
+  "project_axioms_declared": 0,
+  "props_reported": 2,
+  "props_proved": 1,
+  "props_refuted": 0,
+  "props_vacuous": 0,
+  "props_no_proof_in_library": 1
+ },
+ "project_axioms": [],
+ "environment_groups": 1,
+ "name_clashes": [],
+ "modules": [
+  {
+   "module": "MCore",
+   "path": "lean/MCore.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.A14_Formal",
+   "path": "lean/MCore/A14_Formal.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.AttackDAG.K3AlgebraAttacks",
+   "path": "lean/MCore/AttackDAG/K3AlgebraAttacks.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Audit",
+   "path": "lean/MCore/Audit.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Boundary",
+   "path": "lean/MCore/Boundary.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.Frontier.K3Gaps",
+   "path": "lean/MCore/Frontier/K3Gaps.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K0",
+   "path": "lean/MCore/K0.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K1",
+   "path": "lean/MCore/K1.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K2",
+   "path": "lean/MCore/K2.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K3",
+   "path": "lean/MCore/K3.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K4",
+   "path": "lean/MCore/K4.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K5",
+   "path": "lean/MCore/K5.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K6",
+   "path": "lean/MCore/K6.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K7",
+   "path": "lean/MCore/K7.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K8",
+   "path": "lean/MCore/K8.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.K9",
+   "path": "lean/MCore/K9.lean",
+   "status": "FAILED",
+   "in_default_build": false,
+   "first_error": "(no file:line error) error: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_ZetaBridge'\nerror: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_RigidityRoutes'\nerror: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_CriterionRoutes'\nerror: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_RiemannHypothesis'"
+  },
+  {
+   "module": "MCore.RH.K09_Continuation",
+   "path": "lean/MCore/RH/K09_Continuation.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.K9_CriterionRoutes",
+   "path": "lean/MCore/RH/K9_CriterionRoutes.lean",
+   "status": "FAILED",
+   "in_default_build": false,
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_CriterionRoutes.lean: bad import 'MCore.RH.K9_RigidityRoutes'"
+  },
+  {
+   "module": "MCore.RH.K9_Regularization",
+   "path": "lean/MCore/RH/K9_Regularization.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.K9_RiemannHypothesis",
+   "path": "lean/MCore/RH/K9_RiemannHypothesis.lean",
+   "status": "FAILED",
+   "in_default_build": false,
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_RiemannHypothesis.lean: bad import 'MCore.RH.K9_ZetaBridge'"
+  },
+  {
+   "module": "MCore.RH.K9_RigidityRoutes",
+   "path": "lean/MCore/RH/K9_RigidityRoutes.lean",
+   "status": "FAILED",
+   "in_default_build": false,
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_RigidityRoutes.lean: bad import 'MCore.RH.K9_ZetaBridge'"
+  },
+  {
+   "module": "MCore.RH.K9_ZetaBridge",
+   "path": "lean/MCore/RH/K9_ZetaBridge.lean",
+   "status": "FAILED",
+   "in_default_build": false,
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_ZetaBridge.lean: bad import 'Mathlib.NumberTheory.LSeries.ZetaZeros'"
+  },
+  {
+   "module": "MCore.RH.NB.A14NonImplication",
+   "path": "lean/MCore/RH/NB/A14NonImplication.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.Antitone",
+   "path": "lean/MCore/RH/NB/Antitone.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.BCFZeroResidueControl",
+   "path": "lean/MCore/RH/NB/BCFZeroResidueControl.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.Distance",
+   "path": "lean/MCore/RH/NB/Distance.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.FiniteSpan",
+   "path": "lean/MCore/RH/NB/FiniteSpan.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "path": "lean/MCore/RH/NB/FunctionalInterface.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "path": "lean/MCore/RH/NB/FunctionalLawLogic.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.NB.HilbertData",
+   "path": "lean/MCore/RH/NB/HilbertData.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.Limit",
+   "path": "lean/MCore/RH/NB/Limit.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.Nesting",
+   "path": "lean/MCore/RH/NB/Nesting.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.Projection",
+   "path": "lean/MCore/RH/NB/Projection.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.QuantitativeUpperBound",
+   "path": "lean/MCore/RH/NB/QuantitativeUpperBound.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.NB.Total",
+   "path": "lean/MCore/RH/NB/Total.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "path": "lean/MCore/RH/NB/ZeroLimitFrontier.lean",
+   "status": "OK",
+   "in_default_build": true
+  },
+  {
+   "module": "MCore.RH.R0.AmbientCarrier",
+   "path": "lean/MCore/RH/R0/AmbientCarrier.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.R0.ChiL2",
+   "path": "lean/MCore/RH/R0/ChiL2.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.R0.ChiMemLp",
+   "path": "lean/MCore/RH/R0/ChiMemLp.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.R0.ConcreteDomain",
+   "path": "lean/MCore/RH/R0/ConcreteDomain.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.R0.Normalization",
+   "path": "lean/MCore/RH/R0/Normalization.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.RH.R0.RhoConcrete",
+   "path": "lean/MCore/RH/R0/RhoConcrete.lean",
+   "status": "OK",
+   "in_default_build": false
+  },
+  {
+   "module": "MCore.Signature",
+   "path": "lean/MCore/Signature.lean",
+   "status": "OK",
+   "in_default_build": true
+  }
+ ],
+ "standalone_files": [],
+ "props": [
+  {
+   "name": "MCore.OfficialSpecRH",
+   "module": "MCore.K8",
+   "closed_prop": true,
+   "status": "NO_PROOF_IN_LIBRARY",
+   "inhabited_by": [],
+   "refuted_by": []
+  },
+  {
+   "name": "MCore.RH.R0.ChiMemLpTwo",
+   "module": "MCore.RH.R0.ChiL2",
+   "closed_prop": true,
+   "status": "PROVED",
+   "inhabited_by": [
+    "MCore.RH.R0.chi_memLp_two"
+   ],
+   "refuted_by": []
+  }
+ ],
+ "theorems": [
+  {
+   "name": "MCore.OpenBridgeFirewall.certificate_blocked",
+   "module": "MCore.K5",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.OpenBridgeFirewall.open_status",
+   "module": "MCore.K5",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.PathIndependenceCertificate.commonLimit_exists",
+   "module": "MCore.RH.K9_Regularization",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ProofCertificate.proof",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ProofCertificate.status_proved",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.A14_alone_not_sufficient_for_covering",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.A14_alone_not_sufficient_for_joint_decay",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.A14_alone_not_sufficient_for_testDefect",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.necessary_of_equivalent",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.not_necessary_of_strictlyStronger",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.not_sufficient_of_strictlyWeaker",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.strictlyStronger_implies_sufficient",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.strictlyStronger_not_equivalent",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.strictlyWeaker_implies_necessary",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.strictlyWeaker_not_equivalent",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.Functional.sufficient_of_equivalent",
+   "module": "MCore.RH.NB.FunctionalLawLogic",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.FunctionalCompatibility.amplitude_agrees",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.FunctionalCompatibility.scale_agrees",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.BCFZeroResidueControl.dn_le_from_bcf",
+   "module": "MCore.RH.NB.BCFZeroResidueControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.BCFZeroResidueControl.eps_nonneg",
+   "module": "MCore.RH.NB.BCFZeroResidueControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.BCFZeroResidueControl.eps_tendsto_zero",
+   "module": "MCore.RH.NB.BCFZeroResidueControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_BCFZeroResidueControl",
+   "module": "MCore.RH.NB.BCFZeroResidueControl",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_finiteSpanApproximatesChi",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNLimit_eq_zero_of_vanishingUpperBound",
+   "module": "MCore.RH.NB.QuantitativeUpperBound",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNLimit_nonneg",
+   "module": "MCore.RH.NB.Limit",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNToZero_iff_DNLimit_eq_zero",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNToZero_of_finiteSpanApproximatesChi",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNToZero_of_le_zero",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DNToZero_of_vanishingUpperBound",
+   "module": "MCore.RH.NB.QuantitativeUpperBound",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DN_antitone",
+   "module": "MCore.RH.NB.Antitone",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DN_antitone_of_le",
+   "module": "MCore.RH.NB.Antitone",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DN_bddBelow",
+   "module": "MCore.RH.NB.Limit",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.DN_nonneg",
+   "module": "MCore.RH.NB.Distance",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.P_mem",
+   "module": "MCore.RH.NB.Projection",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.P_minimal",
+   "module": "MCore.RH.NB.Projection",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.V_le_succ",
+   "module": "MCore.RH.NB.Nesting",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.V_mono_of_le",
+   "module": "MCore.RH.NB.Nesting",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.VanishingUpperBound.dn_le",
+   "module": "MCore.RH.NB.QuantitativeUpperBound",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.VanishingUpperBound.eps_nonneg",
+   "module": "MCore.RH.NB.QuantitativeUpperBound",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.VanishingUpperBound.eps_tendsto_zero",
+   "module": "MCore.RH.NB.QuantitativeUpperBound",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.dN_antitone_of_le",
+   "module": "MCore.RH.NB.Antitone",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.dN_nonneg",
+   "module": "MCore.RH.NB.Distance",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.delta_eq_zero_iff_DNToZero",
+   "module": "MCore.RH.NB.Total",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.delta_nonneg",
+   "module": "MCore.RH.NB.Total",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.finiteDimensional_V",
+   "module": "MCore.RH.NB.FiniteSpan",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.finiteGenerators_mono",
+   "module": "MCore.RH.NB.Nesting",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.finiteSpanApproximatesChi_iff_DNLimit_eq_zero",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.finiteSpanApproximatesChi_iff_DNToZero",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.finiteSpanApproximatesChi_of_DNToZero",
+   "module": "MCore.RH.NB.ZeroLimitFrontier",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.finite_finiteGenerators",
+   "module": "MCore.RH.NB.HilbertData",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.generator_mem_V",
+   "module": "MCore.RH.NB.HilbertData",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.hasOrthogonalProjection_V",
+   "module": "MCore.RH.NB.Projection",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.instCompleteSpace",
+   "module": "MCore.RH.NB.HilbertData",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.isClosed_V",
+   "module": "MCore.RH.NB.FiniteSpan",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.residual_inner_eq_zero",
+   "module": "MCore.RH.NB.Projection",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.tendsto_DN_DNLimit",
+   "module": "MCore.RH.NB.Limit",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.NBHilbertData.tendsto_DN_delta",
+   "module": "MCore.RH.NB.Total",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.bad_is_compatible",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.bad_not_covering",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.bad_not_testDefect",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.compatibility_alone_not_sufficient_for_covering",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.compatibility_alone_not_sufficient_for_testDefect",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.compatible_counterexample_blocks_universal",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.good_covering",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.good_is_compatible",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.good_testDefect",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.oneCarrier_not_covering_decay",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.oneCarrier_not_testDefect_decay",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.same_A14_opposite_NB_observations",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.witness_A1",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.witness_A14",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.witness_A2",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.witness_A3",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.witness_A4",
+   "module": "MCore.RH.NB.A14NonImplication",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.zeroCarrier_covering_decay",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.NB.zeroCarrier_testDefect_decay",
+   "module": "MCore.RH.NB.FunctionalInterface",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.PositiveIndex.positive",
+   "module": "MCore.RH.R0.Normalization",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.baezDuarteIndex_val",
+   "module": "MCore.RH.R0.Normalization",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.baezDuarteIndex_zero",
+   "module": "MCore.RH.R0.Normalization",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chiRepresentative_eq_indicator",
+   "module": "MCore.RH.R0.ChiMemLp",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chiRepresentative_measurable",
+   "module": "MCore.RH.R0.ChiMemLp",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chiRepresentative_norm_le_one",
+   "module": "MCore.RH.R0.ChiMemLp",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chiRepresentative_of_mem",
+   "module": "MCore.RH.R0.ConcreteDomain",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chiRepresentative_of_not_mem",
+   "module": "MCore.RH.R0.ConcreteDomain",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chiSupport_measure_ne_top",
+   "module": "MCore.RH.R0.ChiMemLp",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.chi_memLp_two",
+   "module": "MCore.RH.R0.ChiMemLp",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rhoIndex_injective",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rhoIndex_ne_zero",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rhoIndex_pos",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rhoRepresentative_index_formula",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rhoRepresentative_measurable",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rho_memLp_two",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rho_sq_integrableOn_Ioc",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rho_sq_integrableOn_Ioi",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rho_sq_integrableOn_Ioi_zero",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.rho_tail_eq",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.selectedCarrier_eq_zeroInfinity",
+   "module": "MCore.RH.R0.AmbientCarrier",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RH.R0.twoExponent_eq_two",
+   "module": "MCore.RH.R0.RhoConcrete",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RHAdapterObligations.main",
+   "module": "MCore.K8",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RegularizationCertificate.pathIndependent",
+   "module": "MCore.RH.K9_Regularization",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RegularizationCertificate.scalePreserved",
+   "module": "MCore.RH.K9_Regularization",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.RegularizationCertificate.selfReferenceRemoved",
+   "module": "MCore.RH.K9_Regularization",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.ScalePreservationCertificate.scale_eq",
+   "module": "MCore.RH.K9_Regularization",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.SelfReferenceEliminationCertificate.eliminated",
+   "module": "MCore.RH.K9_Regularization",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.boundary_ne_regular",
+   "module": "MCore.K0",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.bridge_not_certified",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.candidate_ne_provedProperty",
+   "module": "MCore.K0",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.completedZeta_differentiable_off_poles",
+   "module": "MCore.RH.K09_Continuation",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.completedZeta_entire_real",
+   "module": "MCore.RH.K09_Continuation",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k1_not_proved",
+   "module": "MCore.K1",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k1_status_openBridge",
+   "module": "MCore.K1",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k2_node_not_proved",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k2_node_status_openBridge",
+   "module": "MCore.K2",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_attack_cannot_promote",
+   "module": "MCore.AttackDAG.K3AlgebraAttacks",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_attack_route_only",
+   "module": "MCore.AttackDAG.K3AlgebraAttacks",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_frontier_open",
+   "module": "MCore.Frontier.K3Gaps",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_gap_not_certified",
+   "module": "MCore.K3",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_gap_not_proved",
+   "module": "MCore.K3",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k3_gap_status_openBridge",
+   "module": "MCore.K3",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k4_no_promotion",
+   "module": "MCore.K4",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k4_status_openBridge",
+   "module": "MCore.K4",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k5_openBridge_cannot_certify",
+   "module": "MCore.K5",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k6_source_open",
+   "module": "MCore.K6",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k6_target_not_certified",
+   "module": "MCore.K6",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k6_target_open",
+   "module": "MCore.K6",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_dependency_reachable",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_source_open",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_target_not_certified",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k7_target_open",
+   "module": "MCore.K7",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_k7_target_open",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.k8_preserves_k7_firewall",
+   "module": "MCore.K8",
+   "axioms": [],
+   "status": "CLEAN"
+  },
+  {
+   "name": "MCore.rh_endpoint_of_adapter",
+   "module": "MCore.K8",
+   "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+   ],
+   "status": "CLEAN"
+  }
+ ]
+}
