@@ -275,6 +275,18 @@ def build(root: Path, mods):
                 break
             block.append(nxt)
         failed[mod] = "\n".join(block)[:1500]
+    # fallback: modules Lake marked failed without a file:line error of their own
+    for i, line in enumerate(lines):
+        m = re.match(r"✖ \[\d+/\d+\] (?:Building|Compiling|Running) ([\w.«»']+)", line)
+        if m and m.group(1) in failed and not failed[m.group(1)]:
+            block = []
+            for nxt in lines[i + 1:i + 30]:
+                if re.match(r"^[✖✔⚠] ", nxt):
+                    break
+                if not nxt.startswith("trace:"):
+                    block.append(nxt)
+            if block:
+                failed[m.group(1)] = "(no file:line error) " + "\n".join(block)[:1400]
     return failed, r.returncode, log
 
 
@@ -378,7 +390,9 @@ def main():
     # Lake also marks dependents of a failing module as failed; a module with no
     # error of its own whose imports include a failing module is BLOCKED.
     for m in sorted(failed):
-        if not failed[m] and any(d in failed and failed[d] for d in closure(m, mods) if d != m):
+        own = failed[m] and not failed[m].startswith("(no file:line error)")
+        if not own and any(d in failed and failed[d] and not failed[d].startswith("(no file:line error)")
+                           for d in closure(m, mods) if d != m):
             del failed[m]
     blocked = {}
     for m in mods:
