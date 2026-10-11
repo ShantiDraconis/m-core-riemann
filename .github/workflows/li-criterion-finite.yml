@@ -1,0 +1,97 @@
+name: Li Criterion Finite Core
+
+# Isolated experiment in experiments/li-criterion (Mathlib v4.19.0 pinned to
+# c44e0c8e). Builds the module and audits the axioms of every main theorem.
+# Results are reported as annotations on the run.
+
+on:
+  push:
+    branches:
+      - atk/riemann-li-criterion-finite-20261011
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+        working-directory: experiments/li-criterion
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib build cache
+        run: |
+          set -euo pipefail
+          lean --version
+          lake exe cache get
+      - name: Build LiCriterion.Finite
+        run: |
+          set +e
+          lake build LiCriterion.Finite > ../../build.log 2>&1
+          rc=$?
+          if [ $rc -eq 0 ]; then
+            echo "::notice title=build::BUILD PASS (LiCriterion.Finite)"
+          else
+            grep -E "error:" ../../build.log | head -10 | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::error title=lean-error::${l:0:900}"; done || true
+          fi
+          exit $rc
+      - name: Exact axiom audit
+        run: |
+          set +e
+          cat > AxiomProbe.lean <<'EOF'
+          import LiCriterion.Finite
+          open LiCriterion
+          #check @li_criterion_finite
+          #check @li_criterion_finite_symm
+          #check @norm_liPoint_eq_one_iff
+          #print axioms LiCriterion.norm_liPoint_le_one_iff
+          #print axioms LiCriterion.norm_liPoint_eq_one_iff
+          #print axioms LiCriterion.one_sub_inv_one_sub
+          #print axioms LiCriterion.liCoeff_re_nonneg
+          #print axioms LiCriterion.exists_pow_near_one
+          #print axioms LiCriterion.exists_liCoeff_re_neg
+          #print axioms LiCriterion.li_criterion_finite
+          #print axioms LiCriterion.li_criterion_finite_symm
+          #print axioms LiCriterion.liCoeff_eq_li_original
+          #print axioms LiCriterion.example_on_line
+          #print axioms LiCriterion.example_off_line
+          EOF
+          lake env lean AxiomProbe.lean > ../../axioms.log 2>&1
+          rc=$?
+          cat ../../axioms.log
+          tr '\n' ' ' < ../../axioms.log | sed -E "s/('LiCriterion\.)/\n\1/g; s/(li_criterion_finite :|li_criterion_finite_symm :|norm_liPoint_eq_one_iff :)/\n\1/g" | grep -E "axioms|:" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=axioms::${l:0:900}"; done || true
+          if [ $rc -ne 0 ] || grep -qE "sorryAx|error" ../../axioms.log; then
+            echo "::error title=axioms::probe failed or sorryAx found"; exit 1
+          fi
+          python3 - <<'PY'
+          import re, sys
+          text = open("../../axioms.log").read()
+          sets = re.findall(r"depends on axioms: \[([^\]]*)\]", text, re.S)
+          sets += ["" for _ in re.findall(r"does not depend on any axioms", text)]
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          if len(sets) != 11:
+              sys.exit("expected 11 axiom reports, got %d" % len(sets))
+          for s in sets:
+              names = {x.strip() for x in s.split(",") if x.strip()}
+              if not names <= allowed:
+                  sys.exit("non-standard axioms: %s" % (names - allowed))
+          print("LI_AXIOM_AUDIT_OK")
+          PY
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-criterion-logs
+          path: |
+            build.log
+            axioms.log
