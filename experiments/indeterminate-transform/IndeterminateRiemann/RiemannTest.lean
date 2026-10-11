@@ -52,4 +52,16 @@ theorem transformedRH_iff_RH : TransformedRH ↔ RiemannHypothesis := by
   · intro h s hz hn h1
     exact h s ((zeta_transform_zero_iff s).mp hz) hn h1
 
+/-- With propositional extensionality the two statements are the same
+proposition, not merely equivalent ones. -/
+theorem transformedRH_eq_RH : TransformedRH = RiemannHypothesis :=
+  propext transformedRH_iff_RH
+
+/-- Consequently a proof of either is a proof of the other. -/
+theorem RH_of_transformedRH (h : TransformedRH) : RiemannHypothesis :=
+  transformedRH_iff_RH.mp h
+
+theorem transformedRH_of_RH (h : RiemannHypothesis) : TransformedRH :=
+  transformedRH_iff_RH.mpr h
+
 end IndeterminateRiemann

@@ -70,6 +70,10 @@ jobs:
               echo "#print axioms IndeterminateRiemann.transform_zeta_neg_two"
               echo "#print axioms IndeterminateRiemann.transform_forgets_location"
               echo "#print axioms IndeterminateRiemann.transformedRH_iff_RH"
+              echo "#check @IndeterminateRiemann.transformedRH_eq_RH"
+              echo "#print axioms IndeterminateRiemann.transformedRH_eq_RH"
+              echo "#print axioms IndeterminateRiemann.RH_of_transformedRH"
+              echo "#print axioms IndeterminateRiemann.transformedRH_of_RH"
             fi
             grep -qx ZetaTwo ../../built_modules.txt && echo "#print axioms IndeterminateRiemann.transform_zeta_two"
           } > AxiomProbe.lean
@@ -77,7 +81,7 @@ jobs:
           lake env lean AxiomProbe.lean > ../../axioms.log 2>&1
           echo "probe exit $?"
           cat ../../axioms.log
-          tr '\n' ' ' < ../../axioms.log | sed -E "s/('[A-Za-z]+\.)/\n\1/g; s/(transformedRH_iff_RH :)/\n\1/g" | grep -E "axioms|:" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=axioms::${l:0:900}"; done || true
+          tr '\n' ' ' < ../../axioms.log | sed -E "s/('[A-Za-z]+\.)/\n\1/g; s/(transformedRH_iff_RH :|transformedRH_eq_RH :)/\n\1/g" | grep -E "axioms|:" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=axioms::${l:0:900}"; done || true
           if grep -q "sorryAx" ../../axioms.log; then echo "::error title=axioms::sorryAx found"; exit 1; fi
           exit 0
       - name: Upload logs
