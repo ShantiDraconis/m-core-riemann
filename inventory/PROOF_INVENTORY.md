@@ -29,11 +29,11 @@ Toolchain: `leanprover/lean4:v4.19.0`
 
 | Module | Status | In default build | Detail |
 | --- | --- | --- | --- |
-| `MCore.K9` | FAILED | no |  |
-| `MCore.RH.K9_CriterionRoutes` | FAILED | no |  |
-| `MCore.RH.K9_RiemannHypothesis` | FAILED | no |  |
-| `MCore.RH.K9_RigidityRoutes` | FAILED | no |  |
-| `MCore.RH.K9_ZetaBridge` | FAILED | no |  |
+| `MCore.K9` | FAILED | no | (no file:line error) error: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_ZetaBridge' |
+| `MCore.RH.K9_CriterionRoutes` | FAILED | no | (no file:line error) error: ./././lean/MCore/RH/K9_CriterionRoutes.lean: bad import 'MCore.RH.K9_RigidityRoutes' |
+| `MCore.RH.K9_RiemannHypothesis` | FAILED | no | (no file:line error) error: ./././lean/MCore/RH/K9_RiemannHypothesis.lean: bad import 'MCore.RH.K9_ZetaBridge' |
+| `MCore.RH.K9_RigidityRoutes` | FAILED | no | (no file:line error) error: ./././lean/MCore/RH/K9_RigidityRoutes.lean: bad import 'MCore.RH.K9_ZetaBridge' |
+| `MCore.RH.K9_ZetaBridge` | FAILED | no | (no file:line error) error: ./././lean/MCore/RH/K9_ZetaBridge.lean: bad import 'Mathlib.NumberTheory.LSeries.ZetaZeros' |
 
 ## Stand-alone files that do not compile
 

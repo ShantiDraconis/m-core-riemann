@@ -137,7 +137,7 @@
    "path": "lean/MCore/K9.lean",
    "status": "FAILED",
    "in_default_build": false,
-   "first_error": ""
+   "first_error": "(no file:line error) error: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_ZetaBridge'\nerror: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_RigidityRoutes'\nerror: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_CriterionRoutes'\nerror: ./././lean/MCore/K9.lean: bad import 'MCore.RH.K9_RiemannHypothesis'"
   },
   {
    "module": "MCore.RH.K09_Continuation",
@@ -150,7 +150,7 @@
    "path": "lean/MCore/RH/K9_CriterionRoutes.lean",
    "status": "FAILED",
    "in_default_build": false,
-   "first_error": ""
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_CriterionRoutes.lean: bad import 'MCore.RH.K9_RigidityRoutes'"
   },
   {
    "module": "MCore.RH.K9_Regularization",
@@ -163,21 +163,21 @@
    "path": "lean/MCore/RH/K9_RiemannHypothesis.lean",
    "status": "FAILED",
    "in_default_build": false,
-   "first_error": ""
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_RiemannHypothesis.lean: bad import 'MCore.RH.K9_ZetaBridge'"
   },
   {
    "module": "MCore.RH.K9_RigidityRoutes",
    "path": "lean/MCore/RH/K9_RigidityRoutes.lean",
    "status": "FAILED",
    "in_default_build": false,
-   "first_error": ""
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_RigidityRoutes.lean: bad import 'MCore.RH.K9_ZetaBridge'"
   },
   {
    "module": "MCore.RH.K9_ZetaBridge",
    "path": "lean/MCore/RH/K9_ZetaBridge.lean",
    "status": "FAILED",
    "in_default_build": false,
-   "first_error": ""
+   "first_error": "(no file:line error) error: ./././lean/MCore/RH/K9_ZetaBridge.lean: bad import 'Mathlib.NumberTheory.LSeries.ZetaZeros'"
   },
   {
    "module": "MCore.RH.NB.A14NonImplication",
