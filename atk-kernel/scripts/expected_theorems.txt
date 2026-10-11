@@ -2,3 +2,7 @@ ATK.Riemann.residual_tendsto_zero
 ATK.Riemann.schur_step_monotone
 ATK.Riemann.gram_complete_square
 ATK.Riemann.gram_residual_le
+ATK.Riemann.abstract_bound_vacuous
+ATK.Riemann.bdDistSq_nonneg
+ATK.Riemann.bd_bound_tendsto
+ATK.Riemann.rh_of_bd_bound

@@ -10,6 +10,13 @@ import Mathlib
                             para G simétrica invertível.
 * `gram_residual_le`      — se G é semidefinida positiva, 1 - bᵀG⁻¹b é o mínimo de
                             ‖χ - Σ cⱼφⱼ‖² = 1 - 2⟨b,c⟩ + cᵀGc (cota inferior para todo c).
+
+## Ligação concreta com RH (Báez-Duarte)
+* `bdDistSq N` = inf_c ∫_{(0,∞)} (χ(t) − Σ_{k≤N} c_k {1/(k t)})² dt   — a distância REAL, não uma sequência livre.
+* `abstract_bound_vacuous` — a forma abstrata (DN qualquer) vale trivialmente para DN = 0.
+* `bdDistSq_nonneg`, `bd_bound_tendsto` — a cota K/log(N+2) sobre `bdDistSq` implica `bdDistSq N → 0`.
+* `rh_of_bd_bound` — com o critério de Báez-Duarte (2003) como HIPÓTESE explícita `hCriterion`
+  (não está na Mathlib), a cota implica `RiemannHypothesis` da Mathlib. A cota continua ABERTA.
 -/
 
 namespace ATK.Riemann
@@ -56,9 +63,48 @@ theorem gram_residual_le {n : Type*} [Fintype n] [DecidableEq n]
   rw [hstar] at h
   linarith
 
+/-- A forma abstrata usada em m-core-riemann (sequência arbitrária) é satisfeita por DN = 0. -/
+theorem abstract_bound_vacuous :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ N : ℕ, (fun _ : ℕ => (0 : ℝ)) N ≤ K / Real.log ((N : ℝ) + 2) :=
+  ⟨0, le_refl 0, fun N => by simp⟩
+
+open MeasureTheory in
+/-- χ = indicadora de (0, 1]. -/
+noncomputable def bdChi (t : ℝ) : ℝ := Set.indicator (Set.Ioc (0 : ℝ) 1) (fun _ => (1 : ℝ)) t
+
+/-- ρ_k(t) = {1/(k t)}. -/
+noncomputable def bdRho (k : ℕ) (t : ℝ) : ℝ := Int.fract (1 / ((k : ℝ) * t))
+
+open MeasureTheory in
+/-- D_N de Báez-Duarte: quadrado da distância em L²(0,∞) de χ ao span de ρ_1, …, ρ_N. -/
+noncomputable def bdDistSq (N : ℕ) : ℝ :=
+  ⨅ c : Fin N → ℝ, ∫ t in Set.Ioi (0 : ℝ), (bdChi t - ∑ k : Fin N, c k * bdRho (k.val + 1) t) ^ 2
+
+/-- Produtor terminal corrigido: a cota uniforme sobre a distância concreta. -/
+def ConcreteBDUniformLogBound : Prop :=
+  ∃ K : ℝ, 0 ≤ K ∧ ∀ N : ℕ, bdDistSq N ≤ K / Real.log ((N : ℝ) + 2)
+
+open MeasureTheory in
+theorem bdDistSq_nonneg (N : ℕ) : 0 ≤ bdDistSq N :=
+  le_ciInf fun _ => integral_nonneg fun _ => sq_nonneg _
+
+theorem bd_bound_tendsto (h : ConcreteBDUniformLogBound) :
+    Tendsto bdDistSq atTop (𝓝 0) := by
+  obtain ⟨K, _, hK⟩ := h
+  exact residual_tendsto_zero bdDistSq_nonneg hK
+
+theorem rh_of_bd_bound
+    (hCriterion : Tendsto bdDistSq atTop (𝓝 0) → RiemannHypothesis)
+    (h : ConcreteBDUniformLogBound) : RiemannHypothesis :=
+  hCriterion (bd_bound_tendsto h)
+
 end ATK.Riemann
 
 #print axioms ATK.Riemann.residual_tendsto_zero
 #print axioms ATK.Riemann.schur_step_monotone
 #print axioms ATK.Riemann.gram_complete_square
 #print axioms ATK.Riemann.gram_residual_le
+#print axioms ATK.Riemann.abstract_bound_vacuous
+#print axioms ATK.Riemann.bdDistSq_nonneg
+#print axioms ATK.Riemann.bd_bound_tendsto
+#print axioms ATK.Riemann.rh_of_bd_bound
