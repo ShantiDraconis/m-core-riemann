@@ -1,0 +1,180 @@
+{
+  "repositorio": "ShantiDraconis/m-core-riemann",
+  "branch": "atk-kernel-check",
+  "commit_verificado": "a9cf4ac4f99648cad6e41fd88ba579d86acdf89d",
+  "tag": "atk-kernel-cert-v2",
+  "gerado_em_utc": "2026-10-12T00:46:19+00:00",
+  "workflows": [
+    {
+      "workflow": "ATK kernel check",
+      "run": "https://github.com/ShantiDraconis/m-core-riemann/actions/runs/38188852004",
+      "commit_da_execucao": "a9cf4ac4f99648cad6e41fd88ba579d86acdf89d",
+      "jobs": [
+        {
+          "nome": "RH — D_N real (Nyman–Beurling / Báez-Duarte)",
+          "conclusao": "success",
+          "url": "https://github.com/ShantiDraconis/m-core-riemann/actions/runs/38188852004/job/114617011829"
+        },
+        {
+          "nome": "Lean 4 + Mathlib — compilação e auditoria de axiomas",
+          "conclusao": "success",
+          "url": "https://github.com/ShantiDraconis/m-core-riemann/actions/runs/38188852004/job/114617011971"
+        }
+      ],
+      "resumo_kernel": "ATK-KERNEL CERTIFIED 13/13",
+      "sha256_fontes": "77d48ba47dcc82e96dd8898b3731de2cfd2809e61ffd7b77be44c45acee40edf",
+      "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+    }
+  ],
+  "teoremas": [
+    {
+      "teorema": "ATK.Riemann.residual_tendsto_zero",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.schur_step_monotone",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.gram_complete_square",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.gram_residual_le",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.abstract_bound_vacuous",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.bdDistSq_nonneg",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.bd_bound_tendsto",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.Riemann.rh_of_bd_bound",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.RHConvergence.bdDistSq_succ_le",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.RHConvergence.bdDistSq_antitone",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.RHConvergence.bdDistSq_converges",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.RHConvergence.bdDistSq_limit_nonneg",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    },
+    {
+      "teorema": "ATK.RHConvergence.rh_iff_limit_zero_of_criterion",
+      "veredito": "CERTIFIED",
+      "axiomas": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "obs": "",
+      "workflow": "ATK kernel check"
+    }
+  ],
+  "numericos": [],
+  "escopo": "Lemas auxiliares e cálculos concretos. Nenhuma das sete conjecturas foi provada; OPEN_MATH=true.",
+  "contagem": {
+    "certificados": 13,
+    "total": 13
+  }
+}
