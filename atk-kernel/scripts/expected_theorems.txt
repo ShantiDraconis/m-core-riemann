@@ -1,3 +1,8 @@
+ATK.RHConvergence.bdDistSq_succ_le
+ATK.RHConvergence.bdDistSq_antitone
+ATK.RHConvergence.bdDistSq_converges
+ATK.RHConvergence.bdDistSq_limit_nonneg
+ATK.RHConvergence.rh_iff_limit_zero_of_criterion
 ATK.Riemann.residual_tendsto_zero
 ATK.Riemann.schur_step_monotone
 ATK.Riemann.gram_complete_square

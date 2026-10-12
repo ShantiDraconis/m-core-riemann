@@ -127,9 +127,16 @@ if os.environ.get("GITHUB_ACTIONS"):
     by_mod = {}
     for r in rows:
         by_mod.setdefault(r["file"], []).append(r)
-    for f, rs in by_mod.items():
-        ok = sum(r["verdict"] == "CERTIFIED" for r in rs)
-        lines = [f"{r['verdict']} {r['theorem']} [{', '.join(r['axioms']) if r['axioms'] is not None else '—'}]"
-                 + (f" ({r['reason']})" if r["reason"] else "") for r in rs]
-        print(f"::notice title={f} {ok}/{len(rs)}::" + esc("\n".join(lines)))
+    # o Actions guarda no máximo 10 anotações por passo: agrupa os módulos em até 9 avisos
+    mods = list(by_mod.items())
+    nchunks = min(9, len(mods))
+    for i in range(nchunks):
+        chunk = mods[i::nchunks]
+        names, lines = [], []
+        for f, rs in chunk:
+            ok = sum(r["verdict"] == "CERTIFIED" for r in rs)
+            names.append(f"{f} {ok}/{len(rs)}")
+            lines += [f"{r['verdict']} {r['theorem']} [{', '.join(r['axioms']) if r['axioms'] is not None else '—'}]"
+                      + (f" ({r['reason']})" if r["reason"] else "") for r in rs]
+        print(f"::notice title={' · '.join(names)}::" + esc("\n".join(lines)))
 sys.exit(0 if certified == len(expected) else 1)
