@@ -1,0 +1,16 @@
+{
+  "id": "RH taxa D_N ≤ K/(log N)²",
+  "problema": "RH",
+  "alvo": "itens 10, 48",
+  "onde_quebra_hoje": "—",
+  "proposta": {
+    "nome": "taxa",
+    "definicao": "D_N ≤ K/(log N)²",
+    "taxa": {
+      "s": 2,
+      "K": 1.0
+    },
+    "como_falha_davenport_heilbronn": "usa o produto de Euler na identidade de Báez-Duarte"
+  },
+  "veredito_esperado": "REJEITADA"
+}

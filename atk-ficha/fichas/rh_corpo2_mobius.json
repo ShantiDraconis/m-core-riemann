@@ -1,0 +1,22 @@
+{
+  "id": "RH-Corpo2 operador de Möbius H_N",
+  "problema": "RH",
+  "alvo": "itens 10, 48 (taxa uniforme)",
+  "onde_quebra_hoje": "sup_N D_N·log N < ∞ não tem prova",
+  "proposta": {
+    "nome": "H_N",
+    "definicao": "(H_N f)(k) = Σ_{kj≤N} μ(j) f(kj)/j em ℓ²({1..N}); candidata D_N·log N ≤ ‖H_N‖ ≤ K",
+    "classe": "UniformTauberian",
+    "taxa": {
+      "s": 1,
+      "K": 2.27
+    },
+    "como_falha_davenport_heilbronn": ""
+  },
+  "teste_numerico": "atk-kernel/numerics/mobius_operator_norm.py: ‖H_N‖ = 1.608, 1.875, 1.975, 2.105, 2.176, 2.226, 2.265 para N = 10…1500 (cresce, ~ log log N); D_N·log N ≈ 0.045.",
+  "revisao": {
+    "contradiz": "‖H_N‖ ≤ K: o adjunto de H é a multiplicação por 1/ζ(1+s) no espaço de Hardy de séries de Dirichlet, cuja norma é sup_{Re s>0}|1/ζ(1+s)| = ∞ (1/ζ(1+it) não é limitada); os valores medidos crescem",
+    "nao_segue": "D_N·log N ≤ ‖H_N‖ não tem prova e o lado direito não depende da RH"
+  },
+  "veredito_esperado": "REJEITADA"
+}

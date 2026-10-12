@@ -1,0 +1,11 @@
+     N       ‖H_N‖   log log N     D_N·log N    D_N·log N ≤ ‖H_N‖?
+    10    1.607857    0.834032      0.054737                  True
+    50    1.875000    1.364055      0.046432                  True
+   100    1.974565    1.527180      0.046921                  True
+   300    2.104506    1.741130      0.045601                  True
+   600    2.175951    1.855818      0.045324                  True
+  1000    2.226437    1.932645      0.045287                  True
+  1500    2.264959    1.989684      0.045665                  True
+
+‖H_N‖ cresce com N (não há K uniforme); D_N·log N ≤ ‖H_N‖ vale nos dados mas não tem prova nem conteúdo:
+o lado direito não depende da RH. A taxa uniforme (itens 10/48) continua sendo o enunciado aberto.
