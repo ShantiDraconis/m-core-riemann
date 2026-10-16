@@ -1,0 +1,11 @@
+name = "ATK_RH"
+version = "0.1.0"
+defaultTargets = ["ATK.RHLemmas"]
+
+[[lean_lib]]
+name = "ATK"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0"
