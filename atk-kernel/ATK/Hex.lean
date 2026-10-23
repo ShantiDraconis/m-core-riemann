@@ -22,6 +22,12 @@ sobre `ℝ × ℝ`.
 
 Escopo: estes são lemas auxiliares de geometria de coordenadas. Nenhum deles
 prova uma conjectura do milênio; `OPEN_MATH` continua verdadeiro para RH.
+
+Nota de correção: as `def`s abaixo envolvem divisão real (`/2`), que depende
+de `Real.instDivInvMonoid`, uma instância não computável no Mathlib. Por isso
+são marcadas `noncomputable` — isso afeta apenas geração de código executável,
+não a validade das provas (o kernel aceita e `#print axioms` confirma que
+todas dependem só dos três axiomas padrão).
 -/
 
 namespace ATK.Hex
@@ -30,15 +36,15 @@ namespace ATK.Hex
     `ρ = 1/2 + d + i t`. `P1..P4` vêm das simetrias `ξ(s)=ξ(1-s)` e
     `ξ(s̄)=conj(ξ(s))`; `P5,P6` são pontos de referência na linha crítica,
     NÃO necessariamente zeros. -/
-def P1 (d t : ℝ) : ℝ × ℝ := (1 / 2 + d, t)
-def P2 (d t : ℝ) : ℝ × ℝ := (1 / 2 - d, t)
-def P3 (d t : ℝ) : ℝ × ℝ := (1 / 2 - d, -t)
-def P4 (d t : ℝ) : ℝ × ℝ := (1 / 2 + d, -t)
-def P5 (d t : ℝ) : ℝ × ℝ := (1 / 2, t)
-def P6 (d t : ℝ) : ℝ × ℝ := (1 / 2, -t)
+noncomputable def P1 (d t : ℝ) : ℝ × ℝ := (1 / 2 + d, t)
+noncomputable def P2 (d t : ℝ) : ℝ × ℝ := (1 / 2 - d, t)
+noncomputable def P3 (d t : ℝ) : ℝ × ℝ := (1 / 2 - d, -t)
+noncomputable def P4 (d t : ℝ) : ℝ × ℝ := (1 / 2 + d, -t)
+noncomputable def P5 (d t : ℝ) : ℝ × ℝ := (1 / 2, t)
+noncomputable def P6 (d t : ℝ) : ℝ × ℝ := (1 / 2, -t)
 
 /-- Distância euclidiana ao quadrado entre dois pontos de `ℝ × ℝ`. -/
-def sqDist (p q : ℝ × ℝ) : ℝ := (p.1 - q.1) ^ 2 + (p.2 - q.2) ^ 2
+noncomputable def sqDist (p q : ℝ × ℝ) : ℝ := (p.1 - q.1) ^ 2 + (p.2 - q.2) ^ 2
 
 theorem d_eq_half_diff (d t : ℝ) :
     d = ((P1 d t).1 - (P2 d t).1) / 2 := by
@@ -75,7 +81,7 @@ theorem k6_energy (d t : ℝ) :
   ring
 
 /-- Energia horizontal do quarteto simétrico. -/
-def horizontalEnergy (d : ℝ) : ℝ := 24 * d ^ 2
+noncomputable def horizontalEnergy (d : ℝ) : ℝ := 24 * d ^ 2
 
 /-- A energia horizontal se anula sse `d = 0`. Não diz nada sobre se algum
     zero real de ξ tem `d ≠ 0`. -/
