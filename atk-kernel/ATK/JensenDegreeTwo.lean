@@ -19,15 +19,30 @@ namespace ATK.JensenDegreeTwo
 
 /-- Criterio do discriminante: se `a ≠ 0` e `a·c ≤ b²`, entao
     `a·X² + 2b·X + c` tem uma raiz real explicita,
-    `X = (-b + √(b²-ac)) / a`. -/
+    `X = (r - b) / a`, com `r = √(b²-ac)`.
+
+    Demonstracao estruturada para evitar qualquer cancelamento `a * a⁻¹`
+    dentro de `ring` (que nao sabe usar `a ≠ 0` para isso): a unica
+    divisao usada e a mais simples possivel, `a * ((r-b)/a) = r-b`, via
+    `field_simp`; todo o resto e algebra polinomial pura. -/
 theorem quadratic_has_real_root (a b c : ℝ) (ha : a ≠ 0) (hdisc : a * c ≤ b ^ 2) :
     ∃ x : ℝ, a * x ^ 2 + 2 * b * x + c = 0 := by
   have hnn : 0 ≤ b ^ 2 - a * c := by linarith
   set r := Real.sqrt (b ^ 2 - a * c) with hr
   have hsq : r ^ 2 = b ^ 2 - a * c := Real.sq_sqrt hnn
-  refine ⟨(-b + r) / a, ?_⟩
-  field_simp
-  linear_combination a * hsq
+  have hy2 : (r - b) ^ 2 + 2 * b * (r - b) + a * c = 0 := by
+    have hexpand : (r - b) ^ 2 + 2 * b * (r - b) + a * c = r ^ 2 - b ^ 2 + a * c := by
+      ring
+    rw [hexpand, hsq]; ring
+  refine ⟨(r - b) / a, ?_⟩
+  have hax : a * ((r - b) / a) = r - b := by field_simp
+  have hmul : a * (a * ((r - b) / a) ^ 2 + 2 * b * ((r - b) / a) + c)
+      = (a * ((r - b) / a)) ^ 2 + 2 * b * (a * ((r - b) / a)) + a * c := by ring
+  rw [hax] at hmul
+  rw [hy2] at hmul
+  rcases mul_eq_zero.mp hmul with h | h
+  · exact absurd h ha
+  · exact h
 
 /-- Instancia nomeada: o polinomio de Jensen de grau 2,
     `J(X) = a_k + 2 a_{k+1} X + a_{k+2} X²`, tem raiz real quando
