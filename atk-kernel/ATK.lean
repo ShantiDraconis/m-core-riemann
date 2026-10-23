@@ -7,3 +7,5 @@ import ATK.Multiplicity
 import ATK.Involution
 import ATK.Estimates
 import ATK.PairSum
+import ATK.JensenDegreeTwo
+import ATK.SymmetryGroup
