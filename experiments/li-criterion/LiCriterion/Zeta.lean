@@ -24,7 +24,12 @@ For each height `T` define the **truncated Li coefficients**
 * `riemannHypothesis_iff_liTrunc` — **Mathlib's `RiemannHypothesis` ⟺ `∀ T n, 0 ≤ Re λₙ(T)`**;
 * `exists_liTrunc_re_neg_of_not_RH` — a zero off the line forces a negative truncated coefficient at
   some finite height and index;
-* `liTrunc_eq_li_original` — `λₙ(T)` equals Li's original form `Σ (1 − (1 − 1/ρ)ⁿ)`.
+* `liTrunc_eq_li_original` — `λₙ(T)` equals Li's original form `Σ (1 − (1 − 1/ρ)ⁿ)`;
+* `exists_lowest_offline_zero`, `liTrunc_threshold_of_not_RH` — if RH fails, there is a lowest
+  off-line zero, and negativity of `λₙ(T)` starts exactly at its height `T₀` (finite);
+* `li_two_worlds` — either `∀ T n, 0 ≤ Re λₙ(T)` (RH), or a finite threshold `T₀` as above;
+* `hardyZ_im_eq_zero`, `stripZero_of_hardyZ` — zeros on the line ⟷ zeros of Hardy's `Z`
+  (`Mathlib.NumberTheory.LSeries.HardyZ`, new in v4.35.0).
 
 This is a reformulation of RH, not a proof of it, and not Li's original criterion: Li's coefficients
 sum over all zeros with multiplicity (an infinite sum); here every sum is finite and each zero is
@@ -241,5 +246,74 @@ theorem liTrunc_eq_li_original (T : ℝ) (n : ℕ) :
   exact liCoeff_eq_li_original (ρ := fun x : zerosFinset T => (x : ℂ))
     (ne_one_of_mem_zerosFinset (T := T))
     (Function.Involutive.toPerm (reflect T) (reflect_involutive T)) (fun ρ => rfl) n
+
+/-! ## The first off-line zero, and the two worlds -/
+
+/-- If RH fails on the strip, there is a lowest off-line zero: below its height every strip zero
+lies on the critical line. -/
+theorem exists_lowest_offline_zero (h : ¬ StripRH) :
+    ∃ ρ, StripZero ρ ∧ ρ.re ≠ 1 / 2 ∧ ∀ s, StripZero s → |s.im| < |ρ.im| → s.re = 1 / 2 := by
+  classical
+  unfold StripRH at h
+  push_neg at h
+  obtain ⟨s0, hs0, hne0⟩ := h
+  let F : Finset ℂ := (zerosFinset |s0.im|).filter (fun s => s.re ≠ 1 / 2)
+  have hF : s0 ∈ F := Finset.mem_filter.mpr ⟨mem_zerosFinset.mpr ⟨hs0, le_refl _⟩, hne0⟩
+  obtain ⟨ρ, hρF, hmin⟩ := F.exists_min_image (fun s => |s.im|) ⟨s0, hF⟩
+  have hρ := Finset.mem_filter.mp hρF
+  have hρz := mem_zerosFinset.mp hρ.1
+  refine ⟨ρ, hρz.1, hρ.2, ?_⟩
+  intro s hs hlt
+  by_contra hsne
+  have hsF : s ∈ F := by
+    refine Finset.mem_filter.mpr ⟨mem_zerosFinset.mpr ⟨hs, ?_⟩, hsne⟩
+    exact (le_of_lt hlt).trans hρz.2
+  have hle := hmin s hsF
+  linarith
+
+/-- If RH fails, negativity of the truncated Li coefficients starts at a finite threshold height
+`T₀` (the height of the lowest off-line zero): below `T₀` every coefficient is non-negative, at
+`T₀` some coefficient is negative. -/
+theorem liTrunc_threshold_of_not_RH (h : ¬ RiemannHypothesis) :
+    ∃ T₀ : ℝ, 0 ≤ T₀ ∧ (∀ T < T₀, ∀ n, 0 ≤ (liTrunc T n).re) ∧ ∃ n, (liTrunc T₀ n).re < 0 := by
+  rw [riemannHypothesis_iff_stripRH] at h
+  obtain ⟨ρ, hρ, hne, hlow⟩ := exists_lowest_offline_zero h
+  refine ⟨|ρ.im|, abs_nonneg _, ?_, ?_⟩
+  · intro T hT n
+    refine (liTrunc_criterion T).mpr ?_ n
+    intro s hs
+    exact hlow s hs.1 (lt_of_le_of_lt hs.2 hT)
+  · by_contra hcon
+    push_neg at hcon
+    exact hne ((liTrunc_criterion |ρ.im|).mp hcon ρ ⟨hρ, le_refl _⟩)
+
+/-- **The two worlds as one theorem.** Either every truncated Li coefficient is non-negative at
+every height (this is RH), or negativity appears at a finite threshold height `T₀`, below which all
+coefficients are non-negative. An off-line zero cannot be pushed "past infinity". -/
+theorem li_two_worlds :
+    (∀ T : ℝ, ∀ n : ℕ, 0 ≤ (liTrunc T n).re) ∨
+      ∃ T₀ : ℝ, 0 ≤ T₀ ∧ (∀ T < T₀, ∀ n, 0 ≤ (liTrunc T n).re) ∧
+        ∃ n, (liTrunc T₀ n).re < 0 := by
+  by_cases h : RiemannHypothesis
+  · exact Or.inl (riemannHypothesis_iff_liTrunc.mp h)
+  · exact Or.inr (liTrunc_threshold_of_not_RH h)
+
+/-! ## Link with Hardy's `Z` function (Mathlib v4.35.0) -/
+
+/-- A strip zero on the critical line is a zero of Hardy's `Z` at its height. -/
+theorem hardyZ_im_eq_zero {s : ℂ} (hs : StripZero s) (h : s.re = 1 / 2) : hardyZ s.im = 0 := by
+  rw [hardyZ_eq_zero_iff]
+  have hs' : (1 : ℂ) / 2 + (s.im : ℂ) * I = s := by
+    apply Complex.ext <;> simp [h]
+  rw [hs']
+  exact hs.1
+
+/-- A zero of Hardy's `Z` gives a strip zero on the critical line. -/
+theorem stripZero_of_hardyZ {t : ℝ} (h : hardyZ t = 0) :
+    StripZero (1 / 2 + (t : ℂ) * I) ∧ ((1 : ℂ) / 2 + (t : ℂ) * I).re = 1 / 2 := by
+  have hre : ((1 : ℂ) / 2 + (t : ℂ) * I).re = 1 / 2 := by simp
+  refine ⟨⟨(hardyZ_eq_zero_iff t).mp h, ?_, ?_⟩, hre⟩
+  · rw [hre]; norm_num
+  · rw [hre]; norm_num
 
 end LiCriterion.Zeta

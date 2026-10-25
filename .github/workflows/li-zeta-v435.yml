@@ -79,6 +79,8 @@ jobs:
           #check @LiCriterion.Zeta.riemannHypothesis_iff_liTrunc
           #check @LiCriterion.Zeta.liTrunc_criterion
           #check @LiCriterion.Zeta.liTrunc
+          #check @LiCriterion.Zeta.li_two_worlds
+          #check @LiCriterion.Zeta.liTrunc_threshold_of_not_RH
           #print axioms LiCriterion.norm_liPoint_le_one_iff
           #print axioms LiCriterion.norm_liPoint_eq_one_iff
           #print axioms LiCriterion.one_sub_inv_one_sub
@@ -98,6 +100,11 @@ jobs:
           #print axioms LiCriterion.Zeta.riemannHypothesis_iff_liTrunc
           #print axioms LiCriterion.Zeta.exists_liTrunc_re_neg_of_not_RH
           #print axioms LiCriterion.Zeta.liTrunc_eq_li_original
+          #print axioms LiCriterion.Zeta.exists_lowest_offline_zero
+          #print axioms LiCriterion.Zeta.liTrunc_threshold_of_not_RH
+          #print axioms LiCriterion.Zeta.li_two_worlds
+          #print axioms LiCriterion.Zeta.hardyZ_im_eq_zero
+          #print axioms LiCriterion.Zeta.stripZero_of_hardyZ
           EOF
           lake env lean AxiomProbe.lean > ../../axioms.log 2>&1
           rc=$?
@@ -112,12 +119,15 @@ jobs:
           sets = re.findall(r"depends on axioms: \[([^\]]*)\]", text, re.S)
           sets += ["" for _ in re.findall(r"does not depend on any axioms", text)]
           allowed = {"propext", "Classical.choice", "Quot.sound"}
-          if len(sets) != 19:
-              sys.exit("expected 19 axiom reports, got %d" % len(sets))
+          if len(sets) != 24:
+              sys.exit("expected 24 axiom reports, got %d" % len(sets))
           for s in sets:
               names = {x.strip() for x in s.split(",") if x.strip()}
               if not names <= allowed:
                   sys.exit("non-standard axioms: %s" % (names - allowed))
+          reps = re.findall(r"'(LiCriterion\.[A-Za-z_.]+)' (depends on axioms: \[[^\]]*\]|does not depend on any axioms)", text, re.S)
+          summary = " || ".join(f"{n}: {' '.join(a.split())}" for n, a in reps)
+          print("::notice title=axiom-summary::" + summary.replace("%", "%25")[:3900])
           print("LI_ZETA_AXIOM_AUDIT_OK")
           PY
       - name: Upload logs
