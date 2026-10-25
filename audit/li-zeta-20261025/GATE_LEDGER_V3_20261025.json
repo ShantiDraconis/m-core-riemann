@@ -64,6 +64,12 @@
      "run": 40149374737,
      "head_sha": "c7dacb6823ef893cc2ebf84e93d49a51a31f40e8",
      "conclusion": "success"
+    },
+    {
+     "run": 40149747655,
+     "head_sha": "9e92dd4f",
+     "conclusion": "success",
+     "note": "axiom-summary annotation lists all 24 reports, all ⊆ [propext, Classical.choice, Quot.sound]"
     }
    ],
    "axioms": [
@@ -87,7 +93,8 @@
    "statement": "(∀ T n, 0 ≤ Re λₙ(T)) ∨ ∃ T₀ ≥ 0, (∀ T < T₀, ∀ n, 0 ≤ Re λₙ(T)) ∧ ∃ n, Re λₙ(T₀) < 0",
    "meaning": "an off-line zero, if any, shows up at a finite height T₀ (the lowest off-line zero) and a finite index n; it cannot be pushed past infinity",
    "runs": [
-    40149374737
+    40149374737,
+    40149747655
    ],
    "axioms": [
     "propext",
@@ -99,7 +106,8 @@
    "theorem": "LiCriterion.Zeta.exists_lowest_offline_zero",
    "statement": "¬ StripRH → ∃ lowest off-line zero",
    "runs": [
-    40149374737
+    40149374737,
+    40149747655
    ],
    "axioms": [
     "propext",
@@ -113,7 +121,8 @@
    "theorem": "LiCriterion.Zeta.trivial_of_re_nonpos",
    "statement": "ζ s = 0 → Re s ≤ 0 → ∃ n, s = −2(n+1)",
    "runs": [
-    40149374737
+    40149374737,
+    40149747655
    ],
    "axioms": [
     "propext",
@@ -125,7 +134,8 @@
    "theorem": "LiCriterion.Zeta.liTrunc_criterion",
    "statement": "∀ T, (∀ n, 0 ≤ Re λₙ(T)) ↔ all zeros up to height T lie on Re = 1/2",
    "runs": [
-    40149374737
+    40149374737,
+    40149747655
    ],
    "axioms": [
     "propext",
@@ -137,7 +147,8 @@
    "theorem": "LiCriterion.Zeta.hardyZ_im_eq_zero / stripZero_of_hardyZ",
    "statement": "zeros on the critical line ⟷ zeros of Hardy's Z",
    "runs": [
-    40149374737
+    40149374737,
+    40149747655
    ],
    "axioms": [
     "propext",
