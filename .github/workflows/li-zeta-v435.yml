@@ -1,0 +1,130 @@
+name: Li Criterion on Zeta (Mathlib v4.35.0)
+
+# experiments/li-criterion on Lean v4.35.0 / Mathlib v4.35.0 (56a00585).
+# Builds LiCriterion.Finite (ported from v4.19.0) and LiCriterion.Zeta (truncated Li
+# criterion for riemannZeta) and audits the axioms of every main theorem.
+
+on:
+  push:
+    branches:
+      - atk/riemann-li-zeta-v435-20261025
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+        working-directory: experiments/li-criterion
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lean
+        run: |
+          set -euo pipefail
+          curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Fetch Mathlib build cache
+        run: |
+          set -euo pipefail
+          lean --version
+          lake exe cache get
+      - name: Build LiCriterion
+        run: |
+          set +e
+          lake build LiCriterion.Finite LiCriterion.Zeta > ../../build.log 2>&1
+          rc=$?
+          tail -5 ../../build.log
+          python3 - <<'PY'
+          import re
+          text = open("../../build.log", errors="replace").read().splitlines()
+          errs, cur = [], None
+          for line in text:
+              if line.startswith("error: ") and re.search(r"\.lean:\d+:\d+:", line):
+                  cur = [line[7:]]
+                  errs.append(cur)
+              elif cur is not None and line and not line.startswith(("error:", "warning:", "info:", "✖", "⚠", "✔", "Build", "Some ", "trace:")):
+                  if len(cur) < 8:
+                      cur.append(line.strip())
+              else:
+                  cur = None
+          print("lean errors:", len(errs))
+          chunk, size, k = [], 0, 0
+          for s in [" | ".join(e) for e in errs] + [None]:
+              if s is None or size + len(s) > 3500:
+                  if chunk:
+                      k += 1
+                      msg = " || ".join(chunk).replace("%", "%25").replace("\r", "")
+                      print(f"::error title=lean-errors-{k}::{msg[:3800]}")
+                  chunk, size = [], 0
+              if s is not None:
+                  chunk.append(s); size += len(s)
+          PY
+          if [ $rc -eq 0 ]; then
+            echo "::notice title=build::BUILD PASS (LiCriterion.Finite, LiCriterion.Zeta) on Mathlib v4.35.0"
+          else
+            echo "::error title=build::BUILD FAIL exit $rc"
+          fi
+          exit $rc
+      - name: Exact axiom audit
+        run: |
+          set +e
+          cat > AxiomProbe.lean <<'EOF'
+          import LiCriterion.Zeta
+          #check @LiCriterion.Zeta.riemannHypothesis_iff_liTrunc
+          #check @LiCriterion.Zeta.liTrunc_criterion
+          #check @LiCriterion.Zeta.liTrunc
+          #print axioms LiCriterion.norm_liPoint_le_one_iff
+          #print axioms LiCriterion.norm_liPoint_eq_one_iff
+          #print axioms LiCriterion.one_sub_inv_one_sub
+          #print axioms LiCriterion.liCoeff_re_nonneg
+          #print axioms LiCriterion.exists_pow_near_one
+          #print axioms LiCriterion.exists_liCoeff_re_neg
+          #print axioms LiCriterion.li_criterion_finite
+          #print axioms LiCriterion.li_criterion_finite_symm
+          #print axioms LiCriterion.liCoeff_eq_li_original
+          #print axioms LiCriterion.example_on_line
+          #print axioms LiCriterion.example_off_line
+          #print axioms LiCriterion.Zeta.zerosUpTo_finite
+          #print axioms LiCriterion.Zeta.stripZero_one_sub
+          #print axioms LiCriterion.Zeta.liTrunc_criterion
+          #print axioms LiCriterion.Zeta.trivial_of_re_nonpos
+          #print axioms LiCriterion.Zeta.riemannHypothesis_iff_stripRH
+          #print axioms LiCriterion.Zeta.riemannHypothesis_iff_liTrunc
+          #print axioms LiCriterion.Zeta.exists_liTrunc_re_neg_of_not_RH
+          #print axioms LiCriterion.Zeta.liTrunc_eq_li_original
+          EOF
+          lake env lean AxiomProbe.lean > ../../axioms.log 2>&1
+          rc=$?
+          cat ../../axioms.log
+          tr '\n' ' ' < ../../axioms.log | sed -E "s/('LiCriterion\.)/\n\1/g; s/(LiCriterion\.Zeta\.[A-Za-z_]+ :)/\n\1/g" | grep -E "axioms|:" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=axioms::${l:0:900}"; done || true
+          if [ $rc -ne 0 ] || grep -qE "sorryAx|error" ../../axioms.log; then
+            echo "::error title=axioms::probe failed or sorryAx found"; exit 1
+          fi
+          python3 - <<'PY'
+          import re, sys
+          text = open("../../axioms.log").read()
+          sets = re.findall(r"depends on axioms: \[([^\]]*)\]", text, re.S)
+          sets += ["" for _ in re.findall(r"does not depend on any axioms", text)]
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          if len(sets) != 19:
+              sys.exit("expected 19 axiom reports, got %d" % len(sets))
+          for s in sets:
+              names = {x.strip() for x in s.split(",") if x.strip()}
+              if not names <= allowed:
+                  sys.exit("non-standard axioms: %s" % (names - allowed))
+          print("LI_ZETA_AXIOM_AUDIT_OK")
+          PY
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: li-zeta-logs
+          path: |
+            build.log
+            axioms.log
