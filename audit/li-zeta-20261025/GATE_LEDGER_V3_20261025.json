@@ -1,0 +1,154 @@
+{
+ "schema": "ATK_GATE_LEDGER_V3",
+ "repo": "m-core-riemann",
+ "queue": "RH",
+ "hard_composite_remaining": 1,
+ "hard_atomic_remaining": 1,
+ "current_gate": "R01",
+ "current_head": "5c66f8dca03834f24a61a9b1219e7af9d4892dd6",
+ "canonical_hard_base": {
+  "state": "GREEN_FROZEN_REUSED",
+  "branch": "frozen/vanishing-upper-bound-green-5c66f8dc",
+  "sha": "5c66f8dca03834f24a61a9b1219e7af9d4892dd6",
+  "certified_scope": "VanishingUpperBound implies DNToZero and DNLimit=0"
+ },
+ "state_ci": "GREEN_PREFIX_REUSED",
+ "state_math": "OPEN_MATH",
+ "next": "R01 unchanged (OPEN_MATH). New verified equivalent: RH ↔ ∀ T n, 0 ≤ Re λₙ(T). Any proof of R01 or of RH is a proof of the other; neither is closer than RH itself.",
+ "progress_metric": "FROZEN_HARD/TOTAL_HARD",
+ "tests_are_progress_metric": false,
+ "frozen_prefix_decrements_hard": false,
+ "direct_producer": {
+  "state": "GREEN_FROZEN_TYPED_OPEN_MATH",
+  "branch": "frozen/nb-zero-limit-density-equivalence-green-d6a291b4",
+  "sha": "d6a291b4563f9021f74ab63cc983d44f079472da",
+  "theorem": "finiteSpanApproximatesChi_iff_DNLimit_eq_zero",
+  "target": "FiniteSpanApproximatesChi concreteGeneratorFamily",
+  "equivalent_chain": [
+   "FiniteSpanApproximatesChi",
+   "DNLimit = 0",
+   "DNToZero"
+  ],
+  "inhabitant_state": "OPEN_MATH"
+ },
+ "date": "2026-10-25",
+ "supersedes": {
+  "file": "main:GATE_LEDGER.json",
+  "blob": "5d71efdbb43fba4a36922756bb093cbbfa617de8",
+  "schema": "ATK_GATE_LEDGER_V2"
+ },
+ "toolchain_update": {
+  "from": "Lean v4.19.0 / Mathlib v4.19.0 (c44e0c8e)",
+  "to": "Lean v4.35.0 / Mathlib v4.35.0 (56a005855ea17e0b0958f73ec801ae140b0a1679), experiments/li-criterion only",
+  "mathlib_results_used": [
+   "IsCompact.inter_riemannZetaZeros_finite (Mathlib.NumberTheory.LSeries.ZetaZeros)",
+   "hardyZ, hardyZ_eq_zero_iff (Mathlib.NumberTheory.LSeries.HardyZ)",
+   "riemannZeta_one_sub, riemannZeta_ne_zero_of_one_le_re, riemannZeta_zero, Complex.Gamma_ne_zero, Complex.cos_eq_zero_iff"
+  ],
+  "repository_main_still_on": "Lean v4.19.0"
+ },
+ "verified_equivalents_of_RH": [
+  {
+   "theorem": "LiCriterion.Zeta.riemannHypothesis_iff_liTrunc",
+   "statement": "RiemannHypothesis ↔ ∀ T : ℝ, ∀ n : ℕ, 0 ≤ (liTrunc T n).re",
+   "meaning": "truncated Li coefficients over the zeros of ζ in the critical strip with |Im ρ| ≤ T (finite sum, each zero once)",
+   "branch": "atk/riemann-li-zeta-v435-20261025",
+   "file": "experiments/li-criterion/LiCriterion/Zeta.lean",
+   "runs": [
+    {
+     "run": 40148892239,
+     "head_sha": "b30156764ba6fd8ce5d0ac841f02cde52ede8dd4",
+     "conclusion": "success"
+    },
+    {
+     "run": 40149374737,
+     "head_sha": "c7dacb6823ef893cc2ebf84e93d49a51a31f40e8",
+     "conclusion": "success"
+    }
+   ],
+   "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+   ],
+   "target_fidelity": "Mathlib's own RiemannHypothesis (no local restatement)"
+  },
+  {
+   "theorem": "ATK.NecessidadeRH.rh_iff_DN (M-Core atk-kernel, Mathlib v4.34.1)",
+   "statement": "RiemannHypothesis ↔ Tendsto DN atTop (𝓝 0)",
+   "run": 40120636882,
+   "repository": "ShantiDraconis/M-Core",
+   "note": "the DN of M-Core's ATK.Conditional.Riemann; its identity with this repository's concreteNBData.DN has not been checked here"
+  }
+ ],
+ "verified_dichotomies": [
+  {
+   "theorem": "LiCriterion.Zeta.li_two_worlds",
+   "statement": "(∀ T n, 0 ≤ Re λₙ(T)) ∨ ∃ T₀ ≥ 0, (∀ T < T₀, ∀ n, 0 ≤ Re λₙ(T)) ∧ ∃ n, Re λₙ(T₀) < 0",
+   "meaning": "an off-line zero, if any, shows up at a finite height T₀ (the lowest off-line zero) and a finite index n; it cannot be pushed past infinity",
+   "runs": [
+    40149374737
+   ],
+   "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+   ]
+  },
+  {
+   "theorem": "LiCriterion.Zeta.exists_lowest_offline_zero",
+   "statement": "¬ StripRH → ∃ lowest off-line zero",
+   "runs": [
+    40149374737
+   ],
+   "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+   ]
+  }
+ ],
+ "verified_supporting": [
+  {
+   "theorem": "LiCriterion.Zeta.trivial_of_re_nonpos",
+   "statement": "ζ s = 0 → Re s ≤ 0 → ∃ n, s = −2(n+1)",
+   "runs": [
+    40149374737
+   ],
+   "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+   ]
+  },
+  {
+   "theorem": "LiCriterion.Zeta.liTrunc_criterion",
+   "statement": "∀ T, (∀ n, 0 ≤ Re λₙ(T)) ↔ all zeros up to height T lie on Re = 1/2",
+   "runs": [
+    40149374737
+   ],
+   "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+   ]
+  },
+  {
+   "theorem": "LiCriterion.Zeta.hardyZ_im_eq_zero / stripZero_of_hardyZ",
+   "statement": "zeros on the critical line ⟷ zeros of Hardy's Z",
+   "runs": [
+    40149374737
+   ],
+   "axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+   ]
+  }
+ ],
+ "not_done": [
+  "Li's original criterion (all zeros, with multiplicity): needs the Hadamard product of ξ; not in Mathlib v4.35.0",
+  "RH itself: OPEN_MATH",
+  "port of the repository main (Lean v4.19.0) to v4.35.0"
+ ]
+}

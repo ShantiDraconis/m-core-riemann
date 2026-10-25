@@ -109,7 +109,8 @@ jobs:
           lake env lean AxiomProbe.lean > ../../axioms.log 2>&1
           rc=$?
           cat ../../axioms.log
-          tr '\n' ' ' < ../../axioms.log | sed -E "s/('LiCriterion\.)/\n\1/g; s/(LiCriterion\.Zeta\.[A-Za-z_]+ :)/\n\1/g" | grep -E "axioms|:" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=axioms::${l:0:900}"; done || true
+          # statements only (axiom sets go into one summary annotation below; GitHub keeps 10 notices per step)
+          tr '\n' ' ' < ../../axioms.log | sed -E "s/(LiCriterion\.Zeta\.[A-Za-z_]+ :)/\n\1/g; s/('LiCriterion\.)/\n\1/g" | grep -E "^LiCriterion\.Zeta\.[A-Za-z_]+ :" | sed -E 's/%/%25/g' | while IFS= read -r l; do echo "::notice title=statement::${l:0:900}"; done || true
           if [ $rc -ne 0 ] || grep -qE "sorryAx|error" ../../axioms.log; then
             echo "::error title=axioms::probe failed or sorryAx found"; exit 1
           fi
